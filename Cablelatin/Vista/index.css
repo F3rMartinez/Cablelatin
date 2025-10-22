@@ -1,0 +1,184 @@
+/* =========================
+   ESTILO GENERAL
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #0a192f, #000000);
+    overflow: hidden;
+    color: #ffffff;
+    position: relative;
+}
+
+/* =========================
+   ANIMACIÓN DE PARTÍCULAS DE FONDO
+========================= */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, rgba(0,180,216,0.3) 2px, transparent 3px);
+    background-size: 80px 80px;
+    animation: moverParticulas 30s linear infinite;
+    z-index: 0;
+    opacity: 0.2;
+}
+
+body::after {
+    animation-direction: reverse;
+    background-size: 100px 100px;
+}
+
+@keyframes moverParticulas {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(80px, 80px);
+    }
+}
+
+/* =========================
+   CONTENEDOR PRINCIPAL
+========================= */
+.container {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 40px 50px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    animation: fadeIn 1.2s ease;
+}
+
+/* =========================
+   ANIMACIÓN DE ENTRADA
+========================= */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   LOGO Y TÍTULO
+========================= */
+.logo {
+    width: 90px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 6px rgba(0, 180, 216, 0.6));
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00b4d8;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* =========================
+   FORMULARIO Y CAMPOS
+========================= */
+form {
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #00b4d8;
+    box-shadow: 0 0 10px rgba(0, 180, 216, 0.4);
+}
+
+/* =========================
+   BOTÓN
+========================= */
+button {
+    width: 100%;
+    background: linear-gradient(90deg, #0077b6, #00b4d8);
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    padding: 12px;
+    margin-top: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 180, 216, 0.5);
+}
+
+/* =========================
+   ADAPTABILIDAD MÓVIL
+========================= */
+@media (max-width: 480px) {
+    .container {
+        padding: 30px 25px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    button {
+        font-size: 0.95rem;
+    }
+
+    .logo {
+        width: 70px;
+    }
+}
