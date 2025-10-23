@@ -1,17 +1,15 @@
-CREATE DATABASE CABLELATIN
-
 -- ============================================
--- CREACIÓN DE TABLAS EN SQL SERVER
+-- CREACIÓN DE TABLAS EN MySQL
 -- ============================================
 
 CREATE TABLE roles (
-    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
-    permisos VARCHAR(MAX)
+    permisos TEXT
 );
 
 CREATE TABLE usuarios (
-    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     contrasena VARCHAR(255) NOT NULL,
@@ -20,17 +18,17 @@ CREATE TABLE usuarios (
 );
 
 CREATE TABLE clientes (
-    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     direccion VARCHAR(255),
-    telefono VARCHAR(50),
+    telefono VARCHAR(50) UNIQUE, 
     email VARCHAR(255) UNIQUE,
     nombre VARCHAR(255) NOT NULL,
     plan VARCHAR(100),
-    tipo_cliente VARCHAR(100)  -- 👈 Nueva columna agregada
+    tipo_cliente VARCHAR(100)
 );
 
 CREATE TABLE facturas (
-    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     ultimo_pago DATE,
     ultimo_vencimiento DATE,
