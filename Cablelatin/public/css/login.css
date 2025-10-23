@@ -1,5 +1,5 @@
 /* =========================
-   ESTILO GENERAL
+ESTILO GENERAL
 ========================= */
 * {
     margin: 0;
@@ -20,7 +20,7 @@ body {
 }
 
 /* =========================
-   ANIMACIÓN DE PARTÍCULAS DE FONDO
+ANIMACIÓN DE PARTÍCULAS DE FONDO
 ========================= */
 body::before, body::after {
     content: "";
@@ -51,7 +51,7 @@ body::after {
 }
 
 /* =========================
-   CONTENEDOR PRINCIPAL
+CONTENEDOR PRINCIPAL
 ========================= */
 .container {
     position: relative;
@@ -68,7 +68,7 @@ body::after {
 }
 
 /* =========================
-   ANIMACIÓN DE ENTRADA
+ANIMACIÓN DE ENTRADA
 ========================= */
 @keyframes fadeIn {
     from {
@@ -82,7 +82,7 @@ body::after {
 }
 
 /* =========================
-   LOGO Y TÍTULO
+LOGO Y TÍTULO
 ========================= */
 .logo {
     width: 90px;
@@ -99,7 +99,7 @@ h1 {
 }
 
 /* =========================
-   FORMULARIO Y CAMPOS
+FORMULARIO Y CAMPOS
 ========================= */
 form {
     text-align: left;
@@ -139,7 +139,7 @@ input[type="password"]:focus {
 }
 
 /* =========================
-   BOTÓN
+BOTÓN
 ========================= */
 button {
     width: 100%;
@@ -163,7 +163,7 @@ button:hover {
 }
 
 /* =========================
-   ADAPTABILIDAD MÓVIL
+ADAPTABILIDAD MÓVIL
 ========================= */
 @media (max-width: 480px) {
     .container {

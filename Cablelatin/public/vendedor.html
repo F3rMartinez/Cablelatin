@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Vendedor - CABLE LATÍN</title>
+    
+    <link rel="stylesheet" href="css/vendedor.css"> 
+</head>
+<body>
+
+    <header>
+        <h1>Panel de Vendedor</h1>
+        <nav>
+            <a href="login.html">Cerrar Sesión</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Registrar Nuevo Cliente</h2>
+        
+        <form id="registro-cliente-form">
+
+            <div class="form-group">
+                <label>Tipo de Cliente:</label>
+                <div class="radio-group">
+                    <input type="radio" id="tipoResidencia" name="tipoCliente" value="residencia" checked>
+                    <label for="tipoResidencia">Residencia</label>
+                    
+                    <input type="radio" id="tipoEmpresarial" name="tipoCliente" value="empresarial">
+                    <label for="tipoEmpresarial">Empresarial</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="nombres">Apellidos y Nombres:</label>
+                <input type="text" id="nombres" placeholder="Ingresar apellidos y nombres" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipoDoc">Tipo de Documento:</label>
+                <select id="tipoDoc" name="tipoDoc">
+                    <option value="dni" id="opcionDni">DNI</option>
+                    <option value="ruc" id="opcionRuc">RUC</option>
+                    <option value="ce" id="opcionCe">CE (Carnet de Extranjería)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="numDoc" id="labelNumDoc">N° de Documento:</label>
+                <input type="text" id="numDoc" placeholder="Ingresar N° de documento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico:</label>
+                <input type="email" id="correo" placeholder="Ingresar correo electrónico">
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" placeholder="Ingresar teléfono">
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección de Servicio:</label>
+                <input type="text" id="direccion" placeholder="Ej: Av. Principal 123" style="margin-bottom: 10px;">
+                <input type="text" id="distrito" placeholder="Distrito" style="margin-bottom: 10px;">
+                <input type="text" id="provincia" placeholder="Provincia" style="margin-bottom: 10px;">
+                <input type="text" id="departamento" placeholder="Departamento">
+            </div>
+
+            <div class="form-group">
+                <label for="referencia">Referencia:</label>
+                <textarea id="referencia" placeholder="Ej: Cerca al parque, casa de 2 pisos color verde..."></textarea>
+            </div>
+
+            <button type="submit">Registrar Cliente</button>
+
+        </form>
+    </main>
+
+<!-- Falta añadir el codigo de cliente y el registro de fecha automatico eso se hara por el mismo sistema de la BD -->
+
+
+    <script src="js/vendedor.js"></script>
+</body>
+</html>

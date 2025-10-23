@@ -1,0 +1,164 @@
+/* --- ESTILOS GENERALES --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* --- ENCABEZADO Y NAVEGACIÓN --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto 10px auto;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+header h1 {
+    margin: 0;
+    color: #007bff; /* Azul primario */
+    font-size: 24px;
+    font-weight: 600;
+}
+
+header nav a {
+    text-decoration: none;
+    color: #d9534f;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+header nav a:hover {
+    background-color: #fbeeee;
+}
+
+/* --- TÍTULO DEL FORMULARIO --- */
+main h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* --- GRUPO DE FORMULARIO --- */
+.form-group {
+    margin-bottom: 22px;
+}
+
+/* --- ETIQUETAS (Labels) --- */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #495057;
+}
+
+/* --- (ESTA ES LA PARTE IMPORTANTE) --- */
+/* Aplicamos el estilo a TODOS los tipos de input */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    box-sizing: border-box; 
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* --- Efecto "Focus" (TAMBIÉN CORREGIDO) --- */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* --- GRUPO DE RADIO BUTTONS (Tipo Cliente) --- */
+.radio-group {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+.radio-group label { margin-bottom: 0; cursor: pointer; }
+.radio-group input[type="radio"] { margin-right: 5px; cursor: pointer; }
+
+/* --- BOTÓN DE REGISTRAR --- */
+button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+button[type="submit"]:hover {
+    background-color: #0069d9;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+/* --- (Y ESTA ES LA OTRA PARTE IMPORTANTE) --- */
+/* Estilos para campos deshabilitados (los de precio) */
+select:disabled,
+input:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* --- Estilo para info de cliente --- */
+.info-cliente {
+    background-color: #e6f7ff;
+    border: 1px solid #b3e0ff;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 16px;
+}
+.info-cliente p { margin: 0; color: #0056b3; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    .container { padding: 20px; }
+    header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
