@@ -1,5 +1,5 @@
 -- ============================================
--- CREACIÓN DE TABLAS EN MySQL
+-- CREACIÓN DE TABLAS EN MySQL (NOSIRVE)
 -- ============================================
 
 CREATE TABLE roles (

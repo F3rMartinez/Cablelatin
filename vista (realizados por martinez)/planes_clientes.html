@@ -1,0 +1,267 @@
+<!--- TABLA CLIENTE + PLAN LEER MRD -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Plan Cliente</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .btn-primary {
+      background-color: white;
+      color: #00a3ff;
+      border: 1.5px solid #00a3ff;
+      border-radius: 5px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #00a3ff;
+      color: white;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group select {
+      padding: 7px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e3e3e3;
+    }
+
+    th {
+      background-color: #f2f4f7;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .estado {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: white;
+      display: inline-block;
+    }
+
+    .activo {
+      background-color: #28a745;
+    }
+
+    .deshabilitado {
+      background-color: #dc3545;
+    }
+
+    .acciones button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 5px 7px;
+      border-radius: 5px;
+    }
+
+    .acciones .factura {
+      background-color: #ffc107;
+      color: white;
+      font-weight: bold;
+    }
+
+    .acciones .factura:hover {
+      background-color: #ffb000;
+    }
+
+    .acciones .view {
+      background-color: #00a3ff;
+      color: white;
+    }
+
+    .acciones .view:hover {
+      background-color: #007bff;
+    }
+
+    .fecha-vencimiento {
+      background-color: #ff6b6b;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    tr.highlighted {
+      background-color: #fffec5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <button class="btn-primary">💰 Agregar Pago</button>
+
+    <h3>Registrar Plan Cliente</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>👤 Buscar Cliente</label>
+        <input type="text" placeholder="Buscar...">
+      </div>
+      <div class="form-group">
+        <label>Buscar Plan</label>
+        <input type="text" placeholder="Buscar...">
+      </div>
+      <div class="form-group">
+        <label>💲 Precio Plan</label>
+        <input type="text" disabled>
+      </div>
+      <div class="form-group">
+        <label>Desde</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Hasta</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Acción</label>
+        <select>
+          <option>Mostrar Todo</option>
+          <option>Activos</option>
+          <option>Deshabilitados</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Buscar</label>
+        <input type="text" id="buscar" placeholder="Buscar registro...">
+      </div>
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <button class="btn-primary" id="procesar">⚙️ Procesar</button>
+      </div>
+    </div>
+
+    <table id="tablaPlanes">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Fecha registro</th>
+          <th>N° Documento</th>
+          <th>Cliente</th>
+          <th>Plan</th>
+          <th>Precio Plan</th>
+          <th>Fecha Vencimiento</th>
+          <th>Fecha Límite</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const planes = [
+      {id: 226, fecha: "2025-08-20", documento: "78954465", cliente: "juan perez chumas", plan: "Plan 10 MB", precio: 50.00, vencimiento: "2025-10-20", limite: "2025-10-25", estado: "Activo"},
+      {id: 225, fecha: "2025-08-20", documento: "74546859", cliente: "cesar", plan: "Plan 50MB", precio: 20.00, vencimiento: "2025-09-20", limite: "2025-09-25", estado: "Deshabilitado"},
+      {id: 224, fecha: "2025-04-30", documento: "87654322", cliente: "test", plan: "Plan 50MB", precio: 20.00, vencimiento: "2025-09-30", limite: "2025-10-05", estado: "Activo"},
+      {id: 223, fecha: "2025-04-07", documento: "211286", cliente: "Hector", plan: "Plan 30MB", precio: 80.00, vencimiento: "2025-09-07", limite: "2025-09-12", estado: "Activo"},
+    ];
+
+    const tbody = document.querySelector("#tablaPlanes tbody");
+    const buscar = document.getElementById("buscar");
+
+    function renderTabla(data) {
+      tbody.innerHTML = "";
+      data.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.classList.add("highlighted");
+        tr.innerHTML = `
+          <td>🔵 ${p.id}</td>
+          <td>${p.fecha}</td>
+          <td>${p.documento}</td>
+          <td>${p.cliente}</td>
+          <td>${p.plan}</td>
+          <td>${p.precio.toFixed(2)}</td>
+          <td><span class="fecha-vencimiento">${p.vencimiento}</span></td>
+          <td>${p.limite}</td>
+          <td><span class="estado ${p.estado === "Activo" ? "activo" : "deshabilitado"}">${p.estado}</span></td>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    buscar.addEventListener("input", () => {
+      const texto = buscar.value.toLowerCase();
+      const filtrado = planes.filter(p =>
+        p.cliente.toLowerCase().includes(texto) ||
+        p.documento.includes(texto) ||
+        p.plan.toLowerCase().includes(texto)
+      );
+      renderTabla(filtrado);
+    });
+
+    renderTabla(planes);
+  </script>
+
+</body>
+</html>

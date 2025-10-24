@@ -1,0 +1,207 @@
+<!--- TABLA DE CLIENTES LEER MRD -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+
+    .add-btn {
+      background-color: #4e73df;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .controls select, .controls input {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .estado {
+      background-color: #28a745;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .acciones button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 5px;
+      margin: 0 3px;
+      border-radius: 5px;
+    }
+
+    .acciones .edit {
+      color: #4e73df;
+      border: 1px solid #4e73df;
+    }
+
+    .acciones .delete {
+      color: #e74a3b;
+      border: 1px solid #e74a3b;
+    }
+
+    .acciones button:hover {
+      background-color: #f2f2f2;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h2>Clientes</h2>
+      <button class="add-btn">+</button>
+    </div>
+
+    <div class="controls">
+      <div>
+        Mostrar 
+        <select id="numRegistros">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+        </select> registros
+      </div>
+      <div>
+        Buscar: <input type="text" id="buscar" placeholder="Nombre o DNI...">
+      </div>
+    </div>
+
+    <table id="tablaClientes">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>DNI</th>
+          <th>Nombre</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const clientes = [
+      {id: 114, dni: "1234560", nombre: "Julio Jaramillo", telefono: "123456", direccion: "Casa", estado: "Activo"},
+      {id: 115, dni: "2014", nombre: "Carlos", telefono: "1213456789", direccion: "Carrera 11 N°4-52 Edif BL NAILS", estado: "Activo"},
+      {id: 116, dni: "123456y", nombre: "Felix", telefono: "1432432", direccion: "Texas", estado: "Activo"},
+      {id: 117, dni: "s1111111r", nombre: "Agrtshth", telefono: "1234343432", direccion: "sfdgfegeg", estado: "Activo"},
+      {id: 118, dni: "1111111", nombre: "Ssss", telefono: "1234334", direccion: "ffffff", estado: "Activo"},
+      {id: 119, dni: "1", nombre: "Ddddd", telefono: "143455443", direccion: "rrrrr", estado: "Activo"},
+      {id: 120, dni: "324", nombre: "Rgt", telefono: "83524424", direccion: "dfdfbvdttrtt", estado: "Activo"},
+      {id: 121, dni: "5443645", nombre: "Jose Ramon", telefono: "77857658456", direccion: "av sur sin numero", estado: "Activo"},
+    ];
+
+    const tbody = document.querySelector("#tablaClientes tbody");
+    const buscar = document.getElementById("buscar");
+    const numRegistros = document.getElementById("numRegistros");
+
+    function renderTabla(data) {
+      tbody.innerHTML = "";
+      data.forEach(cli => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${cli.id}</td>
+          <td>${cli.dni}</td>
+          <td>${cli.nombre}</td>
+          <td>${cli.telefono}</td>
+          <td>${cli.direccion}</td>
+          <td><span class="estado">${cli.estado}</span></td>
+          <td class="acciones">
+            <button class="edit">✏️</button>
+            <button class="delete">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrar() {
+      const texto = buscar.value.toLowerCase();
+      const filtrado = clientes.filter(c =>
+        c.nombre.toLowerCase().includes(texto) ||
+        c.dni.toLowerCase().includes(texto)
+      );
+      renderTabla(filtrado.slice(0, numRegistros.value));
+    }
+
+    buscar.addEventListener("input", filtrar);
+    numRegistros.addEventListener("change", filtrar);
+
+    renderTabla(clientes.slice(0, numRegistros.value));
+  </script>
+
+</body>
+</html>
