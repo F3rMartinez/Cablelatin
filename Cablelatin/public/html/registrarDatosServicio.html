@@ -331,21 +331,6 @@
     <div id="sidebar-container"></div>
 
         <main id="main-content">
-            
-            <header class="header-main">
-                <button id="sidebar-toggle-mobile-main" class="sidebar-toggle-btn">
-                    <i data-lucide="menu"></i>
-                </button>
-
-                <div class="breadcrumbs">
-                    Clientes / Registrar Cliente
-                </div>
-                
-                <div class="user-links">
-                    <a href="#">Panel de Vendedor</a>
-                    <a href="#" class="logout">Cerrar Sesión</a>
-                </div>
-            </header>
 
             <div class="form-wrapper-center">
                 <div class="panel-form">
@@ -683,6 +668,28 @@
     </script>
 
         <script>
+  // Carga el HTML del sidebar
+  fetch("siderbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      // Luego de insertarlo, inicializa los eventos de los submenús
+      initSidebarEvents();
+    });
+
+  // Función que activa los desplegables
+  function initSidebarEvents() {
+    document.querySelectorAll(".has-submenu").forEach(item => {
+      const header = item.querySelector(".submenu-header");
+      header.addEventListener("click", () => {
+        item.classList.toggle("open");
+      });
+    });
+  }
+</script>
+
+    <script>
   // Carga el HTML del sidebar
   fetch("siderbar.html")
     .then(res => res.text())
