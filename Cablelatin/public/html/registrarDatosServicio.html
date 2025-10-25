@@ -328,66 +328,7 @@
 </head>
 <body>
 
-    <div id="app-container">
-        
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo-container">
-                    <i data-lucide="tv-2"></i> 
-                    <h1>CABLE LATIN</h1>
-                </div>
-                <button id="sidebar-toggle-mobile">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-
-            <nav>
-                <a class="nav-item" href="#">
-                    <i data-lucide="layout-grid"></i>
-                    <span>Tablero</span>
-                </a>
-                
-                <div id="admin-menu-toggle" class="nav-item is-parent">
-                    <i data-lucide="settings"></i>
-                    <span>Administración</span>
-                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
-                </div>
-                <div id="admin-submenu" class="submenu-container">
-                    <a class="submenu-item" href="#">Usuarios</a>
-                    <a class="submenu-item" href="#">Configuración</a>
-                    <a class="submenu-item" href="#">Planes y servicios</a>
-                </div>
-
-                <div id="clients-menu-toggle" class="nav-item is-parent initial-active">
-                    <i data-lucide="users"></i>
-                    <span>Clientes</span>
-                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
-                </div>
-                <div id="clients-submenu" class="submenu-container">
-                    <a class="submenu-item" href="#">Clientes</a>
-                    <a class="submenu-item active" href="#">Registrar Cliente</a> 
-                    <a class="submenu-item" href="#">Planes Clientes</a>
-                    <a class="submenu-item" href="#">Pagos</a>
-                </div>
-                
-                <div id="requests-menu-toggle" class="nav-item is-parent">
-                    <i data-lucide="list-checks"></i>
-                    <span>Solicitudes</span>
-                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
-                </div>
-                <div id="requests-submenu" class="submenu-container">
-                    <a class="submenu-item" href="#">Aprobadas</a>
-                    <a class="submenu-item" href="#">Pendientes</a>
-                </div>
-
-                <div class="my-4 border-t"></div> 
-                
-                <a class="nav-item" href="#">
-                    <i data-lucide="user-circle"></i>
-                    <span>Mi Perfil</span>
-                </a>
-            </nav>
-        </aside>
+    <div id="sidebar-container"></div>
 
         <main id="main-content">
             
@@ -740,5 +681,27 @@
             }
         });
     </script>
+
+        <script>
+  // Carga el HTML del sidebar
+  fetch("siderbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      // Luego de insertarlo, inicializa los eventos de los submenús
+      initSidebarEvents();
+    });
+
+  // Función que activa los desplegables
+  function initSidebarEvents() {
+    document.querySelectorAll(".has-submenu").forEach(item => {
+      const header = item.querySelector(".submenu-header");
+      header.addEventListener("click", () => {
+        item.classList.toggle("open");
+      });
+    });
+  }
+</script>
 </body>
 </html>

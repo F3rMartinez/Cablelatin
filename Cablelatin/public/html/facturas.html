@@ -362,59 +362,7 @@
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-desktop"></i>
-                    <span>CABLE LATIN</span>
-                </div>
-                <i class="fas fa-bars sidebar-toggle-btn" id="sidebar-toggle-internal"></i>
-            </div>
-
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="nav-item">
-                        <i class="fas fa-grip"></i>
-                        <span>Tablero</span>
-                    </li>
-                    <li class="nav-item has-submenu">
-                        <i class="fas fa-gear"></i>
-                        <span>Administración</span>
-                        <i class="fas fa-chevron-right arrow-icon"></i>
-                        <ul class="submenu">
-                            <li><span>Usuarios</span></li>
-                            <li><span>Configuración</span></li>
-                            <li><span>Planes y servicios</span></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item has-submenu initial-active"> 
-                        <i class="fas fa-users"></i>
-                        <span>Clientes</span>
-                        <i class="fas fa-chevron-right arrow-icon"></i>
-                        <ul class="submenu">
-                            <li><span>Clientes</span></li>
-                            <li><span>Planes Clientes</span></li>
-                            <li><span>Pagos</span></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item has-submenu">
-                        <i class="fas fa-list-check"></i>
-                        <span>Solicitudes</span>
-                        <i class="fas fa-chevron-right arrow-icon"></i>
-                        <ul class="submenu">
-                            <li><span>Ver Solicitudes</span></li>
-                            <li><span>Crear Solicitud</span></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <i class="fas fa-user-circle"></i>
-                        <span>Mi Perfil</span>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+        <div id="sidebar-container"></div>
 
         <main class="main-content">
             
@@ -602,5 +550,27 @@
             }
         });
     </script>
+
+        <script>
+  // Carga el HTML del sidebar
+  fetch("siderbar.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      // Luego de insertarlo, inicializa los eventos de los submenús
+      initSidebarEvents();
+    });
+
+  // Función que activa los desplegables
+  function initSidebarEvents() {
+    document.querySelectorAll(".has-submenu").forEach(item => {
+      const header = item.querySelector(".submenu-header");
+      header.addEventListener("click", () => {
+        item.classList.toggle("open");
+      });
+    });
+  }
+</script>
 </body>
 </html>
