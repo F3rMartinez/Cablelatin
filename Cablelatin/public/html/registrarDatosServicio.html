@@ -7,500 +7,194 @@
     
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <style>
-        :root {
-            /* Paleta de colores basada en tus imágenes */
-            --color-principal: #0d6efd;
-            --color-principal-claro: #e3f2fd; /* Fondo de item activo */
-            --color-texto: #212529;
-            --color-texto-secundario: #6c757d;
-            --color-sidebar: #f8f9fa; /* Fondo del menú lateral */
-            --color-fondo: #f4f7fa;   /* Fondo del contenido principal */
-            --color-panel: #ffffff;
-            --color-borde: #dee2e6;
-            --color-exito: #198754;
-            --color-exito-claro: #d1e7dd;
-        }
-        body { 
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
-            margin: 0; 
-            background: var(--color-fondo); 
-            color: var(--color-texto); 
-            font-size: 0.95rem;
-        }
-        #app-container { display: flex; }
-
-        /* --- Sidebar --- */
-        #sidebar { 
-            width: 250px; 
-            background: var(--color-sidebar); 
-            height: 100vh; 
-            position: fixed; 
-            left: 0; 
-            top: 0; 
-            border-right: 1px solid var(--color-borde); 
-            transition: transform 0.3s ease; 
-            z-index: 100; 
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-header { 
-            padding: 1.25rem 1.5rem; 
-            display: flex; 
-            align-items: center; 
-            border-bottom: 1px solid var(--color-borde);
-            flex-shrink: 0;
-        }
-        .logo-container { display: flex; align-items: center; }
-        .logo-container i { color: var(--color-principal); }
-        .logo-container h1 { 
-            font-size: 1.25rem; 
-            font-weight: 700; 
-            margin: 0 0 0 0.75rem; 
-            color: var(--color-principal); 
-        }
-        #sidebar nav { 
-            padding: 1rem 0.75rem; 
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-        .nav-item { 
-            display: flex; 
-            align-items: center; 
-            padding: 0.75rem 1rem; 
-            border-radius: 0.375rem; 
-            color: var(--color-texto-secundario); 
-            text-decoration: none; 
-            margin-bottom: 0.25rem; 
-            cursor: pointer; 
-            border-left: 3px solid transparent; 
-            font-weight: 500;
-        }
-        .nav-item:hover { 
-            background: #e9ecef; 
-            color: var(--color-texto);
-        }
-        .nav-item.active, .nav-item.open { 
-            background: var(--color-principal-claro); 
-            color: var(--color-principal); 
-            font-weight: 600; 
-            border-left: 3px solid var(--color-principal);
-        }
-        .nav-item span { margin-left: 0.75rem; flex-grow: 1; }
-        .nav-item .submenu-arrow { 
-            margin-left: auto; 
-            transition: transform 0.3s; 
-        }
-        
-        .submenu-container { 
-            display: none; 
-            background: var(--color-panel); 
-            padding-left: 2.5rem; 
-            margin: 0 0.5rem 0.5rem 1rem;
-            border-radius: 0.25rem;
-            padding-bottom: 0.5rem;
-            padding-top: 0.5rem;
-        }
-        .submenu-container.open { display: block; }
-        .submenu-item { 
-            display: block; 
-            padding: 0.6rem 0.5rem; 
-            color: var(--color-texto-secundario); 
-            text-decoration: none; 
-            font-size: 0.9rem;
-            border-radius: 0.25rem;
-        }
-        .submenu-item:hover { 
-            color: var(--color-texto); 
-            background: #f8f9fa;
-        }
-        .submenu-item.active { 
-            color: var(--color-principal); 
-            font-weight: 600; 
-        }
-        .border-t { border-top: 1px solid var(--color-borde); }
-        .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
-        
-        /* --- Main Content --- */
-        #main-content { 
-            margin-left: 250px; 
-            width: calc(100% - 250px); 
-            padding: 0; 
-        }
-        .header-main { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: var(--color-panel); 
-            padding: 1.25rem 1.5rem; 
-            border-bottom: 1px solid var(--color-borde); 
-        }
-        #sidebar-toggle-mobile { 
-            display: none; 
-            background: none; 
-            border: none; 
-            cursor: pointer;
-            padding: 0.25rem;
-        }
-        .breadcrumbs { color: var(--color-texto-secundario); font-size: 0.9rem; }
-        .user-links { margin-left: auto; }
-        .user-links a { 
-            margin-left: 1rem; 
-            text-decoration: none; 
-            color: var(--color-texto-secundario); 
-            font-size: 0.9rem; 
-        }
-        .user-links a.logout { color: #dc3545; }
-
-        /* --- Formulario --- */
-        .form-wrapper-center { padding: 1.5rem; display: flex; justify-content: center; }
-        .panel-form { 
-            background: var(--color-panel); 
-            border-radius: 0.5rem; 
-            border: 1px solid var(--color-borde);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
-            width: 100%; 
-            max-width: 900px; 
-        }
-        .form-title { 
-            font-size: 1.5rem; 
-            font-weight: 600; 
-            padding: 1.5rem; 
-            border-bottom: 1px solid var(--color-borde); 
-            text-align: center; 
-        }
-        .tab-navigation { 
-            display: flex; 
-            justify-content: center; 
-            border-bottom: 1px solid var(--color-borde); 
-        }
-        .tab-item { 
-            padding: 1rem 1.5rem; 
-            cursor: pointer; 
-            color: var(--color-texto-secundario); 
-            border-bottom: 3px solid transparent; 
-            transition: all 0.3s; 
-            font-weight: 500;
-        }
-        .tab-item.active { 
-            color: var(--color-principal); 
-            border-bottom-color: var(--color-principal); 
-            font-weight: 600; 
-        }
-        
-        form { padding: 2rem; }
-        .form-step { display: none; }
-        .form-step.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .form-content-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; }
-        @media (min-width: 768px) {
-            .form-content-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        .form-group-grid { display: flex; flex-direction: column; }
-        .form-group-grid label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--color-texto); }
-        .form-group-grid input[type="text"],
-        .form-group-grid input[type="email"],
-        .form-group-grid input[type="tel"],
-        .form-group-grid input[type="number"],
-        .form-group-grid select,
-        .form-group-grid textarea {
-            width: 100%; 
-            padding: 0.75rem; 
-            border: 1px solid var(--color-borde); 
-            border-radius: 0.375rem; 
-            box-sizing: border-box; 
-            color: var(--color-texto);
-            font-size: 0.9rem;
-        }
-        .form-group-grid input:focus, .form-group-grid select:focus, .form-group-grid textarea:focus {
-            border-color: var(--color-principal);
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-            outline: none;
-        }
-        .client-type-group { grid-column: 1 / -1; }
-        .client-type-options { display: flex; flex-wrap: wrap; gap: 1.5rem; }
-        .client-type-options label { display: flex; align-items: center; cursor: pointer; }
-        .client-type-options .ml-2 { margin-left: 0.5rem; }
-
-        .btn-action { 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 0.375rem; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border: none; 
-            transition: background-color 0.3s; 
-            font-size: 0.9rem;
-        }
-        .btn-next, .btn-save { background-color: var(--color-principal); color: white; }
-        .btn-next:hover, .btn-save:hover { background-color: #0b5ed7; }
-        .btn-prev { background-color: var(--color-texto-secundario); color: white; }
-        .btn-prev:hover { background-color: #5c636a; }
-        .flex { display: flex; }
-        .justify-end { justify-content: flex-end; }
-        .justify-between { justify-content: space-between; }
-        .mt-4 { margin-top: 1.5rem; }
-
-        .servicio-info { 
-            background: var(--color-principal-claro); 
-            color: #0a58ca; 
-            border-left: 4px solid var(--color-principal); 
-            padding: 1rem; 
-            border-radius: 0.5rem; 
-            margin-bottom: 1rem; 
-            text-align: center; 
-        }
-        
-        /* --- Modal --- */
-        .hidden { display: none !important; }
-        .fixed { position: fixed; }
-        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-        #successModal { 
-            background: rgba(0,0,0,0.6); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            opacity: 0; 
-            transition: opacity 0.3s; 
-            z-index: 200; 
-        }
-        #successModal.open { opacity: 1; }
-        #successModal .modal-content { 
-            background: white; 
-            border-radius: 0.5rem; 
-            padding: 2rem; 
-            text-align: center; 
-            max-width: 400px; 
-            width: 90%; 
-            transform: scale(0.95); 
-            transition: transform 0.3s; 
-        }
-        #successModal.open .modal-content { transform: scale(1); }
-        .modal-icon-wrapper { 
-            background: var(--color-exito-claro); 
-            border-radius: 9999px; 
-            width: 4rem; 
-            height: 4rem; 
-            margin: auto; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-        }
-        .modal-icon-wrapper i { color: var(--color-exito); width: 2rem; height: 2rem; }
-        .modal-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 1rem; }
-        .modal-content p { margin-top: 0.5rem; color: var(--color-texto-secundario); }
-        .modal-content .btn-modal-close { 
-            background: var(--color-principal); 
-            color: white; 
-            width: 100%; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 0.375rem; 
-            border: none; 
-            cursor: pointer; 
-            margin-top: 2rem; 
-            font-weight: 600; 
-        }
-        .modal-content .btn-modal-close:hover { background-color: #0b5ed7; }
-
-        /* Responsive Mobile */
-        @media (max-width: 1023px) {
-            #sidebar { 
-                transform: translateX(-100%); 
-            }
-            #sidebar.open { 
-                transform: translateX(0); 
-                box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            }
-            #main-content { margin-left: 0; width: 100%; }
-            #sidebar-toggle-mobile { 
-                display: block; 
-                color: var(--color-texto-secundario);
-            }
-            .breadcrumbs { display: none; }
-        }
-        @media (max-width: 767px) {
-            .form-content-grid { grid-template-columns: repeat(1, 1fr); }
-            .form-wrapper-center { padding: 0.5rem; }
-            form { padding: 1rem; }
-        }
-
-    </style>
+    <link rel="stylesheet" href="/public/css/registrarDatosServicio.css">
 </head>
 <body>
 
     <div id="sidebar-container"></div>
 
-        <main id="main-content">
+    <main id="main-content">
+        
+        <header class="header-main">
+            <button id="sidebar-toggle-mobile" aria-label="Abrir menú">
+                 <i data-lucide="menu"></i>
+            </button>
+            <div class="breadcrumbs">
+                Clientes / Registrar Nuevo Cliente
+            </div>
+            <div class="user-links">
+                <a href="#">Ayuda</a>
+                <a href="login.html" class="logout">Cerrar Sesión</a>
+            </div>
+        </header>
 
-            <div class="form-wrapper-center">
-                <div class="panel-form">
-                    
-                    <h2 class="form-title">Registrar Nuevo Cliente</h2>
+        <div class="form-wrapper-center">
+            <div class="panel-form">
                 
-                    <div class="tab-navigation">
-                        <div class="tab-item active" data-step="1" id="tab-step-1">
-                            Paso 1: Datos del Cliente
-                        </div>
-                        <div class="tab-item" data-step="2" id="tab-step-2">
-                            Paso 2: Asignación de Servicio
-                        </div>
+                <h2 class="form-title">Registrar Nuevo Cliente</h2>
+            
+                <div class="tab-navigation">
+                    <div class="tab-item active" data-step="1" id="tab-step-1">
+                        Paso 1: Datos del Cliente
                     </div>
+                    <div class="tab-item" data-step="2" id="tab-step-2">
+                        Paso 2: Asignación de Servicio
+                    </div>
+                </div>
 
-                    <form id="multiStepForm">
-                        <div class="form-carousel" id="formCarousel">
-                        
-                            <div class="form-step active" data-step="1">
-                                <div class="form-content-grid">
-                                    <div class="client-type-group">
-                                        <label>Tipo de Cliente:</label>
-                                        <div class="client-type-options">
-                                            <label>
-                                                <input type="radio" id="residencia" name="tipoCliente" value="Residencia" checked> 
-                                                <span class="ml-2">Residencia / Personal</span>
-                                            </label>
-                                            <label>
-                                                <input type="radio" id="empresarial" name="tipoCliente" value="Empresarial"> 
-                                                <span class="ml-2">Empresarial (RUC)</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="form-group-grid">
-                                            <label for="nombresApellidos">Apellidos y Nombres:</label>
-                                            <input type="text" id="nombresApellidos" name="nombresApellidos" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="tipoDocumento">Tipo de Documento:</label>
-                                            <select id="tipoDocumento" name="tipoDocumento">
-                                                <option value="DNI">DNI</option>
-                                                <option value="RUC">RUC</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="nDocumento">Nº de Documento:</label>
-                                            <input type="text" id="nDocumento" name="nDocumento" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="email">Correo Electrónico:</label>
-                                            <input type="email" id="email" name="email" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="telefono">Teléfono / Celular:</label>
-                                            <input type="tel" id="telefono" name="telefono" required>
-                                        </div>
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="form-group-grid">
-                                            <label for="direccionCompleta">Dirección (Calle/Av/N°):</label>
-                                            <input type="text" id="direccionCompleta" name="direccionCompleta" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="distrito">Distrito / Ciudad:</label>
-                                            <input type="text" id="distrito" name="distrito" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="provincia">Provincia:</label>
-                                            <input type="text" id="provincia" name="provincia" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="departamento">Departamento:</label>
-                                            <input type="text" id="departamento" name="departamento" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group-grid" style="grid-column: 1 / -1;">
-                                        <label for="referencia">Referencia / Notas:</label>
-                                        <textarea id="referencia" name="referencia" rows="3" placeholder="Ej: Casa de dos pisos con portón azul..."></textarea>
-                                    </div>
-                                </div>
-                                <div class="mt-4 flex justify-end">
-                                    <button type="button" class="btn-action btn-next" data-target-step="2">
-                                        Continuar a Asignación &rarr;
-                                    </button>
-                                </div>
-                            </div>
+                <form id="multiStepForm">
+                    <div class="form-carousel" id="formCarousel">
                     
-                            <div class="form-step" data-step="2">
-                                <p class="servicio-info">Asignando servicio para el cliente: <strong id="customerNameDisplay">(Nombre)</strong></p>
-                                <div class="form-content-grid">
-                                    
-                                    <div>
-                                        <div class="form-group-grid">
-                                            <label for="tipoPlan">Tipo de Plan:</label>
-                                            <select id="tipoPlan" name="tipoPlan">
-                                                <option value="BasicoTV">Basico TV</option>
-                                                <option value="Avanzado">Avanzado Plus</option>
-                                                <option value="Internet">Solo Internet</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="velocidadInternet">Velocidad Internet:</label>
-                                            <select id="velocidadInternet" name="velocidadInternet">
-                                                <option value="N/A">N/A (Solo TV)</option>
-                                                <option value="10MB">10 MB</option>
-                                                <option value="20MB">20 MB</option>
-                                                <option value="50MB">50 MB</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="precioPlan">Precio del Plan (S/):</label>
-                                            <input type="number" id="precioPlan" name="precioPlan" value="40.00" step="0.01" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="serviciosAdicionales">Servicios Adicionales:</label>
-                                            <select id="serviciosAdicionales" name="serviciosAdicionales">
-                                                <option value="Ninguno">Ninguno</option>
-                                                <option value="HBO">HBO Premium</option>
-                                                <option value="FOX">FOX Sports Pack</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="costoAdicional">Costo Adicional (S/):</label>
-                                            <input type="number" id="costoAdicional" name="costoAdicional" value="0.00" step="0.01">
-                                        </div>
-                                    </div>
-                                    
-                                    <div>
-                                        <div class="form-group-grid">
-                                            <label for="cicloFacturacion">Ciclo Facturación (Día):</label>
-                                            <input type="number" id="cicloFacturacion" name="cicloFacturacion" value="15" min="1" max="31" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="fechaInicio">Fecha de Inicio:</label>
-                                            <input type="text" id="fechaInicio" name="fechaInicio" placeholder="dd/mm/aaaa" required>
-                                        </div>
-                                        <div class="form-group-grid">
-                                            <label for="estadoServicio">Estado del Servicio:</label>
-                                            <select id="estadoServicio" name="estadoServicio">
-                                                <option value="Instalacion">En Instalación</option>
-                                                <option value="Activo">Activo</option>
-                                                <option value="Pendiente">Pendiente de Pago</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group-grid" style="grid-row: span 2;">
-                                            <label for="observaciones">Observaciones Técnicas:</label>
-                                            <textarea id="observaciones" name="observaciones" rows="5" placeholder="Anotar detalles de la instalación..."></textarea>
-                                        </div>
+                        <div class="form-step active" data-step="1">
+                            <div class="form-content-grid">
+                                <div class="client-type-group">
+                                    <label>Tipo de Cliente:</label>
+                                    <div class="client-type-options">
+                                        <label>
+                                            <input type="radio" id="residencia" name="tipoCliente" value="Residencia" checked> 
+                                            <span class="ml-2">Residencia / Personal</span>
+                                        </label>
+                                        <label>
+                                            <input type="radio" id="empresarial" name="tipoCliente" value="Empresarial"> 
+                                            <span class="ml-2">Empresarial (RUC)</span>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="mt-4 flex justify-between">
-                                    <button type="button" class="btn-action btn-prev" data-target-step="1">
-                                        &larr; Volver
-                                    </button>
-                                    <button type="submit" class="btn-action btn-save">
-                                        Guardar y Finalizar &check;
-                                    </button>
+                                
+                                <div>
+                                    <div class="form-group-grid">
+                                        <label for="nombresApellidos">Apellidos y Nombres:</label>
+                                        <input type="text" id="nombresApellidos" name="nombresApellidos" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="tipoDocumento">Tipo de Documento:</label>
+                                        <select id="tipoDocumento" name="tipoDocumento">
+                                            <option value="DNI">DNI</option>
+                                            <option value="RUC">RUC</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="nDocumento">Nº de Documento:</label>
+                                        <input type="text" id="nDocumento" name="nDocumento" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="email">Correo Electrónico:</label>
+                                        <input type="email" id="email" name="email" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="telefono">Teléfono / Celular:</label>
+                                        <input type="tel" id="telefono" name="telefono" required>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="form-group-grid">
+                                        <label for="direccionCompleta">Dirección (Calle/Av/N°):</label>
+                                        <input type="text" id="direccionCompleta" name="direccionCompleta" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="distrito">Distrito / Ciudad:</label>
+                                        <input type="text" id="distrito" name="distrito" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="provincia">Provincia:</label>
+                                        <input type="text" id="provincia" name="provincia" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="departamento">Departamento:</label>
+                                        <input type="text" id="departamento" name="departamento" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-grid" style="grid-column: 1 / -1;">
+                                    <label for="referencia">Referencia / Notas:</label>
+                                    <textarea id="referencia" name="referencia" rows="3" placeholder="Ej: Casa de dos pisos con portón azul..."></textarea>
                                 </div>
                             </div>
-                        </div> 
-                    </form>
+                            <div class="mt-4 flex justify-end">
+                                <button type="button" class="btn-action btn-next" data-target-step="2">
+                                    Continuar a Asignación &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    
+                        <div class="form-step" data-step="2">
+                            <p class="servicio-info">Asignando servicio para el cliente: <strong id="customerNameDisplay">(Nombre)</strong></p>
+                            <div class="form-content-grid">
+                                
+                                <div>
+                                    <div class="form-group-grid">
+                                        <label for="tipoPlan">Tipo de Plan:</label>
+                                        <select id="tipoPlan" name="tipoPlan">
+                                            <option value="BasicoTV">Basico TV</option>
+                                            <option value="Avanzado">Avanzado Plus</option>
+                                            <option value="Internet">Solo Internet</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="velocidadInternet">Velocidad Internet:</label>
+                                        <select id="velocidadInternet" name="velocidadInternet">
+                                            <option value="N/A">N/A (Solo TV)</option>
+                                            <option value="10MB">10 MB</option>
+                                            <option value="20MB">20 MB</option>
+                                            <option value="50MB">50 MB</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="precioPlan">Precio del Plan (S/):</label>
+                                        <input type="number" id="precioPlan" name="precioPlan" value="40.00" step="0.01" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="serviciosAdicionales">Servicios Adicionales:</label>
+                                        <select id="serviciosAdicionales" name="serviciosAdicionales">
+                                            <option value="Ninguno">Ninguno</option>
+                                            <option value="HBO">HBO Premium</option>
+                                            <option value="FOX">FOX Sports Pack</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="costoAdicional">Costo Adicional (S/):</label>
+                                        <input type="number" id="costoAdicional" name="costoAdicional" value="0.00" step="0.01">
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="form-group-grid">
+                                        <label for="cicloFacturacion">Ciclo Facturación (Día):</label>
+                                        <input type="number" id="cicloFacturacion" name="cicloFacturacion" value="15" min="1" max="31" required>
+                                    </div>
+                                    <div class="form-group-grid">
+                                        <label for="fechaInicio">Fecha de Inicio:</label>
+                                        <input type="text" id="fechaInicio" name="fechaInicio" placeholder="dd/mm/aaaa" required> </div>
+                                    <div class="form-group-grid">
+                                        <label for="estadoServicio">Estado del Servicio:</label>
+                                        <select id="estadoServicio" name="estadoServicio">
+                                            <option value="Instalacion">En Instalación</option>
+                                            <option value="Activo">Activo</option>
+                                            <option value="Pendiente">Pendiente de Pago</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group-grid" style="grid-row: span 2;">
+                                        <label for="observaciones">Observaciones Técnicas:</label>
+                                        <textarea id="observaciones" name="observaciones" rows="5" placeholder="Anotar detalles de la instalación..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex justify-between">
+                                <button type="button" class="btn-action btn-prev" data-target-step="1">
+                                    &larr; Volver
+                                </button>
+                                <button type="submit" class="btn-action btn-save">
+                                    Guardar y Finalizar &check;
+                                </button>
+                            </div>
+                        </div>
+                    </div> 
+                </form>
 
-                </div> 
             </div> 
-            </main>
-    </div>
+        </div> 
+        </main>
 
     <div id="successModal" class="fixed inset-0 flex items-center justify-center hidden">
         <div class="modal-content">
@@ -518,197 +212,6 @@
             </div>
         </div>
     </div>
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar iconos
-            lucide.createIcons();
-
-            // --- Referencias del DOM ---
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile'); // Botón en sidebar
-            const sidebarToggleMain = document.getElementById('sidebar-toggle-mobile-main'); // Botón en header
-            const tabItems = document.querySelectorAll('.tab-item');
-            const multiStepForm = document.getElementById('multiStepForm');
-            const steps = document.querySelectorAll('.form-step');
-            const successModal = document.getElementById('successModal');
-            const closeModalSuccess = document.getElementById('closeModalSuccess');
-            const customerNameDisplay = document.getElementById('customerNameDisplay');
-            const nameInput = document.getElementById('nombresApellidos');
-            const menuToggles = document.querySelectorAll('.nav-item.is-parent');
-
-            // --- Lógica del Menú Lateral (Sidebar) ---
-            menuToggles.forEach(toggle => {
-                toggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (e.target.closest('.submenu-container')) return;
-
-                    const submenu = toggle.nextElementSibling;
-                    const arrow = toggle.querySelector('.submenu-arrow');
-                    const isOpen = submenu.classList.contains('open');
-                    const parentNavItem = toggle;
-
-                    // Cerrar otros menús
-                    menuToggles.forEach(otherToggle => {
-                        if (otherToggle !== toggle) {
-                            otherToggle.classList.remove('open', 'active');
-                            otherToggle.nextElementSibling.classList.remove('open');
-                            const otherArrow = otherToggle.querySelector('.submenu-arrow');
-                            if(otherArrow) otherArrow.style.transform = 'rotate(0deg)';
-                        }
-                    });
-
-                    // Abrir/Cerrar menú actual
-                    if (isOpen) {
-                        submenu.classList.remove('open');
-                        parentNavItem.classList.remove('open', 'active');
-                        if(arrow) arrow.style.transform = 'rotate(0deg)';
-                    } else {
-                        submenu.classList.add('open');
-                        parentNavItem.classList.add('open', 'active');
-                        if(arrow) arrow.style.transform = 'rotate(90deg)';
-                    }
-                });
-            });
-            
-             // Activar estado inicial (el que tiene 'initial-active')
-             const initialActiveParent = document.querySelector('.nav-item.initial-active');
-             if (initialActiveParent) {
-                 initialActiveParent.classList.add('active'); 
-                 if (initialActiveParent.classList.contains('is-parent')) {
-                     const initialSubmenu = initialActiveParent.nextElementSibling;
-                     const initialArrow = initialActiveParent.querySelector('.submenu-arrow');
-                     initialActiveParent.classList.add('open'); 
-                     initialSubmenu.classList.add('open'); 
-                     if (initialArrow) initialArrow.style.transform = 'rotate(90deg)';
-                 }
-             }
-
-            // Lógica para botones móviles
-            const toggleSidebar = () => sidebar.classList.toggle('open');
-            if (sidebarToggleMobile) sidebarToggleMobile.addEventListener('click', toggleSidebar);
-            if (sidebarToggleMain) sidebarToggleMain.addEventListener('click', toggleSidebar);
-
-
-            // --- Lógica del Formulario Multi-paso ---
-            const updateTabsAndSteps = (targetStep) => {
-                tabItems.forEach(tab => {
-                    tab.classList.remove('active');
-                    if (tab.dataset.step == targetStep) tab.classList.add('active');
-                });
-                steps.forEach(step => step.classList.remove('active'));
-                const targetStepElement = document.querySelector(`.form-step[data-step="${targetStep}"]`);
-                if(targetStepElement) targetStepElement.classList.add('active');
-            };
-            
-            document.querySelectorAll('.btn-next, .btn-prev').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetStep = button.dataset.targetStep;
-                    if(targetStep == 2) {
-                        customerNameDisplay.textContent = nameInput.value || "(Cliente no especificado)";
-                    }
-                    updateTabsAndSteps(targetStep);
-                    window.scrollTo(0, 0); // Subir al inicio
-                });
-            });
-
-            tabItems.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetStep = tab.dataset.step;
-                    if(targetStep == 2) {
-                        if (nameInput.value) { // Validación simple
-                             customerNameDisplay.textContent = nameInput.value;
-                             updateTabsAndSteps(targetStep);
-                        } else {
-                            alert("Por favor, complete los datos del cliente primero.");
-                        }
-                    } else {
-                         updateTabsAndSteps(targetStep);
-                    }
-                });
-            });
-
-            // --- Lógica del Modal de Éxito ---
-            if (multiStepForm) {
-                multiStepForm.addEventListener('submit', (e) => {
-                    e.preventDefault(); 
-                    successModal.classList.add('open');
-                    successModal.classList.remove('hidden'); 
-                    lucide.createIcons(); // Recargar icono por si acaso
-                });
-            }
-            
-            const closeTheModal = () => {
-                successModal.classList.remove('open');
-                setTimeout(() => {
-                    successModal.classList.add('hidden');
-                }, 300); // Esperar animación
-                multiStepForm.reset(); // Limpiar formulario
-                updateTabsAndSteps(1); // Volver al paso 1
-                customerNameDisplay.textContent = "(Nombre)";
-                window.scrollTo(0, 0); 
-            }
-
-            if (closeModalSuccess) {
-                closeModalSuccess.addEventListener('click', closeTheModal);
-            }
-            
-            if (successModal) {
-                // Cerrar al hacer clic fuera del modal
-                successModal.addEventListener('click', (e) => {
-                    if (e.target === successModal) { 
-                        closeTheModal();
-                    }
-                });
-            }
-        });
-    </script>
-
-        <script>
-  // Carga el HTML del sidebar
-  fetch("siderbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("sidebar-container").innerHTML = html;
-
-      // Luego de insertarlo, inicializa los eventos de los submenús
-      initSidebarEvents();
-    });
-
-  // Función que activa los desplegables
-  function initSidebarEvents() {
-    document.querySelectorAll(".has-submenu").forEach(item => {
-      const header = item.querySelector(".submenu-header");
-      header.addEventListener("click", () => {
-        item.classList.toggle("open");
-      });
-    });
-  }
-</script>
-
-    <script>
-  // Carga el HTML del sidebar
-  fetch("siderbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("sidebar-container").innerHTML = html;
-
-      // Luego de insertarlo, inicializa los eventos de los submenús
-      initSidebarEvents();
-    });
-
-  // Función que activa los desplegables
-  function initSidebarEvents() {
-    document.querySelectorAll(".has-submenu").forEach(item => {
-      const header = item.querySelector(".submenu-header");
-      header.addEventListener("click", () => {
-        item.classList.toggle("open");
-      });
-    });
-  }
-</script>
+    <script src="/public/js/registrarDatosServicio.js"></script>
 </body>
 </html>
