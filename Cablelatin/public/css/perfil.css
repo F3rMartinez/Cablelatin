@@ -1,11 +1,10 @@
 :root {
-    /* Paleta de colores basada en tus imágenes */
     --color-principal: #0d6efd;
-    --color-principal-claro: #e3f2fd; /* Fondo de item activo */
+    --color-principal-claro: #e3f2fd;
     --color-texto: #212529;
     --color-texto-secundario: #6c757d;
-    --color-sidebar: #f8f9fa; /* Fondo del menú lateral */
-    --color-fondo: #f4f7fa;   /* Fondo del contenido principal */
+    --color-sidebar: #f8f9fa;
+    --color-fondo: #f4f7fa;
     --color-panel: #ffffff;
     --color-borde: #dee2e6;
     --color-exito: #198754;
@@ -20,7 +19,7 @@ body {
 }
 #app-container { display: flex; }
 
-/* --- Sidebar --- */
+/* --- Sidebar (Estilos para sidebar.html) --- */
 #sidebar { 
     width: 250px; 
     background: var(--color-sidebar); 
@@ -37,7 +36,8 @@ body {
 .sidebar-header { 
     padding: 1.25rem 1.5rem; 
     display: flex; 
-    align-items: center; 
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid var(--color-borde);
     flex-shrink: 0;
 }
@@ -81,7 +81,6 @@ body {
     margin-left: auto; 
     transition: transform 0.3s; 
 }
-
 .submenu-container { 
     display: none; 
     background: var(--color-panel); 
@@ -116,7 +115,7 @@ body {
     margin-left: 250px; 
     width: calc(100% - 250px); 
     padding: 0; 
-    transition: margin-left 0.3s ease, width 0.3s ease; /* Transición */
+    transition: margin-left 0.3s ease, width 0.3s ease; /* Añadida transición */
 }
 .header-main { 
     display: flex; 
@@ -126,7 +125,8 @@ body {
     padding: 1.25rem 1.5rem; 
     border-bottom: 1px solid var(--color-borde); 
 }
-#sidebar-toggle-mobile { 
+#sidebar-toggle-mobile,
+#sidebar-toggle-mobile-main { 
     display: none; 
     background: none; 
     border: none; 
@@ -135,7 +135,7 @@ body {
     color: var(--color-texto-secundario);
 }
 .breadcrumbs { color: var(--color-texto-secundario); font-size: 0.9rem; }
-.user-links { margin-left: auto; }
+.user-links { margin-left: auto; display: flex; align-items: center; } /* Añadido flex */
 .user-links a { 
     margin-left: 1rem; 
     text-decoration: none; 
@@ -144,7 +144,7 @@ body {
 }
 .user-links a.logout { color: #dc3545; }
 
-/* --- Formulario --- */
+/* --- Panel y Formulario --- */
 .form-wrapper-center { padding: 1.5rem; display: flex; justify-content: center; }
 .panel-form { 
     background: var(--color-panel); 
@@ -161,42 +161,16 @@ body {
     border-bottom: 1px solid var(--color-borde); 
     text-align: center; 
 }
-.tab-navigation { 
-    display: flex; 
-    justify-content: center; 
-    border-bottom: 1px solid var(--color-borde); 
-}
-.tab-item { 
-    padding: 1rem 1.5rem; 
-    cursor: pointer; 
-    color: var(--color-texto-secundario); 
-    border-bottom: 3px solid transparent; 
-    transition: all 0.3s; 
-    font-weight: 500;
-}
-.tab-item.active { 
-    color: var(--color-principal); 
-    border-bottom-color: var(--color-principal); 
-    font-weight: 600; 
-}
-
 form { padding: 2rem; }
-.form-step { display: none; }
-.form-step.active { display: block; animation: fadeIn 0.5s; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } /* Animación suave */
-
 .form-content-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; }
 @media (min-width: 768px) {
     .form-content-grid { grid-template-columns: repeat(2, 1fr); }
 }
-.form-group-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+.form-group-grid { display: flex; flex-direction: column; gap: 0.5rem; } /* Añadido gap */
 .form-group-grid label { font-weight: 600; /*margin-bottom: 0.5rem;*/ font-size: 0.875rem; color: var(--color-texto); }
 .form-group-grid input[type="text"],
 .form-group-grid input[type="email"],
-.form-group-grid input[type="tel"],
-.form-group-grid input[type="number"],
-.form-group-grid select,
-.form-group-grid textarea {
+.form-group-grid input[type="password"] {
     width: 100%; 
     padding: 0.75rem; 
     border: 1px solid var(--color-borde); 
@@ -204,26 +178,19 @@ form { padding: 2rem; }
     box-sizing: border-box; 
     color: var(--color-texto);
     font-size: 0.9rem;
-    transition: border-color 0.2s, box-shadow 0.2s; /* Transición focus */
 }
-.form-group-grid input:focus, .form-group-grid select:focus, .form-group-grid textarea:focus {
+.form-group-grid input:focus {
     border-color: var(--color-principal);
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     outline: none;
 }
-/* Estilo específico para input deshabilitado (RUC) */
-.form-group-grid input:disabled, .form-group-grid select:disabled {
+.form-group-grid input.is-readonly {
     background-color: #e9ecef;
+    color: var(--color-texto-secundario);
     cursor: not-allowed;
-    opacity: 0.7;
 }
 
-.client-type-group { grid-column: 1 / -1; }
-.client-type-options { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 0.5rem; }
-.client-type-options label { display: flex; align-items: center; cursor: pointer; font-weight: normal; }
-.client-type-options input[type="radio"] { margin-right: 0.5rem; }
-/*.client-type-options .ml-2 { margin-left: 0.5rem; } No necesario con radio a la izq */
-
+/* --- Botones --- */
 .btn-action { 
     padding: 0.75rem 1.5rem; 
     border-radius: 0.375rem; 
@@ -232,35 +199,61 @@ form { padding: 2rem; }
     border: none; 
     transition: background-color 0.3s; 
     font-size: 0.9rem;
-    display: inline-flex; /* Para alinear icono y texto */
+    display: inline-flex;
     align-items: center;
-    gap: 0.5rem; /* Espacio entre icono y texto */
+    gap: 0.5rem;
 }
-.btn-next, .btn-save { background-color: var(--color-principal); color: white; }
-.btn-next:hover, .btn-save:hover { background-color: #0b5ed7; }
-.btn-prev { background-color: var(--color-texto-secundario); color: white; }
-.btn-prev:hover { background-color: #5c636a; }
+.btn-save { background-color: var(--color-principal); color: white; }
+.btn-save:hover { background-color: #0b5ed7; }
+.btn-secondary {
+    background-color: var(--color-borde);
+    color: var(--color-texto);
+}
+.btn-secondary:hover { background-color: #ced4da; }
 .flex { display: flex; }
 .justify-end { justify-content: flex-end; }
-.justify-between { justify-content: space-between; }
 .mt-4 { margin-top: 1.5rem; }
 
-.servicio-info { 
-    background: var(--color-principal-claro); 
-    color: #0a58ca; 
-    border-left: 4px solid var(--color-principal); 
-    padding: 1rem; 
-    border-radius: 0.25rem; /* Más sutil */
-    margin-bottom: 1.5rem; /* Más espacio */
-    text-align: center; 
-    font-size: 0.9rem;
+/* --- Estilos Perfil --- */
+.profile-pic-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    grid-column: 1 / -1; /* Ocupa todo el ancho en grid */
+}
+.pic-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--color-borde);
+}
+.profile-icon-placeholder {
+    width: 80px;
+    height: 80px;
+    color: var(--color-texto-secundario);
+}
+.form-subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-principal);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    grid-column: 1 / -1; /* Ocupa todo el ancho */
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-borde);
 }
 
-/* --- Modal --- */
+/* --- ESTILOS PARA EL MODAL DE ÉXITO --- */
 .hidden { display: none !important; }
 .fixed { position: fixed; }
 .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
-#successModal { 
+#profileSuccessModal { 
     background: rgba(0,0,0,0.6); 
     display: flex; 
     align-items: center; 
@@ -268,13 +261,13 @@ form { padding: 2rem; }
     opacity: 0; 
     transition: opacity 0.3s; 
     z-index: 200; 
-    pointer-events: none; /* Evita clics accidentales mientras está oculto */
+    pointer-events: none; /* Añadido */
 }
-#successModal.open { 
+#profileSuccessModal.open { 
     opacity: 1; 
-    pointer-events: auto; /* Permite clics cuando está abierto */
+    pointer-events: auto; /* Añadido */
 }
-#successModal .modal-content { 
+#profileSuccessModal .modal-content { 
     background: white; 
     border-radius: 0.5rem; 
     padding: 2rem; 
@@ -284,13 +277,13 @@ form { padding: 2rem; }
     transform: scale(0.95); 
     transition: transform 0.3s; 
 }
-#successModal.open .modal-content { transform: scale(1); }
+#profileSuccessModal.open .modal-content { transform: scale(1); }
 .modal-icon-wrapper { 
     background: var(--color-exito-claro); 
     border-radius: 9999px; 
     width: 4rem; 
     height: 4rem; 
-    margin: auto auto 1rem auto; /* Espacio abajo */
+    margin: auto; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -306,24 +299,22 @@ form { padding: 2rem; }
     border-radius: 0.375rem; 
     border: none; 
     cursor: pointer; 
-    margin-top: 1.5rem; /* Menos espacio */
+    margin-top: 2rem; 
     font-weight: 600; 
 }
 .modal-content .btn-modal-close:hover { background-color: #0b5ed7; }
 
 /* Responsive Mobile */
 @media (max-width: 1023px) {
-    #sidebar { 
-        transform: translateX(-100%); 
-    }
+    #sidebar { transform: translateX(-100%); }
     #sidebar.open { 
         transform: translateX(0); 
         box-shadow: 0 0 20px rgba(0,0,0,0.2);
     }
     #main-content { margin-left: 0; width: 100%; }
-    #sidebar-toggle-mobile { 
+    #sidebar-toggle-mobile,
+    #sidebar-toggle-mobile-main { 
         display: block; 
-        color: var(--color-texto-secundario);
     }
     .breadcrumbs { display: none; }
 }
@@ -331,7 +322,6 @@ form { padding: 2rem; }
     .form-content-grid { grid-template-columns: repeat(1, 1fr); }
     .form-wrapper-center { padding: 0.5rem; }
     form { padding: 1rem; }
-    .header-main { padding: 0.75rem 1rem; } /* Menos padding */
-    .tab-item { padding: 0.75rem 1rem; font-size: 0.9rem; } /* Tabs más pequeños */
-    .btn-action { padding: 0.6rem 1.2rem; font-size: 0.85rem; } /* Botones más pequeños */
+    .header-main { padding: 0.75rem 1rem; } /* Ajuste padding header */
+    .user-links a { font-size: 0.8rem; margin-left: 0.5rem; } /* Menos espacio en links */
 }

@@ -3,7 +3,8 @@
     --danger-color: #dc3545;  /* Rojo */
     --secondary-color: #6c757d; /* Gris */
     --success-color: #28a745; /* Verde */
-    --light-bg: #f8f9fa; /* Fondo gris claro */
+    --dark-bg: #343a40;       /* Gris oscuro */
+    --light-bg: #f8f9fa;      /* Fondo gris claro */
     --card-bg: #ffffff;
     --text-color: #333333;
     --light-text-color: #666666;
@@ -68,6 +69,7 @@ Estilos para el sidebar.html cargado dinámicamente
     transform: rotate(180deg);
 }
 
+
 .sidebar-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
 .sidebar-nav .nav-item {
     display: flex; align-items: center; flex-wrap: wrap; 
@@ -124,7 +126,7 @@ Estilos para el sidebar.html cargado dinámicamente
 
 /*
 ---------------------------------
-NUEVO CONTENIDO PRINCIPAL (TABLA PLANES)
+NUEVO CONTENIDO PRINCIPAL (BUSQUEDA DE FACTURA)
 ---------------------------------
 */
 .main-content {
@@ -137,101 +139,148 @@ NUEVO CONTENIDO PRINCIPAL (TABLA PLANES)
 /* Barra de navegación superior */
 .main-navbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Ajustado */
     align-items: center;
-    background: var(--card-bg);
+    background: var(--dark-bg); /* Cambiado a oscuro */
+    color: var(--light-bg);     /* Texto claro */
     padding: 15px 30px;
-    border-bottom: 1px solid var(--border-color);
 }
 .navbar-breadcrumbs {
-    font-size: 1.1em; /* Más grande */
-    color: var(--primary-color); /* Color azul */
+    font-size: 1.1em;
+    color: #e9ecef;             /* Texto claro */
     font-weight: 500;
 }
+.navbar-right-icons {           /* Cambiado de navbar-user-links */
+    display: flex;
+    gap: 20px;
+    color: #e9ecef;             /* Iconos claros */
+    font-size: 1.2em;
+}
+.navbar-right-icons i {
+    cursor: pointer;
+}
+/* Estilos adicionales para los links si los hubiera */
 .navbar-user-links a {
     font-size: 0.9em;
-    color: var(--light-text-color);
+    color: #e9ecef; /* Texto claro */
     text-decoration: none;
     margin-left: 20px;
     font-weight: 500;
 }
 .navbar-user-links a.logout {
-    color: var(--danger-color); /* Color rojo */
+    color: #ffc107; /* Amarillo para logout? */
 }
 .navbar-user-links a:hover {
     text-decoration: underline;
 }
+
 
 /* Contenedor del cuerpo principal */
 .content-body {
     padding: 30px;
 }
 
-/* Contenedor de la tabla (tarjeta blanca) */
-.card-table-wrapper {
+.content-header h1 {
+    margin: 0 0 25px 0;
+    font-size: 1.8em;
+    font-weight: 500;
+}
+
+/* Contenedor de la tarjeta de formulario */
+.card {
     background-color: var(--card-bg);
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     padding: 25px;
-}
-
-/* Cabecera de contenido (Título y botón) */
-.content-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center; 
     margin-bottom: 25px;
 }
-.content-header h1 {
-    margin: 0;
-    font-size: 1.8em;
-    font-weight: 500;
+
+/* Grid del formulario de filtros */
+.form-filters-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columnas por defecto */
+    gap: 20px;
+    align-items: end; /* Alinea los elementos al final */
 }
-.btn-primary-add {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 14px;
-    font-size: 1.1em;
-    cursor: pointer;
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+.form-group label {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
+    gap: 8px;
 }
-.btn-primary-add:hover {
-    background-color: #0056b3;
+.form-group label i {
+    color: var(--secondary-color);
+}
+.form-group input[type="text"],
+.form-group input[type="search"] {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 0.9em;
 }
 
-/* Controles de la tabla (Mostrar y Buscar) */
+.form-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* margin-top: 10px; No es necesario con align-items: end */
+}
+.btn {
+    padding: 10px 12px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+.btn-outline-primary {
+    background-color: var(--card-bg);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+.btn-outline-primary:hover {
+    background-color: #f4f7fa;
+}
+
+
+/* Controles de la tabla (Mostrar) */
 .table-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Alineado a la izquierda */
     align-items: center;
     margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 15px;
 }
 .table-controls label {
     font-size: 0.9em;
     color: var(--light-text-color);
 }
-.table-controls select,
-.table-controls input[type="search"] {
+.table-controls select {
     border: 1px solid #ced4da;
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 0.9em;
-    margin-left: 8px;
-}
-.table-controls input[type="search"] {
-    width: 250px;
+    margin: 0 8px; /* Espacio a ambos lados */
 }
 
 /* Contenedor de la tabla (para scroll) */
 .table-container {
-    overflow-x: auto;
+    overflow-x: auto; 
 }
 
 table {
@@ -243,7 +292,7 @@ table {
 thead th {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border-color); /* Borde más grueso */
     color: var(--light-text-color);
     font-size: 0.8em;
     text-transform: uppercase;
@@ -268,91 +317,58 @@ tbody tr:hover {
     background-color: #fcfcfc;
 }
 
-/* Píldora de estado (Activo / Inactivo) */
-.status-pill {
+/* Píldora de estado (Activo) */
+.status-pill.active {
     border-radius: 12px;
     padding: 4px 12px;
     font-size: 0.8em;
     font-weight: 500;
-}
-.status-pill.active {
     background-color: #e0f5e9; /* Fondo verde claro */
     color: var(--success-color); /* Texto verde */
 }
-.status-pill.inactive {
-    background-color: #ffebee; /* Fondo rojo claro */
-    color: var(--danger-color); /* Texto rojo */
+/* Añade otros estados si los necesitas (ej: Pagado, Vencido) */
+.status-pill.success {
+    border-radius: 4px; 
+    padding: 4px 8px;
+    font-size: 0.8em;
+    font-weight: 500;
+    background-color: #e0f5e9; 
+    color: var(--success-color); 
 }
+.status-pill.danger { /* Ejemplo para Vencido */
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 0.8em;
+    font-weight: 500;
+    background-color: #ffebee; 
+    color: var(--danger-color); 
+}
+
 
 /* Acciones de la tabla */
-.table-actions .btn-icon {
-    border: none;
-    background-color: transparent;
-    border-radius: 4px;
-    padding: 6px 8px;
-    margin: 0 2px;
+.table-actions i {
+    font-size: 1.2em;
+    margin: 0 8px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    font-size: 0.9em;
+    transition: opacity 0.2s ease;
 }
-.table-actions .btn-icon.edit {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: var(--primary-color);
+.table-actions .icon-success {
+    color: var(--success-color);
 }
-.table-actions .btn-icon.delete {
-    background-color: rgba(220, 53, 69, 0.1);
+.table-actions .icon-danger {
     color: var(--danger-color);
 }
-.table-actions .btn-icon.edit:hover {
-    background-color: rgba(0, 123, 255, 0.2);
-}
-.table-actions .btn-icon.delete:hover {
-    background-color: rgba(220, 53, 69, 0.2);
-}
-
-
-/* Footer de la tabla (Paginación) */
-.table-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    margin-top: 20px;
-}
-.footer-info {
-    font-size: 0.9em;
-    color: var(--light-text-color);
-}
-.pagination {
-    display: flex;
-    gap: 5px;
-}
-.pagination a {
-    text-decoration: none;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    color: var(--primary-color);
-    font-size: 0.9em;
-    transition: all 0.2s ease;
-}
-.pagination a.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-.pagination a.disabled {
-    color: var(--secondary-color);
-    background-color: var(--light-bg);
-    pointer-events: none;
-    border-color: var(--border-color);
-}
-.pagination a:not(.active):not(.disabled):hover {
-    background-color: #f4f7fa;
+.table-actions i:hover {
+    opacity: 0.7;
 }
 
 /* Ajustes responsivos */
+@media (max-width: 992px) {
+    .form-filters-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    }
+}
+
 @media (max-width: 768px) {
     .dashboard-container { flex-direction: column; }
     .sidebar {
@@ -372,18 +388,17 @@ tbody tr:hover {
     
     .main-content { padding: 0; }
     .content-body { padding: 15px; }
-    .main-navbar { padding: 10px 15px; flex-wrap: wrap; gap: 10px; }
+    .main-navbar { padding: 10px 15px; }
     .navbar-breadcrumbs { font-size: 1em; }
-    .navbar-user-links { display: none; }
-
-    .content-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-    .btn-primary-add { width: 100%; box-sizing: border-box; }
+    .navbar-right-icons { font-size: 1.1em; gap: 15px; }
+    
+    .form-filters-grid {
+        grid-template-columns: 1fr; /* 1 columna */
+    }
+    .form-buttons { margin-top: 0; }
     
     .table-controls { flex-direction: column; align-items: stretch; }
     .table-controls div { width: 100%; }
-    .table-controls input[type="search"] { width: 100%; box-sizing: border-box; margin-left: 0; }
-    .table-controls select { width: 100%; margin-left: 0; }
+    .table-controls select { width: 100%; margin: 5px 0 0 0; } /* Ajuste de margen */
     .table-controls label { display: block; margin-bottom: 5px; }
-    
-    .table-footer { flex-direction: column; gap: 15px; }
 }

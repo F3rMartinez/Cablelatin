@@ -8,629 +8,184 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <style>
-        :root {
-            --primary-color: #007bff; /* Azul */
-            --danger-color: #dc3545;  /* Rojo */
-            --secondary-color: #6c757d; /* Gris */
-            --success-color: #28a745; /* Verde */
-            --light-bg: #f8f9fa; /* Fondo gris claro */
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --light-text-color: #666666;
-            --border-color: #e9ecef;
-            --sidebar-width: 250px;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--text-color);
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .dashboard-container {
-            display: flex;
-            width: 100%;
-        }
-
-        /*
-        ---------------------------------
-        SIDEBAR (CABLE LATIN - Sin cambios)
-        ---------------------------------
-        */
-        .sidebar {
-            width: var(--sidebar-width);
-            background-color: var(--card-bg);
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid var(--border-color);
-            flex-shrink: 0;
-            transition: width 0.3s ease;
-            z-index: 100;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header .logo {
-            display: flex; align-items: center; gap: 10px;
-            font-weight: 700; font-size: 1.2em; color: var(--primary-color);
-            white-space: nowrap; overflow: hidden;
-        }
-        .sidebar-header .logo i { font-size: 1.5em; }
-        .sidebar-header .sidebar-toggle-btn {
-            color: var(--secondary-color); cursor: pointer; font-size: 1.2em;
-        }
-
-        .sidebar-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
-        .sidebar-nav .nav-item {
-            display: flex; align-items: center; flex-wrap: wrap; 
-            padding: 14px 20px; color: var(--light-text-color);
-            cursor: pointer; position: relative; transition: all 0.3s ease;
-            white-space: nowrap; overflow: hidden; font-size: 0.95em;
-        }
-        .sidebar-nav .nav-item.active {
-            background-color: rgba(0, 123, 255, 0.1);
-            color: var(--primary-color);
-            border-left: 3px solid var(--primary-color);
-            padding-left: 17px; font-weight: 500;
-        }
-        .sidebar-nav .nav-item:not(.active):hover { background-color: rgba(0, 0, 0, 0.03); }
-        .sidebar-nav .nav-item > i:first-child { margin-right: 12px; width: 20px; font-size: 1.1em; }
-        .sidebar-nav .nav-item > span { flex-grow: 1; }
-        .sidebar-nav .nav-item.has-submenu .arrow-icon { margin-left: auto; transition: transform 0.3s ease; font-size: 0.8em; }
-        .sidebar-nav .submenu {
-            list-style: none; padding: 5px 0 5px 0; margin: 0;
-            display: none; width: 100%;
-            background-color: #fdfdfd; box-sizing: border-box;
-        }
-        .sidebar-nav .submenu li {
-            padding: 10px 20px 10px 52px; color: var(--light-text-color);
-            font-size: 0.9em; white-space: nowrap; overflow: hidden;
-            transition: all 0.2s ease;
-        }
-        .sidebar-nav .submenu li:hover { color: var(--primary-color); background-color: rgba(0, 123, 255, 0.05); }
-        .sidebar-nav .nav-item.open > .submenu { display: block; }
-        .sidebar-nav .nav-item.open > .arrow-icon { transform: rotate(90deg); }
-
-
-        /*
-        ---------------------------------
-        NUEVO CONTENIDO PRINCIPAL (TABLA CLIENTES)
-        ---------------------------------
-        */
-        .main-content {
-            flex-grow: 1;
-            padding: 0; /* Sin padding, el contenido lo maneja */
-            background-color: var(--light-bg);
-            overflow-x: auto;
-        }
-
-        /* Barra de navegación superior (NUEVA) */
-        .main-navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 15px 30px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .navbar-breadcrumbs {
-            font-size: 0.9em;
-            color: var(--light-text-color);
-            font-weight: 400;
-        }
-        .navbar-user-links a {
-            font-size: 0.9em;
-            color: var(--light-text-color);
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-        }
-        .navbar-user-links a.logout {
-            color: var(--primary-color);
-        }
-        .navbar-user-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Contenedor del cuerpo principal */
-        .content-body {
-            padding: 30px;
-        }
-
-        /* Contenedor de la tabla (tarjeta blanca) */
-        .card-table-wrapper {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            padding: 25px;
-        }
-        
-        /* Cabecera de contenido (Título y botón) */
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center; 
-            margin-bottom: 25px;
-        }
-        .content-header h1 {
-            margin: 0;
-            font-size: 1.8em;
-            font-weight: 500;
-        }
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px; /* Botón cuadrado */
-            padding: 10px 14px;
-            font-size: 1.1em;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        /* Controles de la tabla (Mostrar y Buscar) */
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .table-controls label {
-            font-size: 0.9em;
-            color: var(--light-text-color);
-        }
-        .table-controls select,
-        .table-controls input[type="search"] {
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 8px 12px;
-            font-size: 0.9em;
-            margin-left: 8px;
-        }
-        .table-controls input[type="search"] {
-            width: 250px;
-        }
-        
-        /* Contenedor de la tabla (para scroll) */
-        .table-container {
-            overflow-x: auto; /* Permite scroll horizontal en la tabla */
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse; 
-        }
-
-        /* Cabecera de la tabla */
-        thead th {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 2px solid var(--border-color); /* Borde más grueso */
-            color: var(--light-text-color);
-            font-size: 0.8em;
-            text-transform: uppercase;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        /* Cuerpo de la tabla */
-        tbody td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-color);
-            font-size: 0.9em;
-            white-space: nowrap;
-            vertical-align: middle;
-        }
-        tbody tr:last-child td {
-            border-bottom: none; 
-        }
-        tbody tr:hover {
-            background-color: #fcfcfc;
-        }
-
-        /* Foto de perfil placeholder */
-        .user-photo-placeholder {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            color: #adb5bd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1em;
-        }
-
-        /* Píldora de estado */
-        .status-pill {
-            border-radius: 12px;
-            padding: 4px 12px;
-            font-size: 0.8em;
-            font-weight: 500;
-            background-color: #e0f5e9; /* Fondo verde claro */
-            color: var(--success-color); /* Texto verde */
-        }
-
-        /* Acciones de la tabla */
-        .table-actions .btn-icon {
-            border: none;
-            background-color: transparent;
-            border-radius: 4px;
-            padding: 6px 8px;
-            margin: 0 2px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        .table-actions .btn-icon.edit {
-            color: var(--primary-color);
-        }
-        .table-actions .btn-icon.delete {
-            color: var(--danger-color);
-        }
-        .table-actions .btn-icon.edit:hover {
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-        .table-actions .btn-icon.delete:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-        }
-
-
-        /* Footer de la tabla (Paginación) */
-        .table-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            margin-top: 20px;
-        }
-        .footer-info {
-            font-size: 0.9em;
-            color: var(--light-text-color);
-        }
-        .pagination {
-            display: flex;
-            gap: 5px;
-        }
-        .pagination a {
-            text-decoration: none;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--primary-color);
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-        }
-        .pagination a.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        .pagination a.disabled {
-            color: var(--secondary-color);
-            background-color: var(--light-bg);
-            pointer-events: none;
-            border-color: var(--border-color);
-        }
-        .pagination a:not(.active):not(.disabled):hover {
-            background-color: #f4f7fa;
-        }
-        
-        /* Ajustes responsivos */
-        @media (max-width: 768px) {
-            .dashboard-container { flex-direction: column; }
-            .sidebar {
-                width: 100%; height: auto; flex-direction: row; align-items: center;
-                justify-content: space-between; padding: 10px 20px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); box-sizing: border-box;
-            }
-            .sidebar-header { padding: 0; border: none; margin: 0; }
-            .sidebar-header .sidebar-toggle-btn { display: none; }
-            .sidebar-header .logo { overflow: visible; }
-            .sidebar-nav { display: flex; gap: 15px; overflow-x: auto; }
-            .sidebar-nav ul { display: flex; gap: 10px; }
-            .sidebar-nav .nav-item span, .sidebar-nav .arrow-icon, .sidebar-nav .submenu { display: none; }
-            .sidebar-nav .nav-item { padding: 5px; border: none !important; flex-shrink: 0; }
-            .sidebar-nav .nav-item:hover, .sidebar-nav .nav-item.active { background-color: transparent; color: var(--primary-color); padding: 5px; }
-            .sidebar-nav .nav-item i { margin-right: 0; font-size: 1.2em; }
-            
-            .main-content { padding: 0; }
-            .content-body { padding: 15px; }
-            .main-navbar { padding: 10px 15px; flex-wrap: wrap; gap: 10px; }
-            .navbar-user-links { display: none; /* Ocultar en móvil por simplicidad */ }
-
-            .content-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .btn-primary { width: 100%; box-sizing: border-box; }
-            
-            .table-controls { flex-direction: column; align-items: stretch; }
-            .table-controls div { width: 100%; }
-            .table-controls input[type="search"] { width: 100%; box-sizing: border-box; margin-left: 0; }
-            .table-controls select { width: 100%; margin-left: 0; }
-            .table-controls label { display: block; margin-bottom: 5px; }
-            
-            .table-footer { flex-direction: column; gap: 15px; }
-        }
-    </style>
+    <link rel="stylesheet" href="/public/css/clientes.css">
 </head>
 <body>
+    
     <div id="sidebar-container"></div>
 
-        <main class="main-content">
-            </header>
+    <main class="main-content">
+        
+        <header class="main-navbar">
+            <div class="navbar-breadcrumbs">
+                Clientes / Clientes
+            </div>
+            <div class="navbar-user-links">
+                <a href="login.html" class="logout">Cerrar Sesión</a>
+            </div>
+        </header>
 
-            <div class="content-body">
-                
-                <div class="card-table-wrapper">
+        <div class="content-body">
+            
+            <div class="card-table-wrapper">
 
-                    <div class="content-header">
-                        <h1>Clientes</h1>
-                        <button class="btn-primary" title="Añadir Cliente">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
+                <div class="content-header">
+                    <h1>Clientes</h1>
+                    <button class="btn-primary" title="Añadir Cliente">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
 
-                    <div class="table-controls">
-                        <div>
-                            <label for="show-entries">Mostrar</label>
-                            <select id="show-entries" name="show-entries">
-                                <option value="10" selected>10</option>
-                                <option value="25">25</option>
-                                <option value="50">50</option>
-                            </select>
-                            registros
-                        </div>
-                        <div>
-                            <label for="search-table">Buscar:</label>
-                            <input type="search" id="search-table" placeholder="Nombre o DNI...">
-                        </div>
+                <div class="table-controls">
+                    <div>
+                        <label for="show-entries">Mostrar</label>
+                        <select id="show-entries" name="show-entries">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        registros
                     </div>
-                    
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Foto</th>
-                                    <th>DNI</th>
-                                    <th>Nombre</th>
-                                    <th>Teléfono</th>
-                                    <th>Dirección</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>114</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>1234560</td>
-                                    <td>Julio Jaramillo</td>
-                                    <td>123456</td>
-                                    <td>Casa</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>115</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>2014</td>
-                                    <td>Carlos</td>
-                                    <td>123456789</td>
-                                    <td>Carrera 11 N°4-52 Edif BL NAILS</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>116</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>12345ty</td>
-                                    <td>Felix</td>
-                                    <td>1432432</td>
-                                    <td>Texas</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>117</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>s1111111r</td>
-                                    <td>Agrtshtrh</td>
-                                    <td>12343432</td>
-                                    <td>sfdgfegieg</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>118</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>1111111</td>
-                                    <td>Ssss</td>
-                                    <td>1234334</td>
-                                    <td>#####</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>119</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>1</td>
-                                    <td>Ddddd</td>
-                                    <td>143455443</td>
-                                    <td>rrrr</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>120</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>324</td>
-                                    <td>Rgt</td>
-                                    <td>83524424</td>
-                                    <td>dfdfbvdltrtrt</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>121</td>
-                                    <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                                    <td>5443645</td>
-                                    <td>Jose Ramon</td>
-                                    <td>77857858456</td>
-                                    <td>av sur sin numero</td>
-                                    <td><span class="status-pill">Activo</span></td>
-                                    <td class="table-actions">
-                                        <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div class="table-footer">
-                        <span class="footer-info">Mostrando 1 a 8 de 8 registros</span>
-                        <nav class="pagination">
-                            <a href="#" class="disabled">Anterior</a>
-                            <a href="#" class="active">1</a>
-                            <a href="#">Siguiente</a>
-                        </nav>
+                    <div>
+                        <label for="search-table">Buscar:</label>
+                        <input type="search" id="search-table" placeholder="Nombre o DNI...">
                     </div>
                 </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Foto</th>
+                                <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>114</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>1234560</td>
+                                <td>Julio Jaramillo</td>
+                                <td>123456</td>
+                                <td>Casa</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>115</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>2014</td>
+                                <td>Carlos</td>
+                                <td>123456789</td>
+                                <td>Carrera 11 N°4-52 Edif BL NAILS</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>116</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>12345ty</td>
+                                <td>Felix</td>
+                                <td>1432432</td>
+                                <td>Texas</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>117</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>s1111111r</td>
+                                <td>Agrtshtrh</td>
+                                <td>12343432</td>
+                                <td>sfdgfegieg</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>118</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>1111111</td>
+                                <td>Ssss</td>
+                                <td>1234334</td>
+                                <td>#####</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>119</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>1</td>
+                                <td>Ddddd</td>
+                                <td>143455443</td>
+                                <td>rrrr</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>120</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>324</td>
+                                <td>Rgt</td>
+                                <td>83524424</td>
+                                <td>dfdfbvdltrtrt</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>121</td>
+                                <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                                <td>5443645</td>
+                                <td>Jose Ramon</td>
+                                <td>77857858456</td>
+                                <td>av sur sin numero</td>
+                                <td><span class="status-pill">Activo</span></td>
+                                <td class="table-actions">
+                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-footer">
+                    <span class="footer-info">Mostrando 1 a 8 de 8 registros</span>
+                    <nav class="pagination">
+                        <a href="#" class="disabled">Anterior</a>
+                        <a href="#" class="active">1</a>
+                        <a href="#">Siguiente</a>
+                    </nav>
+                </div>
             </div>
-            
-        </main>
-    </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- MANEJO DEL SIDEBAR ---
-            const allNavItems = document.querySelectorAll('.sidebar-nav > ul > li.nav-item');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggleInternal = document.getElementById('sidebar-toggle-internal');
-
-            // 1. Lógica de Acordeón y Estado Activo
-            allNavItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    const isMobileView = window.innerWidth <= 768;
-                    if (isMobileView) return; 
-                    if (e.target.closest('.submenu')) return;
-
-                    const hasSubmenu = this.classList.contains('has-submenu');
-                    const wasOpen = this.classList.contains('open');
-
-                    // Manejar estado Activo
-                    allNavItems.forEach(i => i.classList.remove('active'));
-                    this.classList.add('active');
-
-                    // Manejar Acordeón
-                    allNavItems.forEach(otherItem => {
-                        if (otherItem !== this && otherItem.classList.contains('has-submenu')) {
-                            otherItem.classList.remove('open');
-                        }
-                    });
-                    if (hasSubmenu && !wasOpen) {
-                        this.classList.add('open');
-                    }
-                });
-            });
-            
-            // 2. Estado inicial: Activar y abrir 'Clientes'
-            const initialActive = document.querySelector('.nav-item.initial-active');
-            if (initialActive) {
-                initialActive.classList.add('active');
-                if (initialActive.classList.contains('has-submenu')) {
-                    initialActive.classList.add('open');
-                }
-            }
-
-            // 3. Función para Colapsar/Expandir Sidebar
-            const toggleSidebar = () => {
-                const isMobileView = window.innerWidth <= 768;
-                if (!isMobileView && sidebar) {
-                    const isCollapsed = sidebar.style.width === '80px';
-                    if (isCollapsed) {
-                        sidebar.style.width = '250px';
-                    } else {
-                        // Cierra submenús antes de colapsar
-                        allNavItems.forEach(item => item.classList.remove('open'));
-                        sidebar.style.width = '80px';
-                    }
-                }
-            };
-
-            // 4. Asignar la función al botón interno del sidebar
-            if(sidebarToggleInternal) {
-                sidebarToggleInternal.addEventListener('click', toggleSidebar);
-            }
-
-        });
-    </script>
-        <script>
-  // Carga el HTML del sidebar
-  fetch("siderbar.html")
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("sidebar-container").innerHTML = html;
-
-      // Luego de insertarlo, inicializa los eventos de los submenús
-      initSidebarEvents();
-    });
-
-  // Función que activa los desplegables
-  function initSidebarEvents() {
-    document.querySelectorAll(".has-submenu").forEach(item => {
-      const header = item.querySelector(".submenu-header");
-      header.addEventListener("click", () => {
-        item.classList.toggle("open");
-      });
-    });
-  }
-</script>
+        </div>
+    </main>
+    <script src="/public/js/clientes.js"></script>
 </body>
 </html>

@@ -1,500 +1,421 @@
-/* ============================================== */
-/* 0. BASE & RESET */
-/* ============================================== */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+:root {
+    --primary-color: #007bff; /* Azul */
+    --secondary-color: #6c757d; /* Gris */
+    --success-color: #28a745; /* Verde */
+    --light-bg: #f8f9fa; /* Fondo claro */
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --light-text-color: #666666;
+    --border-color: #e9ecef;
+    --sidebar-width: 250px;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f4f6f9; /* Fondo muy claro del dashboard */
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    display: flex;
     min-height: 100vh;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+.dashboard-container {
+    display: flex;
+    width: 100%;
 }
 
-ul {
-    list-style: none;
-}
-
-/* ============================================== */
-/* 1. LAYOUT PRINCIPAL (GRID) */
-/* ============================================== */
-.dashboard-layout {
-    display: grid;
-    /* Define 2 columnas: Sidebar (fija) y Contenido (dinámica) */
-    grid-template-columns: 250px 1fr; 
-    min-height: 100vh;
-}
-
-/* El contenedor del contenido principal */
-.main-content-wrapper {
+/*
+---------------------------------
+SIDEBAR (CABLE LATIN)
+Estilos para el sidebar.html cargado dinámicamente
+---------------------------------
+*/
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--card-bg);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px 0;
     display: flex;
     flex-direction: column;
+    border-right: 1px solid var(--border-color);
+    flex-shrink: 0;
+    transition: width 0.3s ease, transform 0.3s ease; /* Añadida transform */
+    z-index: 100;
+    position: fixed; /* Fijado */
+    left: 0;
+    top: 0;
+    height: 100vh; /* Ocupa toda la altura */
 }
 
-/* ============================================== */
-/* 2. SIDEBAR (BARRA LATERAL) */
-/* ============================================== */
-.sidebar {
-    background-color: #ffffff; 
-    color: #495057;
-    padding: 15px 0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-}
-
-/* Logo y Título */
-.logo-section {
+.sidebar-header {
     display: flex;
     align-items: center;
-    padding: 10px 20px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    justify-content: space-between;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+    flex-shrink: 0;
 }
 
-.logo-section i {
-    font-size: 1.5rem;
-    color: #007bff; /* Color azul */
-    margin-right: 10px;
-}
-
-.logo-text {
-    font-size: 1.2rem;
+.sidebar-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-weight: 700;
-    color: #343a40;
-}
-
-/* Etiqueta MAIN */
-.main-label {
-    font-size: 0.7rem;
-    color: #adb5bd;
-    font-weight: 500;
-    text-transform: uppercase;
-    padding: 15px 20px 5px;
-}
-
-/* Navegación */
-.sidebar-nav {
-    padding: 10px 0;
-}
-
-.nav-item a {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    font-size: 0.95rem;
-    color: #495057;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.nav-item i {
-    width: 25px;
-    text-align: center;
-    margin-right: 10px;
-    color: #adb5bd; /* Iconos grises */
-}
-
-/* Estado Activo y Hover */
-.nav-item:hover > a {
-    color: #007bff;
-    background-color: #e9ecef;
-}
-
-.nav-item.active > a,
-.nav-item.active > a i {
-    color: #007bff; /* Texto e icono azul para la sección activa */
-}
-
-/* Submenu */
-.has-submenu a {
-    justify-content: space-between;
-}
-
-.submenu-icon {
-    font-size: 0.7rem !important;
-    transition: transform 0.3s;
-}
-
-.submenu {
-    padding-left: 0;
-    max-height: 0;
+    font-size: 1.2em;
+    color: var(--primary-color);
+    white-space: nowrap;
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    background-color: #f8f9fa; /* Fondo más claro para el submenú */
 }
-
-.submenu.visible {
-    max-height: 500px; /* Suficientemente grande para mostrar */
-}
-
-.submenu-item a {
-    padding: 8px 20px 8px 45px; /* Indentación */
-    font-size: 0.9rem;
-    color: #6c757d;
-}
-
-.submenu-item:hover a,
-.submenu-item.active a {
-    color: #007bff;
-    background-color: #e2f0ff; /* Fondo azul muy claro */
-}
-
-.submenu-item i {
-    display: none; /* Ocultar iconos en submenú para el diseño de la imagen */
-}
-
-/* ============================================== */
-/* 3. TOP HEADER (BARRA SUPERIOR) */
-/* ============================================== */
-.top-header {
-    background-color: #ffffff;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.header-left .menu-toggle {
-    font-size: 1.2rem;
+.sidebar-header .logo i { font-size: 1.5em; }
+.sidebar-header .sidebar-toggle-btn {
+    color: var(--secondary-color);
     cursor: pointer;
-    color: #495057;
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+}
+/* Rotar flecha cuando está colapsado */
+.sidebar[style*="width: 80px"] .sidebar-toggle-btn {
+    transform: rotate(180deg);
 }
 
-.header-right {
-    display: flex;
-    align-items: center;
-}
 
-.icon-spacer {
-    font-size: 1.2rem;
-    color: #adb5bd;
-    margin-right: 20px;
-}
-
-.user-profile .profile-icon {
-    font-size: 1.5rem;
-    color: #007bff; 
-}
-
-/* ============================================== */
-/* 4. MAIN CONTENT AREA */
-/* ============================================== */
-.main-container {
-    padding: 20px;
+.sidebar-nav {
+    overflow-y: auto;
     flex-grow: 1;
 }
 
-.content-card {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    padding: 20px;
+.sidebar-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
+.sidebar-nav .nav-item {
+    display: flex; align-items: center; flex-wrap: nowrap; /* Cambio a nowrap */
+    padding: 14px 20px; color: var(--light-text-color);
+    cursor: pointer; position: relative; transition: all 0.3s ease;
+    white-space: nowrap; overflow: hidden; font-size: 0.95em;
+    text-decoration: none; /* Asegurar no subrayado */
+}
+.sidebar-nav .submenu-header { /* DIV Clickeable */
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
-/* Card Header (Usuarios + Botón Agregar) */
-.card-header {
+.sidebar-nav .nav-item.active {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--primary-color);
+    border-left: 3px solid var(--primary-color);
+    padding-left: 17px; font-weight: 500;
+}
+.sidebar-nav .nav-item:not(.active):hover { background-color: rgba(0, 0, 0, 0.03); }
+.sidebar-nav .nav-item > i:first-child,
+.sidebar-nav .submenu-header > i:first-child { 
+    margin-right: 12px; 
+    width: 20px; 
+    font-size: 1.1em; 
+    text-align: center;
+}
+.sidebar-nav .nav-item > span,
+.sidebar-nav .submenu-header > span { 
+    flex-grow: 1; 
+}
+.sidebar-nav .nav-item.has-submenu .arrow-icon { 
+    margin-left: auto; 
+    transition: transform 0.3s ease; 
+    font-size: 0.8em; 
+}
+.sidebar-nav .submenu {
+    list-style: none; padding: 0; margin: 0; /* Cambio padding */
+    width: 100%;
+    background-color: #fdfdfd; box-sizing: border-box;
+    max-height: 0; /* Para animación */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out; /* Animación */
+}
+.sidebar-nav .submenu li {
+    padding: 10px 20px 10px 52px; color: var(--light-text-color);
+    font-size: 0.9em; white-space: nowrap; overflow: hidden;
+    transition: all 0.2s ease;
+}
+.sidebar-nav .submenu li a { /* Estilos enlace submenú */
+    color: inherit;
+    text-decoration: none;
+    display: block;
+}
+.sidebar-nav .submenu li:hover, .sidebar-nav .submenu li a:hover { 
+    color: var(--primary-color); 
+    background-color: rgba(0, 123, 255, 0.05); 
+}
+
+.sidebar-nav .nav-item.open > .submenu { 
+    max-height: 500px; /* Altura suficiente */
+    padding: 5px 0 5px 0; /* Padding al abrir */
+}
+.sidebar-nav .nav-item.open > .submenu-header .arrow-icon { transform: rotate(90deg); }
+
+
+/*
+---------------------------------
+NUEVO CONTENIDO PRINCIPAL (TABLA)
+---------------------------------
+*/
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: var(--light-bg);
+    overflow-x: auto;
+    margin-left: var(--sidebar-width); /* Espacio para sidebar fijo */
+    width: calc(100% - var(--sidebar-width));
+    transition: margin-left 0.3s ease, width 0.3s ease; /* Transición */
+}
+/* Ajuste cuando sidebar colapsado */
+body:has(.sidebar[style*="width: 80px"]) .main-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+
+/* Barra de navegación superior (simple) */
+.main-navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+}
+#sidebar-toggle-main { /* Estilo botón hamburguesa */
+    display: none; /* Oculto en escritorio */
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    cursor: pointer;
+    padding: 5px;
+}
+.main-navbar .user-links a i { /* Estilo icono logout */
+    font-size: 1.2em;
+    color: var(--secondary-color);
+}
+.main-navbar .user-links a:hover i {
+    color: var(--primary-color);
+}
+
+/* Cabecera de contenido (Título y botón) */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
     margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
 }
-
-.card-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #343a40;
+.breadcrumb {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+    margin: 0 0 5px 0;
+    font-weight: 400;
 }
-
-.btn-add {
-    background-color: #007bff;
+.content-header h1 {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 500;
+}
+.btn-primary {
+    background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 10px 15px;
-    font-size: 1rem;
+    border-radius: 50%; 
+    width: 45px;
+    height: 45px;
+    font-size: 1.2em;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.4);
-    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Evita que se encoja */
 }
-
-.btn-add:hover {
+.btn-primary:hover {
     background-color: #0056b3;
 }
 
-/* ============================================== */
-/* 5. TABLA DE USUARIOS (REUSANDO ESTILOS ANTERIORES) */
-/* ============================================== */
-
-/* Control bar (Mostrar, Botones, Buscar) */
-.controls-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 10px 0;
-    flex-wrap: wrap; 
+/* Contenedor de la tabla */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* Para que bordes redondeados afecten tabla */
 }
 
-.show-entries label,
-.search-box label {
-    font-size: 0.9rem;
-    color: #555;
-    margin-right: 5px;
-}
-
-.show-entries select {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin: 0 5px;
-    appearance: none; /* Eliminar el estilo por defecto del select */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 12px;
-}
-
-.search-box {
-    display: flex;
-    align-items: center;
-}
-
-.search-box input {
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 180px;
-    transition: border-color 0.2s;
-}
-
-.search-box input:focus {
-    border-color: #007bff;
-    outline: none;
-}
-
-/* Action Buttons (Export/Tools) */
-.action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 10px 0;
-}
-
-.action-buttons .btn {
-    border: none;
-    color: white;
-    width: 38px;
-    height: 38px;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: opacity 0.2s;
-}
-
-.btn.green { background-color: #28a745; }
-.btn.red { background-color: #dc3545; }
-.btn.purple { background-color: #6f42c1; }
-.btn.yellow { background-color: #ffc107; color: #333; } 
-.btn.blue { background-color: #007bff; }
-.btn.cyan { background-color: #17a2b8; }
-.btn:hover { opacity: 0.8; }
-
-
-/* Table styles */
-.table-responsive {
+.table-container {
+    padding: 0; 
     overflow-x: auto; 
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 10px;
+    border-collapse: collapse; 
 }
 
-table th,
-table td {
+/* Cabecera de la tabla */
+thead th {
+    padding: 15px 20px;
     text-align: left;
-    padding: 12px 15px;
-    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--light-text-color);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: var(--card-bg); /* Fondo blanco */
 }
 
-/* Header */
-table thead tr {
-    background-color: #ffffff; 
-    border-bottom: 1px solid #dee2e6;
+/* Cuerpo de la tabla */
+tbody td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 0.9em;
+    white-space: nowrap;
+    vertical-align: middle; /* Centrar verticalmente */
 }
-
-table th {
-    font-size: 0.9rem;
-    color: #495057;
-    font-weight: 600;
-}
-
-/* Body */
-table td {
-    font-size: 0.95rem;
-    color: #333;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-table tbody tr:last-child td {
+tbody tr:last-child td {
     border-bottom: none; 
 }
-
-/* User Avatar Styling (Simulando las imágenes de perfil) */
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #e9ecef;
+tbody tr:hover {
+    background-color: var(--light-bg);
 }
 
-.user-avatar::before {
-    /* Usar un icono de Font Awesome para simular la imagen de perfil */
-    content: "\f007"; /* Icono de usuario */
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    font-size: 1.3rem;
-    color: #ffffff;
+/* Píldora de estado */
+.status-pill {
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 0.8em;
+    font-weight: 500;
+    display: inline-block; /* Para que no ocupe todo el ancho */
 }
-
-/* Colores de fondo de avatar (para diferenciarlos, como en la imagen) */
-.avatar-24 { background-color: #3498db; } 
-.avatar-23 { background-color: #2ecc71; }
-.avatar-22 { background-color: #9b59b6; }
-.avatar-21 { 
-    background-color: #ffffff; 
-    border: 1px solid #ccc;
-} 
-.avatar-21::before {
-    color: #ccc;
+.status-pill.active { /* Asume 'active' es la única clase */
+    background-color: #e0f5e9; 
+    color: var(--success-color); 
 }
-
-
-/* Status Badge */
-.status-badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-align: center;
-}
-
-.status-badge.active {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-/* Action Buttons (Edit/Delete) */
-td .action-btn {
-    border: 1px solid;
-    padding: 6px 10px;
-    margin-left: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: background-color 0.2s, color 0.2s;
-    background-color: white; /* Asegurar fondo blanco */
-}
-
-.action-btn.edit {
-    color: #007bff;
-    border-color: #007bff;
-}
-.action-btn.delete {
+/* Podrías añadir .inactive si es necesario */
+.status-pill.inactive {
+    background-color: #ffebee;
     color: #dc3545;
-    border-color: #dc3545;
 }
 
-.action-btn.edit:hover {
-    background-color: #007bff;
-    color: white;
+
+/* Acciones de la tabla */
+.table-actions a {
+    color: var(--secondary-color);
+    margin: 0 8px;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.2s ease;
 }
-.action-btn.delete:hover {
-    background-color: #dc3545;
-    color: white;
+.table-actions a:hover {
+    color: var(--primary-color);
+}
+.table-actions a .fa-trash-alt:hover {
+    color: #dc3545; /* Rojo para eliminar */
 }
 
-/* Footer Bar (Info and Pagination) */
-.footer-bar {
+/* Footer de la tabla (Paginación) */
+.table-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
-    font-size: 0.9rem;
-    color: #555;
+    padding: 15px 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg); /* Fondo blanco */
 }
-
-/* Pagination */
+.footer-info {
+    font-size: 0.9em;
+    color: var(--light-text-color);
+}
 .pagination {
     display: flex;
+    gap: 5px;
 }
-
-.page-btn {
-    border: 1px solid #ddd;
-    background-color: white;
+.pagination a {
+    text-decoration: none;
     padding: 8px 12px;
-    margin-left: -1px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--primary-color);
+    font-size: 0.9em;
+    transition: all 0.2s ease;
 }
-
-.page-btn.prev {
-    border-radius: 4px 0 0 4px;
-}
-
-.page-btn.next {
-    border-radius: 0 4px 4px 0;
-}
-
-.page-btn.current {
-    background-color: #007bff;
+.pagination a.active {
+    background-color: var(--primary-color);
     color: white;
-    border-color: #007bff;
+    border-color: var(--primary-color);
+}
+.pagination a.disabled {
+    color: var(--secondary-color);
+    background-color: var(--light-bg);
+    pointer-events: none;
+    border-color: var(--border-color);
+}
+.pagination a:not(.active):not(.disabled):hover {
+    background-color: #f4f7fa;
 }
 
-.page-btn:not(.current):hover {
-    background-color: #f8f9fa;
-}
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    body { display: block; } /* Quitar flex en móvil */
+    .sidebar {
+        transform: translateX(-100%);
+        /* Reestablecer estilos columna */
+        width: var(--sidebar-width);
+        height: 100vh;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 20px 0;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    }
+    
+    .sidebar-header {
+        /* Reestablecer */
+        padding: 0 20px 20px;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 20px;
+    }
+    .sidebar-header .sidebar-toggle-btn { display: block; } /* Mostrar botón interno */
 
-/* ============================================== */
-/* 6. BOTÓN FLOTANTE DE CONFIGURACIÓN */
-/* ============================================== */
-.floating-settings-btn {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    background-color: #6c757d; /* Gris del engrane lateral */
-    color: white;
-    border: none;
-    border-radius: 8px 0 0 8px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    .sidebar-nav {
+         /* Reestablecer */
+        display: block;
+        overflow-y: auto;
+    }
+    .sidebar-nav ul { display: block; }
+    .sidebar-nav .nav-item span, .sidebar-nav .arrow-icon { display: inline-block; } /* Mostrar texto/flecha */
+    .sidebar-nav .submenu { display: none; max-height: 0; }
+    .sidebar-nav .nav-item.open > .submenu { display: block; max-height: 500px; padding: 5px 0; }
+    .sidebar-nav .nav-item { padding: 14px 20px; }
+    .sidebar-nav .nav-item i { margin-right: 12px; }
+    .sidebar-nav .nav-item:hover, .sidebar-nav .nav-item.active {
+        /* Reestablecer */
+        background-color: rgba(0, 123, 255, 0.1);
+        color: var(--primary-color);
+        padding-left: 17px;
+    }
+    
+    .main-content { 
+        margin-left: 0; 
+        width: 100%; 
+        padding: 15px; 
+    }
+    #sidebar-toggle-main { display: block; } /* Mostrar botón hamburguesa */
+    .main-navbar { margin-bottom: 20px; }
+    .content-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .btn-primary {
+        width: 40px; height: 40px; font-size: 1.1em; align-self: flex-end; /* Alinear botón a la derecha */
+    }
+    .table-footer { flex-direction: column; gap: 15px; }
 }
