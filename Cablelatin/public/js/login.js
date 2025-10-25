@@ -1,4 +1,3 @@
-// Espera a que todo el HTML esté cargado
 document.addEventListener('DOMContentLoaded', function() {
 
     // 1. Busca el botón por su ID

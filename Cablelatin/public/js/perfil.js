@@ -1,9 +1,3 @@
-// Este es el contenido completo para tu nuevo archivo js/perfil.js
-
-/**
- * Función que inicializa TODOS los eventos del sidebar.
- * Se debe llamar DESPUÉS de que el fetch cargue el HTML.
- */
 function initSidebarEvents() {
     
     // --- Referencias del DOM del Sidebar (se buscan DESPUÉS del fetch) ---

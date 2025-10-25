@@ -1,4 +1,3 @@
-// Este es el código COMPLETO para js/vendedor.js (el más actual)
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- 1. OBTENER LOS ELEMENTOS ---

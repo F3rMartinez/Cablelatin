@@ -1,6 +1,5 @@
 function initSidebarEvents() {
     
-    // --- LOGIC 1: Acordeón (para los submenús) ---
     document.querySelectorAll(".has-submenu").forEach(item => {
         const header = item.querySelector(".submenu-header");
         if (header) { 
