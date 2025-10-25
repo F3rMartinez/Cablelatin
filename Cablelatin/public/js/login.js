@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loginButton.addEventListener('click', function() {
         
         // 3. ¡La simulación! Redirige a la página del vendedor
-        console.log('Simulando login... Redirigiendo a vendedor.html');
-        window.location.href = 'vendedor.html'; 
+        console.log('Simulando login... Redirigiendo a tablero.html');
+        window.location.href = 'tablero.html'; 
     });
     
 });
