@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - CABLE LATIN</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --color-principal: #0d6efd;
+            --color-principal-claro: #e3f2fd;
+            --color-texto: #212529;
+            --color-texto-secundario: #6c757d;
+            --color-sidebar: #f8f9fa;
+            --color-fondo: #f4f7fa;
+            --color-panel: #ffffff;
+            --color-borde: #dee2e6;
+            --color-exito: #198754;
+            --color-exito-claro: #d1e7dd;
+        }
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+            margin: 0; 
+            background: var(--color-fondo); 
+            color: var(--color-texto); 
+            font-size: 0.95rem;
+        }
+        #app-container { display: flex; }
+
+        /* --- Sidebar (Idéntico al anterior) --- */
+        #sidebar { 
+            width: 250px; 
+            background: var(--color-sidebar); 
+            height: 100vh; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            border-right: 1px solid var(--color-borde); 
+            transition: transform 0.3s ease; 
+            z-index: 100; 
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header { 
+            padding: 1.25rem 1.5rem; 
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--color-borde);
+            flex-shrink: 0;
+        }
+        .logo-container { display: flex; align-items: center; }
+        .logo-container i { color: var(--color-principal); }
+        .logo-container h1 { 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            margin: 0 0 0 0.75rem; 
+            color: var(--color-principal); 
+        }
+        #sidebar nav { 
+            padding: 1rem 0.75rem; 
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 0.75rem 1rem; 
+            border-radius: 0.375rem; 
+            color: var(--color-texto-secundario); 
+            text-decoration: none; 
+            margin-bottom: 0.25rem; 
+            cursor: pointer; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .nav-item:hover { 
+            background: #e9ecef; 
+            color: var(--color-texto);
+        }
+        .nav-item.active, .nav-item.open { 
+            background: var(--color-principal-claro); 
+            color: var(--color-principal); 
+            font-weight: 600; 
+            border-left: 3px solid var(--color-principal);
+        }
+        .nav-item span { margin-left: 0.75rem; flex-grow: 1; }
+        .nav-item .submenu-arrow { 
+            margin-left: auto; 
+            transition: transform 0.3s; 
+        }
+        .submenu-container { 
+            display: none; 
+            background: var(--color-panel); 
+            padding-left: 2.5rem; 
+            margin: 0 0.5rem 0.5rem 1rem;
+            border-radius: 0.25rem;
+            padding-bottom: 0.5rem;
+            padding-top: 0.5rem;
+        }
+        .submenu-container.open { display: block; }
+        .submenu-item { 
+            display: block; 
+            padding: 0.6rem 0.5rem; 
+            color: var(--color-texto-secundario); 
+            text-decoration: none; 
+            font-size: 0.9rem;
+            border-radius: 0.25rem;
+        }
+        .submenu-item:hover { 
+            color: var(--color-texto); 
+            background: #f8f9fa;
+        }
+        .submenu-item.active { 
+            color: var(--color-principal); 
+            font-weight: 600; 
+        }
+        .border-t { border-top: 1px solid var(--color-borde); }
+        .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
+        
+        /* --- Main Content --- */
+        #main-content { 
+            margin-left: 250px; 
+            width: calc(100% - 250px); 
+            padding: 0; 
+        }
+        .header-main { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--color-panel); 
+            padding: 1.25rem 1.5rem; 
+            border-bottom: 1px solid var(--color-borde); 
+        }
+        #sidebar-toggle-mobile,
+        #sidebar-toggle-mobile-main { 
+            display: none; 
+            background: none; 
+            border: none; 
+            cursor: pointer;
+            padding: 0.25rem;
+            color: var(--color-texto-secundario);
+        }
+        .breadcrumbs { color: var(--color-texto-secundario); font-size: 0.9rem; }
+        .user-links { margin-left: auto; }
+        .user-links a { 
+            margin-left: 1rem; 
+            text-decoration: none; 
+            color: var(--color-texto-secundario); 
+            font-size: 0.9rem; 
+        }
+        .user-links a.logout { color: #dc3545; }
+
+        /* --- Panel y Formulario --- */
+        .form-wrapper-center { padding: 1.5rem; display: flex; justify-content: center; }
+        .panel-form { 
+            background: var(--color-panel); 
+            border-radius: 0.5rem; 
+            border: 1px solid var(--color-borde);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+            width: 100%; 
+            max-width: 900px; 
+        }
+        .form-title { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            padding: 1.5rem; 
+            border-bottom: 1px solid var(--color-borde); 
+            text-align: center; 
+        }
+        form { padding: 2rem; }
+        .form-content-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; }
+        @media (min-width: 768px) {
+            .form-content-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        .form-group-grid { display: flex; flex-direction: column; }
+        .form-group-grid label { font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem; color: var(--color-texto); }
+        .form-group-grid input[type="text"],
+        .form-group-grid input[type="email"],
+        .form-group-grid input[type="password"] {
+            width: 100%; 
+            padding: 0.75rem; 
+            border: 1px solid var(--color-borde); 
+            border-radius: 0.375rem; 
+            box-sizing: border-box; 
+            color: var(--color-texto);
+            font-size: 0.9rem;
+        }
+        .form-group-grid input:focus {
+            border-color: var(--color-principal);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: none;
+        }
+        .form-group-grid input.is-readonly {
+            background-color: #e9ecef;
+            color: var(--color-texto-secundario);
+            cursor: not-allowed;
+        }
+
+        /* --- Botones --- */
+        .btn-action { 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 0.375rem; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border: none; 
+            transition: background-color 0.3s; 
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-save { background-color: var(--color-principal); color: white; }
+        .btn-save:hover { background-color: #0b5ed7; }
+        .btn-secondary {
+            background-color: var(--color-borde);
+            color: var(--color-texto);
+        }
+        .btn-secondary:hover { background-color: #ced4da; }
+        .flex { display: flex; }
+        .justify-end { justify-content: flex-end; }
+        .mt-4 { margin-top: 1.5rem; }
+
+        /* --- Estilos Perfil --- */
+        .profile-pic-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .pic-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--color-borde);
+        }
+        .profile-icon-placeholder {
+            width: 80px;
+            height: 80px;
+            color: var(--color-texto-secundario);
+        }
+        .form-subtitle {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-principal);
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            grid-column: 1 / -1;
+        }
+
+        /* --- ESTILOS PARA EL MODAL DE ÉXITO --- */
+        .hidden { display: none !important; }
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        #profileSuccessModal { 
+            background: rgba(0,0,0,0.6); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+            z-index: 200; 
+        }
+        #profileSuccessModal.open { opacity: 1; }
+        #profileSuccessModal .modal-content { 
+            background: white; 
+            border-radius: 0.5rem; 
+            padding: 2rem; 
+            text-align: center; 
+            max-width: 400px; 
+            width: 90%; 
+            transform: scale(0.95); 
+            transition: transform 0.3s; 
+        }
+        #profileSuccessModal.open .modal-content { transform: scale(1); }
+        .modal-icon-wrapper { 
+            background: var(--color-exito-claro); 
+            border-radius: 9999px; 
+            width: 4rem; 
+            height: 4rem; 
+            margin: auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .modal-icon-wrapper i { color: var(--color-exito); width: 2rem; height: 2rem; }
+        .modal-content h3 { font-size: 1.5rem; font-weight: 600; margin-top: 1rem; }
+        .modal-content p { margin-top: 0.5rem; color: var(--color-texto-secundario); }
+        .modal-content .btn-modal-close { 
+            background: var(--color-principal); 
+            color: white; 
+            width: 100%; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 0.375rem; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 2rem; 
+            font-weight: 600; 
+        }
+        .modal-content .btn-modal-close:hover { background-color: #0b5ed7; }
+
+        /* Responsive Mobile */
+        @media (max-width: 1023px) {
+            #sidebar { transform: translateX(-100%); }
+            #sidebar.open { 
+                transform: translateX(0); 
+                box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            }
+            #main-content { margin-left: 0; width: 100%; }
+            #sidebar-toggle-mobile,
+            #sidebar-toggle-mobile-main { 
+                display: block; 
+            }
+            .breadcrumbs { display: none; }
+        }
+        @media (max-width: 767px) {
+            .form-content-grid { grid-template-columns: repeat(1, 1fr); }
+            .form-wrapper-center { padding: 0.5rem; }
+            form { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <i data-lucide="tv-2"></i> 
+                    <h1>CABLE LATIN</h1>
+                </div>
+                <button id="sidebar-toggle-mobile">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <nav>
+                <a class="nav-item" href="#">
+                    <i data-lucide="layout-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+                
+                <div id="admin-menu-toggle" class="nav-item is-parent">
+                    <i data-lucide="settings"></i>
+                    <span>Administración</span>
+                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
+                </div>
+                <div id="admin-submenu" class="submenu-container">
+                    <a class="submenu-item" href="#">Usuarios</a>
+                    <a class="submenu-item" href="#">Planes y servicios</a>
+                </div>
+
+                <div id="clients-menu-toggle" class="nav-item is-parent">
+                    <i data-lucide="users"></i>
+                    <span>Clientes</span>
+                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
+                </div>
+                <div id="clients-submenu" class="submenu-container">
+                    <a class="submenu-item" href="#">Clientes</a>
+                    <a class="submenu-item" href="#">Facturas</a>
+                    <a class="submenu-item" href="#">Pagos</a>
+                </div>
+                
+                <div id="requests-menu-toggle" class="nav-item is-parent">
+                    <i data-lucide="list-checks"></i>
+                    <span>Reportes</span>
+                    <i data-lucide="chevron-right" class="submenu-arrow"></i>
+                </div>
+                <div id="requests-submenu" class="submenu-container">
+                    <a class="submenu-item" href="#">Reportes</a>
+                </div>
+
+                <div class="my-4 border-t"></div> 
+                
+                <a class="nav-item initial-active" href="#">
+                    <i data-lucide="user-circle"></i>
+                    <span>Mi Perfil</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main id="main-content">
+            
+            <header class="header-main">
+                <button id="sidebar-toggle-mobile-main">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="breadcrumbs">
+                    Mi Perfil
+                </div>
+                <div class="user-links">
+                    <a href="#">Panel de Administrador</a>
+                    <a href="#" class="logout">Cerrar Sesión</a>
+                </div>
+            </header>
+
+            <div class="form-wrapper-center">
+                <div class="panel-form">
+                    
+                    <h2 class="form-title">Mi Perfil</h2>
+                
+                    <form id="profileForm">
+                        
+                        <div class="profile-pic-section">
+                            <div class="pic-wrapper">
+                                <i data-lucide="user-circle-2" class="profile-icon-placeholder"></i>
+                            </div>
+                            <button type="button" class="btn-action btn-secondary">
+                                <i data-lucide="upload-cloud"></i>
+                                Cambiar Foto
+                            </button>
+                        </div>
+
+                        <div class="form-content-grid">
+                            <div>
+                                <div class="form-group-grid">
+                                    <label for="fullName">Nombre Completo:</label>
+                                    <input type="text" id="fullName" name="fullName" value="Ana Sofía Rivas">
+                                </div>
+                                <div class="form-group-grid">
+                                    <label for="username">Nombre de Usuario (no editable):</label>
+                                    <input type="text" id="username" name="username" value="arivas_admin" readonly class="is-readonly">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="form-group-grid">
+                                    <label for="email">Correo Electrónico:</label>
+                                    <input type="email" id="email" name="email" value="a.rivas@cablelatin.com">
+                                </div>
+                                <div class="form-group-grid">
+                                    <label for="role">Cargo / Rol (no editable):</label>
+                                    <input type="text" id="role" name="role" value="Administrador" readonly class="is-readonly">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-4 border-t"></div>
+
+                        <div class="form-content-grid">
+                            <h3 class="form-subtitle">Cambiar Contraseña</h3>
+                             <div>
+                                <div class="form-group-grid">
+                                    <label for="passCurrent">Contraseña Actual:</label>
+                                    <input type="password" id="passCurrent" name="passCurrent" placeholder="Ingrese su contraseña actual">
+                                </div>
+                             </div>
+                             <div>
+                                <div class="form-group-grid">
+                                    <label for="passNew">Nueva Contraseña:</label>
+                                    <input type="password" id="passNew" name="passNew" placeholder="Mínimo 8 caracteres">
+                                </div>
+                             </div>
+                        </div>
+
+                        <div class="mt-4 flex justify-end">
+                            <button type="submit" class="btn-action btn-save">
+                                <i data-lucide="save"></i> Guardar Cambios
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div> 
+            </div> 
+            </main>
+    </div>
+
+    <div id="profileSuccessModal" class="fixed inset-0 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <div class="modal-icon-wrapper">
+                <i data-lucide="check" class="modal-icon"></i>
+            </div>
+            <div class="mt-4">
+                <h3>¡Perfil Actualizado!</h3>
+                <p>Tu información ha sido guardada exitosamente.</p>
+            </div>
+            <div>
+                <button id="closeProfileModal" type="button" class="btn-modal-close">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar iconos
+            lucide.createIcons();
+
+            // --- Referencias del DOM ---
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile');
+            const sidebarToggleMain = document.getElementById('sidebar-toggle-mobile-main');
+            
+            const allNavItems = document.querySelectorAll('.nav-item');
+            const menuToggles = document.querySelectorAll('.nav-item.is-parent');
+            const nonParentItems = document.querySelectorAll('.nav-item:not(.is-parent)');
+
+            // --- Referencias del Formulario y Modal ---
+            const profileForm = document.getElementById('profileForm');
+            const profileModal = document.getElementById('profileSuccessModal');
+            const closeProfileModalBtn = document.getElementById('closeProfileModal');
+            const passCurrentInput = document.getElementById('passCurrent');
+            const passNewInput = document.getElementById('passNew');
+
+
+            // --- Lógica del Menú Lateral (Sidebar) ---
+            const setAllInactive = () => {
+                allNavItems.forEach(item => {
+                    item.classList.remove('active', 'open');
+                });
+                menuToggles.forEach(toggle => {
+                    toggle.nextElementSibling.classList.remove('open');
+                    const arrow = toggle.querySelector('.submenu-arrow');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                });
+            };
+
+            menuToggles.forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (e.target.closest('.submenu-container')) return;
+                    const submenu = toggle.nextElementSibling;
+                    const arrow = toggle.querySelector('.submenu-arrow');
+                    const wasOpen = submenu.classList.contains('open');
+                    setAllInactive(); 
+                    if (!wasOpen) {
+                        submenu.classList.add('open');
+                        toggle.classList.add('open', 'active');
+                        if (arrow) arrow.style.transform = 'rotate(90deg)';
+                    }
+                });
+            });
+
+            nonParentItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    setAllInactive();
+                    item.classList.add('active');
+                });
+            });
+            
+             const initialActiveItem = document.querySelector('.initial-active');
+             if (initialActiveItem) {
+                 initialActiveItem.classList.add('active'); 
+                 if (initialActiveItem.classList.contains('is-parent')) {
+                     const initialSubmenu = initialActiveItem.nextElementSibling;
+                     const initialArrow = initialActiveItem.querySelector('.submenu-arrow');
+                     initialActiveItem.classList.add('open'); 
+                     initialSubmenu.classList.add('open'); 
+                     if (initialArrow) initialArrow.style.transform = 'rotate(90deg)';
+                 }
+             }
+
+            // --- Lógica para botones móviles ---
+            const toggleSidebar = () => sidebar.classList.toggle('open');
+            if (sidebarToggleMobile) sidebarToggleMobile.addEventListener('click', toggleSidebar);
+            if (sidebarToggleMain) sidebarToggleMain.addEventListener('click', toggleSidebar);
+
+
+            // --- Lógica del Formulario y Modal de Perfil ---
+            
+            // Función para CERRAR el modal
+            const closeProfileModal = () => {
+                if (profileModal) {
+                    profileModal.classList.remove('open');
+                    setTimeout(() => {
+                        profileModal.classList.add('hidden');
+                    }, 300); // Esperar animación
+                    
+                    // Limpiar campos de contraseña
+                    if(passCurrentInput) passCurrentInput.value = '';
+                    if(passNewInput) passNewInput.value = '';
+                }
+            }
+            
+            // Evento al ENVIAR el formulario
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    // Aquí iría la lógica para guardar los datos...
+                    
+                    // Mostrar el modal en lugar del alert
+                    if (profileModal) {
+                        profileModal.classList.add('open');
+                        profileModal.classList.remove('hidden');
+                        lucide.createIcons(); // Recargar icono del modal
+                    }
+                });
+            }
+            
+            // Evento para CERRAR con el botón "Aceptar"
+            if (closeProfileModalBtn) {
+                closeProfileModalBtn.addEventListener('click', closeProfileModal);
+            }
+            
+            // Evento para CERRAR haciendo clic en el fondo
+            if (profileModal) {
+                profileModal.addEventListener('click', (e) => {
+                    if (e.target === profileModal) { 
+                        closeProfileModal();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
