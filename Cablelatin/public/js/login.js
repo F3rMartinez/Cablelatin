@@ -33,7 +33,7 @@ loginForm.addEventListener('submit', (e) => {
         mostrarMensaje('¡Inicio de sesión exitoso!', 'success');
         intentosFallidos = 0;
         setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/Cablelatin/public/html/tablero.html';
         }, 1000);
     } else {
         intentosFallidos++;
