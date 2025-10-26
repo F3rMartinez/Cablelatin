@@ -74,7 +74,7 @@ function initSidebarEvents() {
 
 // --- EL FETCH (Esto es lo que carga el menú) ---
 // Se ejecuta apenas carga la página
-fetch("siderbar.html") // Asumiendo que siderbar.html está en la misma carpeta
+fetch("sidebar.html") // Asumiendo que siderbar.html está en la misma carpeta
     .then(res => {
         if (!res.ok) throw new Error('No se encontró siderbar.html'); 
         return res.text();

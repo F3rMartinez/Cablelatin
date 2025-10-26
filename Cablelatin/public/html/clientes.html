@@ -187,6 +187,187 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <script src="/Cablelatin/public/js/clientes.js"></script>
+=======
+        // --- Autenticación ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log("Usuario autenticado:", user.uid);
+                userId = user.uid;
+                isAuthReady = true;
+                
+                // *** ¡AQUÍ ES DONDE CARGAMOS LOS CLIENTES! ***
+                listenForClients(userId);
+
+            } else {
+                console.log("Usuario no autenticado, intentando iniciar sesión anónima...");
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Error en la autenticación anónima:", error);
+                    if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="color: red;">Error de autenticación.</td></tr>`;
+                }
+            }
+        });
+
+        // --- FUNCIÓN PARA LEER CLIENTES (NUEVO) ---
+        function listenForClients(userId) {
+            if (!db || !userId) return;
+
+            // Ruta de la colección: artifacts/{appId}/users/{userId}/clientes
+            const clientsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
+            
+            // Creamos una consulta
+            const q = query(clientsCollectionRef); // (Puedes añadir orderBy aquí si tienes índices)
+
+            console.log("Escuchando cambios en:", clientsCollectionRef.path);
+
+            // onSnapshot se actualiza en tiempo real
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    console.log("No se encontraron clientes.");
+                    if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">No hay clientes registrados.</td></tr>`;
+                    if(footerInfo) footerInfo.textContent = "Mostrando 0 a 0 de 0 registros";
+                    return;
+                }
+
+                // Si hay datos, limpiamos la tabla
+                if(tableBody) tableBody.innerHTML = '';
+                
+                let count = 0;
+                snapshot.forEach(doc => {
+                    count++;
+                    const cliente = doc.data();
+                    
+                    // Creamos la fila de la tabla
+                    const row = document.createElement('tr');
+                    
+                    // Añadimos un data-id para futuras acciones (editar/borrar)
+                    row.setAttribute('data-id', doc.id);
+                    
+                    row.innerHTML = `
+                        <td>${doc.id.substring(0, 6)}...</td>
+                        <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
+                        <td>${cliente.dni || 'N/A'}</td>
+                        <td>${cliente.nombre || ''} ${cliente.apellido || ''}</td>
+                        <td>${cliente.telefono || 'N/A'}</td>
+                        <td>${cliente.direccion || 'N/A'}</td>
+                        <td><span class="status-pill">${cliente.estado || 'N/A'}</span></td>
+                        <td class="table-actions">
+                            <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    `;
+                    
+                    if(tableBody) tableBody.appendChild(row);
+                });
+
+                // Actualizamos el pie de tabla
+                if(footerInfo) footerInfo.textContent = `Mostrando 1 a ${count} de ${count} registros`;
+
+            }, (error) => {
+                console.error("Error al leer clientes (onSnapshot):", error);
+                if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="color: red;">Error al leer datos: ${error.message}</td></tr>`;
+            });
+
+            // (En una app más compleja, guardarías 'unsubscribe' para detener la escucha)
+        }
+
+
+        // --- LÓGICA DEL SIDEBAR (Copiada de registrar_cliente.html) ---
+        function initSidebarEvents() {
+            const sidebar = document.getElementById('sidebar-container');
+            const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile'); 
+            const sidebarToggleMain = document.querySelector('.main-content .sidebar-toggle-btn'); // Asumimos que está en el main
+            
+            if (!sidebar) return;
+
+            const allNavItems = sidebar.querySelectorAll('.nav-item');
+            const menuToggles = sidebar.querySelectorAll('.nav-item.is-parent');
+            const nonParentItems = sidebar.querySelectorAll('.nav-item:not(.is-parent)');
+
+            const setAllInactive = () => {
+                allNavItems.forEach(item => item.classList.remove('active', 'open'));
+                menuToggles.forEach(toggle => {
+                    const submenu = toggle.nextElementSibling;
+                    if (submenu && submenu.classList.contains('submenu-container')) {
+                        submenu.classList.remove('open');
+                    }
+                    const arrow = toggle.querySelector('.submenu-arrow');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                });
+            };
+
+            menuToggles.forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (e.target.closest('.submenu-item')) return;
+                    const submenu = toggle.nextElementSibling;
+                    const arrow = toggle.querySelector('.submenu-arrow');
+                    const wasOpen = submenu && submenu.classList.contains('open');
+                    setAllInactive(); 
+                    if (!wasOpen && submenu) {
+                        submenu.classList.add('open');
+                        toggle.classList.add('open', 'active'); 
+                        if (arrow) arrow.style.transform = 'rotate(90deg)';
+                    }
+                });
+            });
+
+            nonParentItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    setAllInactive();
+                    item.classList.add('active');
+                    if (window.innerWidth <= 1023 && sidebar) {
+                        sidebar.classList.remove('open');
+                    }
+                });
+            });
+            
+            // ... (Lógica de 'initial-active' omitida por brevedad, pero puedes copiarla si es necesaria) ...
+
+            const toggleSidebar = () => {
+                if (sidebar) sidebar.classList.toggle('open');
+            };
+            
+            if (sidebarToggleMobile) sidebarToggleMobile.addEventListener('click', toggleSidebar);
+            if (sidebarToggleMain) sidebarToggleMain.addEventListener('click', toggleSidebar);
+        }
+
+        // --- Carga del Sidebar y DOM ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar iconos (Lucide para el sidebar, FontAwesome ya está en la tabla)
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // --- Carga el menú lateral ---
+            fetch("sidebar.html")
+                .then(res => {
+                    if (!res.ok) throw new Error('No se encontró sidebar.html'); 
+                    return res.text();
+                })
+                .then(html => {
+                    const sidebarContainer = document.getElementById("sidebar-container");
+                    if(sidebarContainer) {
+                        sidebarContainer.innerHTML = html;
+                        initSidebarEvents(); // Inicializa eventos del sidebar
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons({ nodes: [sidebarContainer] }); // Recarga iconos para el sidebar
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Error al cargar el sidebar:", err);
+                    const sidebarContainer = document.getElementById("sidebar-container");
+                    if(sidebarContainer) {
+                        sidebarContainer.innerHTML = `<p style="color: red; padding: 20px;">Error al cargar menú.</p>`;
+                    }
+                });
+        });
+
+    </script>
+>>>>>>> ce4f311 (planes agregada a la bd y pequeños cambios en otros archivos)
 </body>
 </html>

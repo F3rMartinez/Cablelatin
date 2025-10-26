@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- EL FETCH (Carga el menú lateral) ---
     // Esto se ejecuta después de que el DOM esté listo
-    fetch("siderbar.html") // Asegúrate que siderbar.html esté en la misma carpeta que perfil.html
+    fetch("sidebar.html") // Asegúrate que siderbar.html esté en la misma carpeta que perfil.html
         .then(res => {
             if (!res.ok) throw new Error('No se encontró siderbar.html'); 
             return res.text();

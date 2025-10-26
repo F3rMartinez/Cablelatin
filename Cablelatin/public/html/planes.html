@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- Lucide Icons (para el sidebar) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <!-- 
       NOTA: 
       Asegúrate de que esta ruta a tu CSS sea correcta. 
@@ -15,278 +18,64 @@
     <link rel="stylesheet" href="/Cablelatin/public/css/planes.css">
 
     <style>
-        /* ============================================== */
-        /* ESTILOS DE TABLA Y ETIQUETAS */
-        /* ============================================== */
-        body { font-family: 'Roboto', sans-serif; background-color: #f4f7f9; }
-        .main-content { padding: 20px; }
-
-        .status-pill {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .status-pill.active {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .status-pill.inactive {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        
-        .btn-primary-add {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.2s;
-        }
-        
-        .btn-primary-add:hover {
-            background-color: #0056b3;
-        }
-        
-        .table-actions .btn-icon {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 0 5px;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
-        }
-
+        /* Estilos base (los que proporcionaste) */
+        body { font-family: 'Roboto', sans-serif; background-color: #f4f7f9; display: flex; }
+        #sidebar-container { width: 250px; flex-shrink: 0; }
+        .main-content { padding: 20px; flex-grow: 1; }
+        .status-pill { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; text-transform: uppercase; }
+        .status-pill.active { background-color: #d4edda; color: #155724; }
+        .status-pill.inactive { background-color: #f8d7da; color: #721c24; }
+        .btn-primary-add { background-color: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: background-color 0.2s; }
+        .btn-primary-add:hover { background-color: #0056b3; }
+        .table-actions .btn-icon { background: none; border: none; cursor: pointer; font-size: 16px; margin: 0 5px; padding: 5px; border-radius: 5px; transition: background-color 0.2s; }
         .table-actions .edit { color: #007bff; }
         .table-actions .delete { color: #dc3545; }
+        .card-table-wrapper { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .table-controls { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .table-container { overflow-x: auto; }
+        #planes-table { width: 100%; border-collapse: collapse; }
+        #planes-table th, #planes-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        #planes-table th { background-color: #f8f9fa; font-weight: 700; color: #333; }
+        .table-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
 
-        /* Estilos base de la tabla */
-        .card-table-wrapper {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .table-container {
-            overflow-x: auto;
-        }
-        #planes-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #planes-table th, #planes-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        #planes-table th {
-            background-color: #f8f9fa;
-            font-weight: 700;
-            color: #333;
-        }
+        /* Estilos para Modales de Formulario */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .modal-content { background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); width: 90%; max-width: 600px; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; }
+        .modal-overlay.open .modal-content { transform: translateY(0); }
+        .modal-content h2 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 28px; cursor: pointer; color: #999; transition: color 0.2s; }
+        .modal-close:hover { color: #333; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 5px; font-weight: 500; color: #555; }
+        .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; box-sizing: border-box; width: 100%; }
+        .form-group textarea { grid-column: 1 / -1; resize: vertical; }
+        .form-grid .full-width { grid-column: 1 / -1; }
+        .modal-buttons { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        .btn-guardar, .btn-cancelar, .btn-confirm-delete, .btn-cancel-delete { padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 500; border: none; }
+        .btn-guardar { background-color: #28a745; color: white; }
+        .btn-cancelar, .btn-cancel-delete { background-color: #6c757d; color: white; }
+        .btn-confirm-delete { background-color: #dc3545; color: white; }
 
+        /* Estilos del Modal de Éxito */
+        #success-modal { background-color: transparent; pointer-events: none; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        #success-modal.open { pointer-events: auto; }
+        .success-content { background-color: #f0fff4; color: #0c6; padding: 20px 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 204, 102, 0.3); display: flex; align-items: center; font-weight: 500; font-size: 16px; border: 1px solid #0c6; animation: fadeInDown 0.4s; }
+        .success-content i { font-size: 24px; margin-right: 15px; }
+        @keyframes fadeInDown { 0% { opacity: 0; transform: translateY(-50px); } 100% { opacity: 1; transform: translateY(0); } }
+        #success-modal.hide { opacity: 0; }
 
-        /* ============================================== */
-        /* ESTILOS PARA MODALES DE FORMULARIO */
-        /* ============================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); 
-            display: none; /* Inicialmente oculto */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
+        /* Estilos del Modal de Confirmación (NUEVO) */
+        #confirm-modal .modal-content { max-width: 450px; text-align: center; }
+        #confirm-modal-message { font-size: 1.1rem; color: #333; margin-bottom: 25px; }
+        #confirm-modal-buttons { display: flex; justify-content: center; gap: 15px; }
         
-        .modal-overlay.open .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-content h2 {
-            margin-top: 0;
-            color: #333;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #999;
-            transition: color 0.2s;
-        }
-        
-        .modal-close:hover {
-            color: #333;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
-            width: 100%;
-        }
-
-        .form-group textarea {
-            grid-column: 1 / -1; 
-            resize: vertical;
-        }
-        
-        .form-grid .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .modal-buttons {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .btn-guardar, .btn-cancelar {
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .btn-guardar { 
-            background-color: #28a745; 
-            color: white; 
-            border: none;
-        }
-        
-        .btn-cancelar { 
-            background-color: #6c757d; 
-            color: white; 
-            border: none;
-        }
-
-        /* ============================================== */
-        /* ESTILOS DEL MODAL DE ÉXITO (NUEVO) */
-        /* ============================================== */
-        #success-modal {
-            background-color: transparent; /* Fondo transparente */
-            pointer-events: none; /* Permite clics a través del overlay */
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        #success-modal.open {
-            pointer-events: auto;
-        }
-
-        .success-content {
-            background-color: #f0fff4; /* Verde muy claro */
-            color: #0c6; /* Verde oscuro */
-            padding: 20px 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 204, 102, 0.3);
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-            font-size: 16px;
-            border: 1px solid #0c6;
-            animation: fadeInDown 0.4s;
-        }
-
-        .success-content i {
-            font-size: 24px;
-            margin-right: 15px;
-        }
-
-        @keyframes fadeInDown {
-            0% { opacity: 0; transform: translateY(-50px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Animación para desaparecer */
-        #success-modal.hide {
-            opacity: 0;
-        }
-
-        /* Media query para móviles */
         @media (max-width: 500px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .table-controls {
-                flex-direction: column;
-                gap: 10px;
-            }
+            .form-grid { grid-template-columns: 1fr; }
+            .table-controls { flex-direction: column; gap: 10px; }
         }
-
     </style>
 </head>
 <body>
@@ -298,6 +87,7 @@
     <main class="main-content">
         
         <header class="main-navbar">
+            <!-- (Tu header) -->
         </header>
 
         <div class="content-body">
@@ -306,7 +96,6 @@
 
                 <div class="content-header">
                     <h1>Planes</h1>
-                    <!-- Botón para abrir el modal de registro -->
                     <button class="btn-primary-add" title="Añadir Plan" onclick="openModal('modal-registrar-plan')">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -343,7 +132,12 @@
                             </tr>
                         </thead>
                         <tbody id="planes-table-body">
-                            <!-- El contenido de la tabla se cargará dinámicamente con JavaScript -->
+                            <!-- El contenido de la tabla se cargará dinámicamente -->
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 20px;">
+                                    Cargando planes...
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -362,7 +156,7 @@
     </main>
 
     <!-- ========================================================= -->
-    <!--       MODAL DE REGISTRO DE NUEVO PLAN                     -->
+    <!--     MODAL DE REGISTRO DE NUEVO PLAN                     -->
     <!-- ========================================================= -->
     <div id="modal-registrar-plan" class="modal-overlay">
         <div class="modal-content">
@@ -372,13 +166,11 @@
                 
                 <div class="form-grid">
                     
-                    <!-- Plan -->
                     <div class="form-group">
                         <label for="reg-plan-nombre">Nombre del Plan:</label>
                         <input type="text" id="reg-plan-nombre" name="nombre" placeholder="Ej: Plan 100MB Duo" required>
                     </div>
 
-                    <!-- Condición / Ciclo -->
                     <div class="form-group">
                         <label for="reg-plan-condicion">Condición / Ciclo:</label>
                         <select id="reg-plan-condicion" name="condicion" required>
@@ -388,19 +180,16 @@
                         </select>
                     </div>
 
-                    <!-- Precio Plan (S/) -->
                     <div class="form-group">
                         <label for="reg-plan-precio">Precio Plan (S/):</label>
                         <input type="number" id="reg-plan-precio" name="precio" step="0.01" min="0" placeholder="Ej: 50.00" required>
                     </div>
 
-                    <!-- P. Instalación (S/) -->
                     <div class="form-group">
                         <label for="reg-plan-instalacion">Precio Instalación (S/):</label>
                         <input type="number" id="reg-plan-instalacion" name="precioInstalacion" step="0.01" min="0" placeholder="Ej: 0.00 o 50.00" required>
                     </div>
 
-                    <!-- Estado -->
                     <div class="form-group">
                         <label for="reg-plan-estado">Estado:</label>
                         <select id="reg-plan-estado" name="estado" required>
@@ -410,10 +199,8 @@
                         </select>
                     </div>
                     
-                    <!-- Campo vacío para mantener la alineación -->
-                    <div></div>
+                    <div></div> <!-- Espaciador -->
 
-                    <!-- Descripción (Ancho completo) -->
                     <div class="form-group full-width">
                         <label for="reg-plan-descripcion">Descripción detallada:</label>
                         <textarea id="reg-plan-descripcion" name="descripcion" rows="3" placeholder="Detalles del servicio incluido (velocidad, canales, etc.)" required></textarea>
@@ -429,7 +216,7 @@
     </div>
 
     <!-- ========================================================= -->
-    <!--       MODAL DE EDICIÓN DE PLAN                            -->
+    <!--     MODAL DE EDICIÓN DE PLAN                            -->
     <!-- ========================================================= -->
     <div id="modal-editar-plan" class="modal-overlay">
         <div class="modal-content">
@@ -438,22 +225,18 @@
             <form id="form-editar-plan">
                 
                 <div class="form-grid">
-                    <!-- ID OCULTO: Necesario para saber qué plan estamos editando -->
                     <input type="hidden" id="edit-plan-id" name="id">
 
-                    <!-- Id (solo visual, en la cuadrícula) -->
                     <div class="form-group">
                         <label>ID del Plan:</label>
                         <input type="text" id="edit-plan-id-display" disabled style="background-color: #f0f0f0; cursor: not-allowed;">
                     </div>
                     
-                    <!-- Plan -->
                     <div class="form-group">
                         <label for="edit-plan-nombre">Nombre del Plan:</label>
                         <input type="text" id="edit-plan-nombre" name="nombre" required>
                     </div>
 
-                    <!-- Condición / Ciclo -->
                     <div class="form-group">
                         <label for="edit-plan-condicion">Condición / Ciclo:</label>
                         <select id="edit-plan-condicion" name="condicion" required>
@@ -463,19 +246,16 @@
                         </select>
                     </div>
 
-                    <!-- Precio Plan (S/) -->
                     <div class="form-group">
                         <label for="edit-plan-precio">Precio Plan (S/):</label>
                         <input type="number" id="edit-plan-precio" name="precio" step="0.01" min="0" required>
                     </div>
 
-                    <!-- P. Instalación (S/) -->
                     <div class="form-group">
                         <label for="edit-plan-instalacion">Precio Instalación (S/):</label>
                         <input type="number" id="edit-plan-instalacion" name="precioInstalacion" step="0.01" min="0" required>
                     </div>
 
-                    <!-- Estado -->
                     <div class="form-group">
                         <label for="edit-plan-estado">Estado:</label>
                         <select id="edit-plan-estado" name="estado" required>
@@ -485,7 +265,6 @@
                         </select>
                     </div>
                     
-                    <!-- Descripción (Ancho completo) -->
                     <div class="form-group full-width">
                         <label for="edit-plan-descripcion">Descripción detallada:</label>
                         <textarea id="edit-plan-descripcion" name="descripcion" rows="3" required></textarea>
@@ -501,7 +280,7 @@
     </div>
     
     <!-- ========================================================= -->
-    <!--       MODAL DE NOTIFICACIÓN DE ÉXITO (NUEVO)              -->
+    <!--     MODAL DE NOTIFICACIÓN DE ÉXITO                     -->
     <!-- ========================================================= -->
     <div id="success-modal" class="modal-overlay">
         <div class="success-content">
@@ -510,48 +289,106 @@
         </div>
     </div>
 
+    <!-- ========================================================= -->
+    <!--     MODAL DE CONFIRMACIÓN DE BORRADO (NUEVO)            -->
+    <!-- ========================================================= -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Confirmar Eliminación</h2>
+            <p id="confirm-modal-message">¿Estás seguro de que deseas eliminar este plan?</p>
+            <div id="confirm-modal-buttons">
+                 <button type="button" class="btn-cancel-delete">Cancelar</button>
+                 <button type="button" class="btn-confirm-delete">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
 
+
+    <!-- ========================================================= -->
+    <!--     SCRIPT DE FIREBASE Y LÓGICA DE PLANES               -->
+    <!-- ========================================================= -->
     <script type="module">
-        // ===================================================================
-        // GESTIÓN DE DATOS Y ESTADO (SIMULADO)
-        // ===================================================================
+        // --- Importaciones de Firebase ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc,
+            doc,
+            getDoc,
+            updateDoc,
+            deleteDoc,
+            onSnapshot,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Datos iniciales de los planes (reemplazan las filas HTML estáticas)
-        let currentPlans = [
-            { id: 73, nombre: 'Plan 100MB', descripcion: 'Internet alta velocidad', precio: 50.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
-            { id: 71, nombre: 'Plan 50MB', descripcion: 'Servicio estándar', precio: 20.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
-            { id: 70, nombre: 'Plan 30MB', descripcion: 'Plan económico', precio: 30.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
-            { id: 69, nombre: 'Plan Básico TV', descripcion: 'Cable TV + Internet 10MB', precio: 80.00, instalacion: 50.00, condicion: 'MENSUAL', estado: 'Activo' },
-            { id: 68, nombre: 'Plan Inactivo', descripcion: 'Plan de prueba obsoleto', precio: 0.00, instalacion: 0.00, condicion: 'ANUAL', estado: 'Inactivo' }
-        ];
-        // Establecer el ID para el próximo plan
-        let nextId = Math.max(...currentPlans.map(p => p.id)) + 1; 
-        
-        // Simulación de Firebase: Reemplaza esto con tu lógica real y lógica de BD
-        const db = { 
-            addPlan: (data) => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        console.log("Simulación: Plan guardado en DB:", data);
-                        resolve({ id: nextId++ });
-                    }, 500);
-                });
-            },
-             updatePlan: (id, data) => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        console.log(`Simulación: Plan ID ${id} actualizado en DB:`, data);
-                        resolve({ success: true });
-                    }, 500);
-                });
-            }
+        // --- Configuración de Firebase (Manual) ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
+          authDomain: "cablelatin-prueba.firebaseapp.com",
+          projectId: "cablelatin-prueba",
+          storageBucket: "cablelatin-prueba.firebasestorage.app",
+          messagingSenderId: "370823325775",
+          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
+          measurementId: "G-PV3NRMJBW2"
         };
+        
+        const appId = firebaseConfig.projectId;
+        
+        let app, auth, db, analytics;
+        let userId = null;
+        let isAuthReady = false;
+        
+        // Referencia a la colección de planes (pública)
+        let planesCollectionRef;
+
+        // --- Inicialización de Firebase ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            analytics = getAnalytics(app);
+            console.log("Firebase inicializado con éxito en proyecto:", appId);
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+        }
+
+        // --- Autenticación ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log("Usuario autenticado:", user.uid);
+                userId = user.uid;
+                isAuthReady = true;
+                
+                // Definimos la colección de planes (pública)
+                // Ruta: artifacts/{appId}/public/data/planes
+                planesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'planes');
+                console.log("Referencia de colección de planes:", planesCollectionRef.path);
+
+                // Empezar a escuchar los planes
+                listenForPlans();
+
+            } else {
+                console.log("Usuario no autenticado, iniciando sesión anónima...");
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Error en la autenticación anónima:", error);
+                }
+            }
+        });
 
         // ===================================================================
         // FUNCIONES DE UTILIDAD (MODAL Y NOTIFICACIÓN)
+        // (Las funciones que ya tenías)
         // ===================================================================
         
-        // --- Apertura/Cierre de Modales de Formulario ---
         window.openModal = (modalId) => {
             const modal = document.getElementById(modalId);
             if(modal) {
@@ -565,94 +402,112 @@
             if(modal) {
                 modal.classList.remove('open');
                 setTimeout(() => modal.style.display = 'none', 300);
-                // Limpiar el formulario al cerrar si es el de registro
                 if (modalId === 'modal-registrar-plan') {
-                    const form = document.getElementById('form-registrar-plan');
-                    if (form) form.reset();
+                    document.getElementById('form-registrar-plan')?.reset();
                 }
             }
         };
 
-        // --- Muestra el Modal de Notificación de Éxito ---
         window.showSuccessNotification = (message) => {
             const modal = document.getElementById('success-modal');
             const msgElement = document.getElementById('success-message');
-            
-            if (msgElement) {
-                msgElement.textContent = message;
-            }
-
+            if (msgElement) msgElement.textContent = message;
             if (modal) {
-                // Asegurar que no tenga la clase 'hide'
                 modal.classList.remove('hide'); 
                 modal.style.display = 'flex';
-                // Usar un timeout más corto para la aparición visual
                 setTimeout(() => modal.classList.add('open'), 10); 
-                
-                // Ocultar después de 3 segundos
                 setTimeout(() => {
                     modal.classList.add('hide');
                     modal.classList.remove('open');
-                    // Ocultar completamente después de la transición de opacidad
                     setTimeout(() => modal.style.display = 'none', 300); 
                 }, 3000);
             }
         };
+
+        // ===================================================================
+        // LÓGICA DE DATOS (REEMPLAZANDO LA SIMULACIÓN)
+        // ===================================================================
+
+        // --- 1. Escuchar Planes (Leer) ---
+        function listenForPlans() {
+            if (!planesCollectionRef) return;
+
+            onSnapshot(planesCollectionRef, (snapshot) => {
+                const plans = [];
+                snapshot.forEach(doc => {
+                    plans.push({ id: doc.id, ...doc.data() });
+                });
+                // Renderizar la tabla con los datos de Firebase
+                renderTable(plans);
+            }, (error) => {
+                console.error("Error al escuchar planes (onSnapshot):", error);
+                const tbody = document.getElementById('planes-table-body');
+                if(tbody) tbody.innerHTML = `<tr><td colspan="8" style="color:red;text-align:center;">Error al cargar planes.</td></tr>`;
+            });
+        }
         
-        // --- Renderiza toda la tabla a partir del array 'currentPlans' ---
-        function renderTable() {
+        // --- 2. Renderizar la Tabla ---
+        // (Modificada para aceptar 'plans' como argumento)
+        function renderTable(plans) {
             const tbody = document.getElementById('planes-table-body');
             const footer = document.getElementById('footer-info');
             if (!tbody) return;
 
             tbody.innerHTML = ''; // Limpiar filas existentes
+            
+            if (plans.length === 0) {
+                 tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">No se encontraron planes.</td></tr>`;
+                 if(footer) footer.textContent = "Mostrando 0 de 0 registros";
+                 return;
+            }
 
-            currentPlans.sort((a, b) => b.id - a.id); // Ordenar por ID descendente
+            // Ordenar por 'fecha_creacion' si existe, si no por id (simulado)
+            plans.sort((a, b) => (b.fecha_creacion?.seconds || 0) - (a.fecha_creacion?.seconds || 0));
 
-            currentPlans.forEach(plan => {
+            plans.forEach(plan => {
                 const newRow = tbody.insertRow();
                 const estadoClass = plan.estado === 'Activo' ? 'active' : 'inactive';
-
-                // Añadir los datos del plan como JSON string para pasar a la función de edición
-                // Importante: Almacenar los datos ya parseados como floats para evitar errores
+                
+                // Preparamos los datos para la edición
+                // Convertimos los números a float para el formulario
                 const planDataForJson = {
                     ...plan,
-                    precio: parseFloat(plan.precio),
-                    instalacion: parseFloat(plan.instalacion)
+                    precio: parseFloat(plan.precio || 0),
+                    instalacion: parseFloat(plan.precioInstalacion || 0) // El formulario usa 'precioInstalacion'
                 };
                 const planDataJson = JSON.stringify(planDataForJson).replace(/"/g, '&quot;');
                 
                 newRow.innerHTML = `
-                    <td>${plan.id}</td>
+                    <td>${plan.id.substring(0, 6)}...</td>
                     <td>${plan.nombre}</td>
                     <td>${plan.descripcion}</td>
-                    <td>${parseFloat(plan.precio).toFixed(2)}</td>
-                    <td>${parseFloat(plan.instalacion).toFixed(2)}</td>
+                    <td>${parseFloat(plan.precio || 0).toFixed(2)}</td>
+                    <td>${parseFloat(plan.precioInstalacion || 0).toFixed(2)}</td>
                     <td>${plan.condicion}</td>
                     <td><span class="status-pill ${estadoClass}">${plan.estado}</span></td>
                     <td class="table-actions">
                         <button class="btn-icon edit" title="Editar" onclick="openEditModal('${planDataJson}')"><i class="fas fa-pencil-alt"></i></button>
-                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                        <button class="btn-icon delete" title="Eliminar" onclick="openConfirmDelete('${plan.id}', '${plan.nombre}')"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 `;
             });
 
-            // Actualizar el pie de página
-            const rowCount = currentPlans.length;
+            const rowCount = plans.length;
             if(footer) footer.textContent = `Mostrando 1 a ${rowCount} de ${rowCount} registros`;
         }
 
-        // --- Abre el modal de edición y precarga los datos ---
+        // --- 3. Abrir Modal de Edición ---
+        // (Tu función original, sin cambios, pero ahora recibe datos de Firebase)
         window.openEditModal = (planDataJson) => {
             try {
                 const plan = JSON.parse(planDataJson.replace(/&quot;/g, '"'));
-
+                
                 document.getElementById('edit-plan-id').value = plan.id;
                 document.getElementById('edit-plan-id-display').value = plan.id; 
                 document.getElementById('edit-plan-nombre').value = plan.nombre;
                 document.getElementById('edit-plan-condicion').value = plan.condicion;
                 document.getElementById('edit-plan-precio').value = plan.precio;
-                document.getElementById('edit-plan-instalacion').value = plan.instalacion;
+                document.getElementById('edit-plan-instalacion').value = plan.instalacion; // 'instalacion'
                 document.getElementById('edit-plan-estado').value = plan.estado;
                 document.getElementById('edit-plan-descripcion').value = plan.descripcion;
 
@@ -663,14 +518,49 @@
             }
         };
 
+        // --- 4. Abrir Modal de Confirmar Borrado (Nuevo) ---
+        window.openConfirmDelete = (id, nombre) => {
+            const modal = document.getElementById('confirm-modal');
+            const message = document.getElementById('confirm-modal-message');
+            const btnConfirm = modal.querySelector('.btn-confirm-delete');
+            const btnCancel = modal.querySelector('.btn-cancel-delete');
+            
+            if (message) message.textContent = `¿Estás seguro de que deseas eliminar el plan "${nombre}" (ID: ...${id.substring(id.length - 6)})?`;
+            
+            // Pasamos un nuevo 'onclick' al botón de confirmar
+            btnConfirm.onclick = () => deletePlan(id, nombre);
+            btnCancel.onclick = () => closeModal('confirm-modal');
+            
+            openModal('confirm-modal');
+        };
+
+        // --- 5. Lógica de Borrado (Nuevo) ---
+        async function deletePlan(id, nombre) {
+            if (!planesCollectionRef) return;
+            
+            const planDocRef = doc(planesCollectionRef, id);
+            
+            try {
+                await deleteDoc(planDocRef);
+                closeModal('confirm-modal');
+                showSuccessNotification(`¡Plan "${nombre}" eliminado correctamente!`);
+                // onSnapshot se encargará de re-renderizar la tabla
+            } catch (error) {
+                console.error("Error al eliminar el plan:", error);
+                closeModal('confirm-modal');
+                // Aquí podrías mostrar un modal de error
+            }
+        }
+
         // ===================================================================
         // MANEJADORES DE EVENTOS
         // ===================================================================
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Cargar la tabla inicial al cargar la página
-            renderTable();
-
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
             const formRegistro = document.getElementById('form-registrar-plan');
             const formEdicion = document.getElementById('form-editar-plan');
             
@@ -678,33 +568,26 @@
             if (formRegistro) {
                 formRegistro.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    if (!isAuthReady || !planesCollectionRef) {
+                        console.error("Firebase no está listo."); return;
+                    }
                     
                     const formData = new FormData(formRegistro);
                     const nuevoPlan = Object.fromEntries(formData.entries());
                     
-                    // IMPORTANTE: Convertir a números para el array de datos
+                    // Convertir a números
                     nuevoPlan.precio = parseFloat(nuevoPlan.precio);
-                    nuevoPlan.instalacion = parseFloat(nuevoPlan.precioInstalacion);
+                    nuevoPlan.precioInstalacion = parseFloat(nuevoPlan.precioInstalacion);
+                    // Añadir fecha de creación
+                    nuevoPlan.fecha_creacion = serverTimestamp();
                     
                     try {
-                        const result = await db.addPlan(nuevoPlan);
-                        const newId = result.id;
-                        
-                        // Añadir el nuevo plan al array local con el ID asignado
-                        currentPlans.push({ 
-                            ...nuevoPlan, 
-                            id: newId,
-                            precioInstalacion: nuevoPlan.instalacion // Corregir nombre de campo
-                        });
-
-                        renderTable();
+                        await addDoc(planesCollectionRef, nuevoPlan);
+                        // onSnapshot se encargará de re-renderizar
                         closeModal('modal-registrar-plan');
-                        
                         showSuccessNotification(`¡Plan "${nuevoPlan.nombre}" registrado con éxito!`);
-                        
                     } catch (error) {
                         console.error("Error al registrar el plan:", error);
-                        // showErrorMessage("Ocurrió un error al guardar el plan."); // Se podría añadir un modal de error
                     }
                 });
             }
@@ -713,62 +596,57 @@
             if (formEdicion) {
                 formEdicion.addEventListener('submit', async (e) => {
                     e.preventDefault();
+                    if (!isAuthReady || !planesCollectionRef) {
+                        console.error("Firebase no está listo."); return;
+                    }
                     
                     const formData = new FormData(formEdicion);
                     const planEditado = Object.fromEntries(formData.entries());
-                    const planId = parseInt(planEditado.id);
+                    const planId = planEditado.id;
                     
-                    // IMPORTANTE: Convertir a números para el array de datos
+                    // Quitar el ID del objeto a actualizar
+                    delete planEditado.id; 
+                    
+                    // Convertir a números
                     planEditado.precio = parseFloat(planEditado.precio);
-                    planEditado.instalacion = parseFloat(planEditado.precioInstalacion);
-                    
-                    try {
-                        // 1. Simulación de actualización en Firebase
-                        await db.updatePlan(planId, planEditado);
-                        
-                        // 2. Actualizar el array de datos local
-                        const index = currentPlans.findIndex(p => p.id === planId);
-                        if (index !== -1) {
-                            // Sustituir el plan antiguo con el editado (asegurando el formato correcto)
-                            currentPlans[index] = {
-                                id: planId,
-                                nombre: planEditado.nombre,
-                                descripcion: planEditado.descripcion,
-                                precio: planEditado.precio,
-                                instalacion: planEditado.instalacion,
-                                condicion: planEditado.condicion,
-                                estado: planEditado.estado
-                            };
-                        }
+                    planEditado.precioInstalacion = parseFloat(planEditado.precioInstalacion);
+                    // Añadir fecha de actualización
+                    planEditado.fecha_actualizacion = serverTimestamp();
 
-                        // 3. Volver a renderizar la tabla para mostrar los cambios
-                        renderTable();
+                    try {
+                        const planDocRef = doc(planesCollectionRef, planId);
+                        await updateDoc(planDocRef, planEditado);
+                        
+                        // onSnapshot se encargará de re-renderizar
                         closeModal('modal-editar-plan');
-                        
-                        showSuccessNotification(`¡Plan ID ${planId} actualizado correctamente!`);
-                        
+                        showSuccessNotification(`¡Plan ID ...${planId.substring(planId.length - 6)} actualizado!`);
                     } catch (error) {
                         console.error("Error al editar el plan:", error);
-                        // showErrorMessage("Ocurrió un error al actualizar el plan."); // Se podría añadir un modal de error
                     }
                 });
             }
             
-            // --- Lógica para la carga simulada del Sidebar ---
-            // Simulación de carga para no depender de archivos externos
-            fetch("siderbar.html")
+            // --- Carga del Sidebar ---
+            // (Corregí "siderbar.html" a "sidebar.html")
+            fetch("sidebar.html")
                 .then(res => {
-                    if (!res.ok) return '';
+                    if (!res.ok) throw new Error('No se encontró sidebar.html');
                     return res.text();
                 })
                 .then(html => {
                     const sidebarContainer = document.getElementById("sidebar-container");
                     if(sidebarContainer) {
                         sidebarContainer.innerHTML = html;
+                        // Aquí deberías llamar a 'initSidebarEvents()' si lo tienes
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons({ nodes: [sidebarContainer] });
+                        }
                     }
                 })
                 .catch(err => {
-                    console.warn("Advertencia: Error al cargar el sidebar (simulación).", err);
+                    console.warn("Advertencia: Error al cargar el sidebar.", err);
+                     const sidebarContainer = document.getElementById("sidebar-container");
+                     if(sidebarContainer) sidebarContainer.innerHTML = `<p style="color:red;padding:15px;">Error al cargar menú lateral.</p>`
                 });
         });
 
