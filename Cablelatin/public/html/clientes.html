@@ -6,55 +6,54 @@
     <title>Dashboard - Clientes</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome (para los iconos de la tabla) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Lucide Icons (para los iconos del sidebar) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- 
-      NOTA: 
-      Asegúrate de que esta ruta a tu CSS sea correcta. 
-      La dejé tal como la pusiste.
-    -->
     <link rel="stylesheet" href="/Cablelatin/public/css/clientes.css">
-
-    <!-- Estilos básicos para el sidebar (mientras carga el CSS) -->
-    <style>
-        body { display: flex; }
-        #sidebar-container {
-            width: 250px;
-            flex-shrink: 0;
-            /* El JS del sidebar manejará el mostrar/ocultar en móvil */
-        }
-        .main-content {
-            flex-grow: 1;
-            /* Agrega aquí estilos si es necesario */
-        }
-    </style>
 </head>
 <body>
     
     <div id="sidebar-container">
-        <!-- El sidebar se cargará aquí -->
+        <h3 style="margin: 0 0 20px 15px; font-weight: 700; color: #007bff;">CABLE LATIN</h3>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li>
+                    <a href="#"><i class="fas fa-cog"></i> Administración <i class="fas fa-chevron-right arrow"></i></a>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-users"></i> Usuarios</a></li>
+                        <li><a href="#"><i class="fas fa-clipboard-list"></i> Planes y servicios</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="active-link"><i class="fas fa-address-card"></i> Clientes <i class="fas fa-chevron-right arrow"></i></a>
+                    <ul>
+                        <li><a href="#" class="active-link"><i class="fas fa-user-friends"></i> Clientes</a></li>
+                        <li><a href="#"><i class="fas fa-file-invoice"></i> Facturas</a></li>
+                        <li><a href="#"><i class="fas fa-credit-card"></i> Pagos</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-chart-line"></i> Reportes <i class="fas fa-chevron-right arrow"></i></a>
+                    <ul>
+                        <li><a href="#"><i class="fas fa-chart-pie"></i> Reportes</a></li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fas fa-user-circle"></i> Mi Perfil</a></li>
+                <li><a href="#"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
     </div>
 
     <main class="main-content">
         
-        <!-- 
-          El header (si tienes uno) iría aquí. 
-          Tu HTML original tenía una </header> sin un <header> de apertura.
-        -->
-
         <div class="content-body">
             
             <div class="card-table-wrapper">
 
                 <div class="content-header">
                     <h1>Clientes</h1>
-                    <!-- CAMBIO: Hice que el botón te lleve a la página de registro -->
                     <a href="registrar_cliente.html" class="btn-primary" title="Añadir Cliente">
-                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-plus"></i> Añadir Cliente
                     </a>
                 </div>
 
@@ -88,18 +87,8 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <!-- 
-                          CAMBIO: 
-                          El <tbody> está vacío. El script de Firebase lo llenará. 
-                        -->
                         <tbody id="clients-table-body">
-                            <!-- Los clientes de Firebase aparecerán aquí -->
-                            <tr>
-                                <td colspan="8" style="text-align: center; padding: 20px;">
-                                    Cargando clientes...
-                                </td>
-                            </tr>
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
                 
@@ -114,236 +103,90 @@
             </div>
         </div>
     </main>
-
     
-    <!-- ============================================== -->
-    <!--       SCRIPT DE FIREBASE Y TABLA               -->
-    <!-- ============================================== -->
-    <script type="module">
-        // --- Importaciones de Firebase ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { 
-            getAuth, 
-            signInAnonymously, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            collection, 
-            query,
-            onSnapshot // Importamos onSnapshot para tiempo real
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <div id="modal-editar-cliente" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-editar-cliente')"><i class="fas fa-times"></i></button>
+            <h2>Editar Datos del Cliente</h2>
+            <form id="form-editar-cliente">
+                <input type="hidden" id="edit-cliente-id" name="id">
+                <div class="modal-form-grid">
+                    <div class="form-group full-width">
+                        <label>Tipo de Cliente:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" id="edit-tipo-residencia" name="tipoCliente" value="Residencia/Personal" checked> Residencia / Personal</label>
+                            <label><input type="radio" id="edit-tipo-empresarial" name="tipoCliente" value="Empresarial(RUC)"> Empresarial (RUC)</label>
+                        </div>
+                    </div>
+                    <div class="form-group"><label for="edit-nombre">Nombres:</label><input type="text" id="edit-nombre" name="nombre" required></div>
+                    <div class="form-group"><label for="edit-direccion-calle">Dirección (Calle/Av/N°):</label><input type="text" id="edit-direccion-calle" name="direccionCalle"></div>
+                    <div class="form-group"><label for="edit-apellido">Apellidos:</label><input type="text" id="edit-apellido" name="apellido" required></div>
+                    <div class="form-group"><label for="edit-distrito">Distrito / Ciudad:</label><input type="text" id="edit-distrito" name="distrito"></div>
+                    <div class="form-group"><label for="edit-tipo-documento">Tipo de Documento:</label><select id="edit-tipo-documento" name="tipoDocumento"><option value="DNI">DNI</option><option value="RUC">RUC</option><option value="CE">Carnet de Extranjería (CE)</option></select></div>
+                    <div class="form-group"><label for="edit-provincia">Provincia:</label><input type="text" id="edit-provincia" name="provincia"></div>
+                    <div class="form-group"><label for="edit-numero-documento">Nº de Documento:</label><input type="text" id="edit-numero-documento" name="numeroDocumento" required></div>
+                    <div class="form-group"><label for="edit-departamento">Departamento:</label><input type="text" id="edit-departamento" name="departamento"></div>
+                    <div class="form-group"><label for="edit-email">Correo Electrónico:</label><input type="email" id="edit-email" name="email"></div>
+                    <div class="form-group"><label for="edit-telefono">Teléfono / Celular:</label><input type="text" id="edit-telefono" name="telefono"></div>
+                    <div class="form-group full-width"><label for="edit-referencia">Referencia / Notas:</label><textarea id="edit-referencia" name="referencia" rows="3"></textarea></div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-secondary" onclick="closeModal('modal-editar-cliente')">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        // --- Configuración de Firebase (Manual) ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
-          authDomain: "cablelatin-prueba.firebaseapp.com",
-          projectId: "cablelatin-prueba",
-          storageBucket: "cablelatin-prueba.firebasestorage.app",
-          messagingSenderId: "370823325775",
-          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
-          measurementId: "G-PV3NRMJBW2"
-        };
-        
-        const appId = firebaseConfig.projectId;
-        
-        let app, auth, db, analytics;
-        let userId = null;
-        let isAuthReady = false;
-        
-        // --- Referencia a la tabla ---
-        const tableBody = document.getElementById('clients-table-body');
-        const footerInfo = document.getElementById('footer-info');
+    <div id="modal-editar-servicio" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-editar-servicio')"><i class="fas fa-times"></i></button>
+            <h2>Editar Asignación de Servicio</h2>
+            <form id="form-editar-servicio">
+                <input type="hidden" id="edit-servicio-cliente-id" name="clienteId">
+                <div class="modal-form-grid">
+                    <div class="form-group"><label for="edit-plan-tipo">Tipo de Plan:</label><select id="edit-plan-tipo" name="planTipo"><option value="Basico TV">Básico TV</option><option value="Premium Internet">Premium Internet</option><option value="Duo">Duo (TV + Internet)</option><option value="Solo Internet">Solo Internet</option></select></div>
+                    <div class="form-group"><label for="edit-ciclo-facturacion">Ciclo Facturación (Día):</label><input type="number" id="edit-ciclo-facturacion" name="cicloFacturacion" min="1" max="31"></div>
+                    <div class="form-group"><label for="edit-velocidad-internet">Velocidad Internet:</label><select id="edit-velocidad-internet" name="velocidadInternet"><option value="N/A (Solo TV)">N/A (Solo TV)</option><option value="100 Mbps">100 Mbps</option><option value="200 Mbps">200 Mbps</option></select></div>
+                    <div class="form-group"><label for="edit-fecha-inicio">Fecha de Inicio:</label><input type="date" id="edit-fecha-inicio" name="fechaInicio" required></div>
+                    <div class="form-group"><label for="edit-precio-plan">Precio del Plan (S/):</label><input type="number" id="edit-precio-plan" name="precioPlan" step="0.01" required></div>
+                    <div class="form-group"><label for="edit-fecha-vencimiento">Fecha Vencimiento (Opcional):</label><input type="date" id="edit-fecha-vencimiento" name="fechaVencimiento"></div>
+                    <div class="form-group"><label for="edit-servicios-adicionales">Servicios Adicionales:</label><select id="edit-servicios-adicionales" name="serviciosAdicionales"><option value="Ninguno">Ninguno</option><option value="Decodificador Adicional">Decodificador Adicional</option><option value="IP Fija">IP Fija</option></select></div>
+                    <div class="form-group"><label for="edit-estado-servicio">Estado del Servicio:</label><select id="edit-estado-servicio" name="estadoServicio"><option value="En Instalación">En Instalación</option><option value="Activo">Activo</option><option value="Suspendido">Suspendido</option><option value="Cortado">Cortado</option></select></div>
+                    <div class="form-group"><label for="edit-costo-adicional">Costo Adicional (S/):</label><input type="number" id="edit-costo-adicional" name="costoAdicional" step="0.01"></div>
+                    <div class="form-group"><label for="edit-observaciones-tecnicas">Observaciones Técnicas:</label><textarea id="edit-observaciones-tecnicas" name="observacionesTecnicas" rows="3">Anotar detalles de la instalación...</textarea></div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-secondary" onclick="closeModal('modal-editar-servicio')">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal-content notification-confirm">
+            <div class="notification-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="notification-title" id="confirm-title">Confirmar Eliminación</div>
+            <div class="notification-message" id="confirm-message"></div>
+            <div class="notification-buttons">
+                <button type="button" class="btn-secondary btn-cancel" onclick="closeModal('modal-confirm')">Cancelar</button>
+                <button type="button" class="btn-primary" id="confirm-action-button">Eliminar</button>
+            </div>
+        </div>
+    </div>
 
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            analytics = getAnalytics(app);
-            console.log("Firebase inicializado con éxito en proyecto:", appId);
-        } catch (e) {
-            console.error("Error inicializando Firebase:", e);
-            if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="color: red;">Error al conectar a DB.</td></tr>`;
-        }
+    <div id="modal-notification" class="modal-overlay">
+        <div class="modal-content notification-success">
+            <div class="notification-icon" id="notification-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="notification-title" id="notification-title"></div>
+            <div class="notification-message" id="notification-message"></div>
+            <div class="notification-buttons">
+                <button type="button" class="btn-primary" onclick="closeModal('modal-notification')">Aceptar</button>
+            </div>
+        </div>
+    </div>
 
-        // --- Autenticación ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                console.log("Usuario autenticado:", user.uid);
-                userId = user.uid;
-                isAuthReady = true;
-                
-                // *** ¡AQUÍ ES DONDE CARGAMOS LOS CLIENTES! ***
-                listenForClients(userId);
-
-            } else {
-                console.log("Usuario no autenticado, intentando iniciar sesión anónima...");
-                try {
-                    await signInAnonymously(auth);
-                } catch (error) {
-                    console.error("Error en la autenticación anónima:", error);
-                    if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="color: red;">Error de autenticación.</td></tr>`;
-                }
-            }
-        });
-
-        // --- FUNCIÓN PARA LEER CLIENTES (NUEVO) ---
-        function listenForClients(userId) {
-            if (!db || !userId) return;
-
-            // Ruta de la colección: artifacts/{appId}/users/{userId}/clientes
-            const clientsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
-            
-            // Creamos una consulta
-            const q = query(clientsCollectionRef); // (Puedes añadir orderBy aquí si tienes índices)
-
-            console.log("Escuchando cambios en:", clientsCollectionRef.path);
-
-            // onSnapshot se actualiza en tiempo real
-            const unsubscribe = onSnapshot(q, (snapshot) => {
-                if (snapshot.empty) {
-                    console.log("No se encontraron clientes.");
-                    if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px;">No hay clientes registrados.</td></tr>`;
-                    if(footerInfo) footerInfo.textContent = "Mostrando 0 a 0 de 0 registros";
-                    return;
-                }
-
-                // Si hay datos, limpiamos la tabla
-                if(tableBody) tableBody.innerHTML = '';
-                
-                let count = 0;
-                snapshot.forEach(doc => {
-                    count++;
-                    const cliente = doc.data();
-                    
-                    // Creamos la fila de la tabla
-                    const row = document.createElement('tr');
-                    
-                    // Añadimos un data-id para futuras acciones (editar/borrar)
-                    row.setAttribute('data-id', doc.id);
-                    
-                    row.innerHTML = `
-                        <td>${doc.id.substring(0, 6)}...</td>
-                        <td><div class="user-photo-placeholder"><i class="fas fa-user"></i></div></td>
-                        <td>${cliente.dni || 'N/A'}</td>
-                        <td>${cliente.nombre || ''} ${cliente.apellido || ''}</td>
-                        <td>${cliente.telefono || 'N/A'}</td>
-                        <td>${cliente.direccion || 'N/A'}</td>
-                        <td><span class="status-pill">${cliente.estado || 'N/A'}</span></td>
-                        <td class="table-actions">
-                            <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                        </td>
-                    `;
-                    
-                    if(tableBody) tableBody.appendChild(row);
-                });
-
-                // Actualizamos el pie de tabla
-                if(footerInfo) footerInfo.textContent = `Mostrando 1 a ${count} de ${count} registros`;
-
-            }, (error) => {
-                console.error("Error al leer clientes (onSnapshot):", error);
-                if(tableBody) tableBody.innerHTML = `<tr><td colspan="8" style="color: red;">Error al leer datos: ${error.message}</td></tr>`;
-            });
-
-            // (En una app más compleja, guardarías 'unsubscribe' para detener la escucha)
-        }
-
-
-        // --- LÓGICA DEL SIDEBAR (Copiada de registrar_cliente.html) ---
-        function initSidebarEvents() {
-            const sidebar = document.getElementById('sidebar-container');
-            const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile'); 
-            const sidebarToggleMain = document.querySelector('.main-content .sidebar-toggle-btn'); // Asumimos que está en el main
-            
-            if (!sidebar) return;
-
-            const allNavItems = sidebar.querySelectorAll('.nav-item');
-            const menuToggles = sidebar.querySelectorAll('.nav-item.is-parent');
-            const nonParentItems = sidebar.querySelectorAll('.nav-item:not(.is-parent)');
-
-            const setAllInactive = () => {
-                allNavItems.forEach(item => item.classList.remove('active', 'open'));
-                menuToggles.forEach(toggle => {
-                    const submenu = toggle.nextElementSibling;
-                    if (submenu && submenu.classList.contains('submenu-container')) {
-                        submenu.classList.remove('open');
-                    }
-                    const arrow = toggle.querySelector('.submenu-arrow');
-                    if (arrow) arrow.style.transform = 'rotate(0deg)';
-                });
-            };
-
-            menuToggles.forEach(toggle => {
-                toggle.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (e.target.closest('.submenu-item')) return;
-                    const submenu = toggle.nextElementSibling;
-                    const arrow = toggle.querySelector('.submenu-arrow');
-                    const wasOpen = submenu && submenu.classList.contains('open');
-                    setAllInactive(); 
-                    if (!wasOpen && submenu) {
-                        submenu.classList.add('open');
-                        toggle.classList.add('open', 'active'); 
-                        if (arrow) arrow.style.transform = 'rotate(90deg)';
-                    }
-                });
-            });
-
-            nonParentItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    setAllInactive();
-                    item.classList.add('active');
-                    if (window.innerWidth <= 1023 && sidebar) {
-                        sidebar.classList.remove('open');
-                    }
-                });
-            });
-            
-            // ... (Lógica de 'initial-active' omitida por brevedad, pero puedes copiarla si es necesaria) ...
-
-            const toggleSidebar = () => {
-                if (sidebar) sidebar.classList.toggle('open');
-            };
-            
-            if (sidebarToggleMobile) sidebarToggleMobile.addEventListener('click', toggleSidebar);
-            if (sidebarToggleMain) sidebarToggleMain.addEventListener('click', toggleSidebar);
-        }
-
-        // --- Carga del Sidebar y DOM ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar iconos (Lucide para el sidebar, FontAwesome ya está en la tabla)
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-
-            // --- Carga el menú lateral ---
-            fetch("siderbar.html")
-                .then(res => {
-                    if (!res.ok) throw new Error('No se encontró sidebar.html'); 
-                    return res.text();
-                })
-                .then(html => {
-                    const sidebarContainer = document.getElementById("sidebar-container");
-                    if(sidebarContainer) {
-                        sidebarContainer.innerHTML = html;
-                        initSidebarEvents(); // Inicializa eventos del sidebar
-                        if (typeof lucide !== 'undefined') {
-                            lucide.createIcons({ nodes: [sidebarContainer] }); // Recarga iconos para el sidebar
-                        }
-                    }
-                })
-                .catch(err => {
-                    console.error("Error al cargar el sidebar:", err);
-                    const sidebarContainer = document.getElementById("sidebar-container");
-                    if(sidebarContainer) {
-                        sidebarContainer.innerHTML = `<p style="color: red; padding: 20px;">Error al cargar menú.</p>`;
-                    }
-                });
-        });
-
-    </script>
+    <script src="/Cablelatin/public/js/clientes.js"></script>
 </body>
 </html>
