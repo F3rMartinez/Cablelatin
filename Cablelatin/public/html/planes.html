@@ -8,11 +8,292 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- 
+      NOTA: 
+      Asegúrate de que esta ruta a tu CSS sea correcta. 
+    -->
     <link rel="stylesheet" href="/Cablelatin/public/css/planes.css">
+
+    <style>
+        /* ============================================== */
+        /* ESTILOS DE TABLA Y ETIQUETAS */
+        /* ============================================== */
+        body { font-family: 'Roboto', sans-serif; background-color: #f4f7f9; }
+        .main-content { padding: 20px; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pill.active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-pill.inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-primary-add {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary-add:hover {
+            background-color: #0056b3;
+        }
+        
+        .table-actions .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .table-actions .edit { color: #007bff; }
+        .table-actions .delete { color: #dc3545; }
+
+        /* Estilos base de la tabla */
+        .card-table-wrapper {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        #planes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #planes-table th, #planes-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        #planes-table th {
+            background-color: #f8f9fa;
+            font-weight: 700;
+            color: #333;
+        }
+
+
+        /* ============================================== */
+        /* ESTILOS PARA MODALES DE FORMULARIO */
+        /* ============================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); 
+            display: none; /* Inicialmente oculto */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.open .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .form-group textarea {
+            grid-column: 1 / -1; 
+            resize: vertical;
+        }
+        
+        .form-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .modal-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn-guardar, .btn-cancelar {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-guardar { 
+            background-color: #28a745; 
+            color: white; 
+            border: none;
+        }
+        
+        .btn-cancelar { 
+            background-color: #6c757d; 
+            color: white; 
+            border: none;
+        }
+
+        /* ============================================== */
+        /* ESTILOS DEL MODAL DE ÉXITO (NUEVO) */
+        /* ============================================== */
+        #success-modal {
+            background-color: transparent; /* Fondo transparente */
+            pointer-events: none; /* Permite clics a través del overlay */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #success-modal.open {
+            pointer-events: auto;
+        }
+
+        .success-content {
+            background-color: #f0fff4; /* Verde muy claro */
+            color: #0c6; /* Verde oscuro */
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 204, 102, 0.3);
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            font-size: 16px;
+            border: 1px solid #0c6;
+            animation: fadeInDown 0.4s;
+        }
+
+        .success-content i {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animación para desaparecer */
+        #success-modal.hide {
+            opacity: 0;
+        }
+
+        /* Media query para móviles */
+        @media (max-width: 500px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .table-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+    </style>
 </head>
 <body>
     
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container">
+        <!-- El sidebar se cargará aquí -->
+    </div>
 
     <main class="main-content">
         
@@ -25,7 +306,8 @@
 
                 <div class="content-header">
                     <h1>Planes</h1>
-                    <button class="btn-primary-add" title="Añadir Plan">
+                    <!-- Botón para abrir el modal de registro -->
+                    <button class="btn-primary-add" title="Añadir Plan" onclick="openModal('modal-registrar-plan')">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
@@ -47,7 +329,7 @@
                 </div>
                 
                 <div class="table-container">
-                    <table>
+                    <table id="planes-table">
                         <thead>
                             <tr>
                                 <th>Id</th>
@@ -60,78 +342,14 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>73</td>
-                                <td>Plan 100MB</td>
-                                <td>Internet alta velocidad</td>
-                                <td>50.00</td>
-                                <td>0.00</td>
-                                <td>MENSUAL</td>
-                                <td><span class="status-pill active">Activo</span></td>
-                                <td class="table-actions">
-                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>71</td>
-                                <td>Plan 50MB</td>
-                                <td>Servicio estándar</td>
-                                <td>20.00</td>
-                                <td>0.00</td>
-                                <td>MENSUAL</td>
-                                <td><span class="status-pill active">Activo</span></td>
-                                <td class="table-actions">
-                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>70</td>
-                                <td>Plan 30MB</td>
-                                <td>Plan económico</td>
-                                <td>30.00</td>
-                                <td>0.00</td>
-                                <td>MENSUAL</td>
-                                <td><span class="status-pill active">Activo</span></td>
-                                <td class="table-actions">
-                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>69</td>
-                                <td>Plan Básico TV</td>
-                                <td>Cable TV + Internet 10MB</td>
-                                <td>80.00</td>
-                                <td>50.00</td>
-                                <td>MENSUAL</td>
-                                <td><span class="status-pill active">Activo</span></td>
-                                <td class="table-actions">
-                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>68</td>
-                                <td>Plan Inactivo</td>
-                                <td>Plan de prueba obsoleto</td>
-                                <td>0.00</td>
-                                <td>0.00</td>
-                                <td>ANUAL</td>
-                                <td><span class="status-pill inactive">Inactivo</span></td>
-                                <td class="table-actions">
-                                    <button class="btn-icon edit" title="Editar"><i class="fas fa-pencil-alt"></i></button>
-                                    <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-                                </td>
-                            </tr>
+                        <tbody id="planes-table-body">
+                            <!-- El contenido de la tabla se cargará dinámicamente con JavaScript -->
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="table-footer">
-                    <span class="footer-info">Mostrando 1 a 5 de 5 registros</span>
+                    <span class="footer-info" id="footer-info">Mostrando 0 de 0 registros</span>
                     <nav class="pagination">
                         <a href="#" class="disabled">Anterior</a>
                         <a href="#" class="active">1</a>
@@ -143,6 +361,417 @@
         
     </main>
 
-    <script src="/Cablelatin/public/js/planes.js"></script>
+    <!-- ========================================================= -->
+    <!--       MODAL DE REGISTRO DE NUEVO PLAN                     -->
+    <!-- ========================================================= -->
+    <div id="modal-registrar-plan" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-registrar-plan')"><i class="fas fa-times"></i></button>
+            <h2>Registrar Nuevo Plan</h2>
+            <form id="form-registrar-plan">
+                
+                <div class="form-grid">
+                    
+                    <!-- Plan -->
+                    <div class="form-group">
+                        <label for="reg-plan-nombre">Nombre del Plan:</label>
+                        <input type="text" id="reg-plan-nombre" name="nombre" placeholder="Ej: Plan 100MB Duo" required>
+                    </div>
+
+                    <!-- Condición / Ciclo -->
+                    <div class="form-group">
+                        <label for="reg-plan-condicion">Condición / Ciclo:</label>
+                        <select id="reg-plan-condicion" name="condicion" required>
+                            <option value="MENSUAL">MENSUAL</option>
+                            <option value="TRIMESTRAL">TRIMESTRAL</option>
+                            <option value="ANUAL">ANUAL</option>
+                        </select>
+                    </div>
+
+                    <!-- Precio Plan (S/) -->
+                    <div class="form-group">
+                        <label for="reg-plan-precio">Precio Plan (S/):</label>
+                        <input type="number" id="reg-plan-precio" name="precio" step="0.01" min="0" placeholder="Ej: 50.00" required>
+                    </div>
+
+                    <!-- P. Instalación (S/) -->
+                    <div class="form-group">
+                        <label for="reg-plan-instalacion">Precio Instalación (S/):</label>
+                        <input type="number" id="reg-plan-instalacion" name="precioInstalacion" step="0.01" min="0" placeholder="Ej: 0.00 o 50.00" required>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="form-group">
+                        <label for="reg-plan-estado">Estado:</label>
+                        <select id="reg-plan-estado" name="estado" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                            <option value="Obsoleto">Obsoleto</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Campo vacío para mantener la alineación -->
+                    <div></div>
+
+                    <!-- Descripción (Ancho completo) -->
+                    <div class="form-group full-width">
+                        <label for="reg-plan-descripcion">Descripción detallada:</label>
+                        <textarea id="reg-plan-descripcion" name="descripcion" rows="3" placeholder="Detalles del servicio incluido (velocidad, canales, etc.)" required></textarea>
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancelar" onclick="closeModal('modal-registrar-plan')">Cancelar</button>
+                        <button type="submit" class="btn-guardar">Guardar Plan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!--       MODAL DE EDICIÓN DE PLAN                            -->
+    <!-- ========================================================= -->
+    <div id="modal-editar-plan" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('modal-editar-plan')"><i class="fas fa-times"></i></button>
+            <h2>Editar Plan</h2>
+            <form id="form-editar-plan">
+                
+                <div class="form-grid">
+                    <!-- ID OCULTO: Necesario para saber qué plan estamos editando -->
+                    <input type="hidden" id="edit-plan-id" name="id">
+
+                    <!-- Id (solo visual, en la cuadrícula) -->
+                    <div class="form-group">
+                        <label>ID del Plan:</label>
+                        <input type="text" id="edit-plan-id-display" disabled style="background-color: #f0f0f0; cursor: not-allowed;">
+                    </div>
+                    
+                    <!-- Plan -->
+                    <div class="form-group">
+                        <label for="edit-plan-nombre">Nombre del Plan:</label>
+                        <input type="text" id="edit-plan-nombre" name="nombre" required>
+                    </div>
+
+                    <!-- Condición / Ciclo -->
+                    <div class="form-group">
+                        <label for="edit-plan-condicion">Condición / Ciclo:</label>
+                        <select id="edit-plan-condicion" name="condicion" required>
+                            <option value="MENSUAL">MENSUAL</option>
+                            <option value="TRIMESTRAL">TRIMESTRAL</option>
+                            <option value="ANUAL">ANUAL</option>
+                        </select>
+                    </div>
+
+                    <!-- Precio Plan (S/) -->
+                    <div class="form-group">
+                        <label for="edit-plan-precio">Precio Plan (S/):</label>
+                        <input type="number" id="edit-plan-precio" name="precio" step="0.01" min="0" required>
+                    </div>
+
+                    <!-- P. Instalación (S/) -->
+                    <div class="form-group">
+                        <label for="edit-plan-instalacion">Precio Instalación (S/):</label>
+                        <input type="number" id="edit-plan-instalacion" name="precioInstalacion" step="0.01" min="0" required>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="form-group">
+                        <label for="edit-plan-estado">Estado:</label>
+                        <select id="edit-plan-estado" name="estado" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                            <option value="Obsoleto">Obsoleto</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Descripción (Ancho completo) -->
+                    <div class="form-group full-width">
+                        <label for="edit-plan-descripcion">Descripción detallada:</label>
+                        <textarea id="edit-plan-descripcion" name="descripcion" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancelar" onclick="closeModal('modal-editar-plan')">Cancelar</button>
+                        <button type="submit" class="btn-guardar">Guardar Cambios</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- ========================================================= -->
+    <!--       MODAL DE NOTIFICACIÓN DE ÉXITO (NUEVO)              -->
+    <!-- ========================================================= -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="success-message">¡Operación realizada con éxito!</span>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // ===================================================================
+        // GESTIÓN DE DATOS Y ESTADO (SIMULADO)
+        // ===================================================================
+
+        // Datos iniciales de los planes (reemplazan las filas HTML estáticas)
+        let currentPlans = [
+            { id: 73, nombre: 'Plan 100MB', descripcion: 'Internet alta velocidad', precio: 50.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
+            { id: 71, nombre: 'Plan 50MB', descripcion: 'Servicio estándar', precio: 20.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
+            { id: 70, nombre: 'Plan 30MB', descripcion: 'Plan económico', precio: 30.00, instalacion: 0.00, condicion: 'MENSUAL', estado: 'Activo' },
+            { id: 69, nombre: 'Plan Básico TV', descripcion: 'Cable TV + Internet 10MB', precio: 80.00, instalacion: 50.00, condicion: 'MENSUAL', estado: 'Activo' },
+            { id: 68, nombre: 'Plan Inactivo', descripcion: 'Plan de prueba obsoleto', precio: 0.00, instalacion: 0.00, condicion: 'ANUAL', estado: 'Inactivo' }
+        ];
+        // Establecer el ID para el próximo plan
+        let nextId = Math.max(...currentPlans.map(p => p.id)) + 1; 
+        
+        // Simulación de Firebase: Reemplaza esto con tu lógica real y lógica de BD
+        const db = { 
+            addPlan: (data) => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        console.log("Simulación: Plan guardado en DB:", data);
+                        resolve({ id: nextId++ });
+                    }, 500);
+                });
+            },
+             updatePlan: (id, data) => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        console.log(`Simulación: Plan ID ${id} actualizado en DB:`, data);
+                        resolve({ success: true });
+                    }, 500);
+                });
+            }
+        };
+
+        // ===================================================================
+        // FUNCIONES DE UTILIDAD (MODAL Y NOTIFICACIÓN)
+        // ===================================================================
+        
+        // --- Apertura/Cierre de Modales de Formulario ---
+        window.openModal = (modalId) => {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('open'), 10);
+            }
+        };
+
+        window.closeModal = (modalId) => {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.remove('open');
+                setTimeout(() => modal.style.display = 'none', 300);
+                // Limpiar el formulario al cerrar si es el de registro
+                if (modalId === 'modal-registrar-plan') {
+                    const form = document.getElementById('form-registrar-plan');
+                    if (form) form.reset();
+                }
+            }
+        };
+
+        // --- Muestra el Modal de Notificación de Éxito ---
+        window.showSuccessNotification = (message) => {
+            const modal = document.getElementById('success-modal');
+            const msgElement = document.getElementById('success-message');
+            
+            if (msgElement) {
+                msgElement.textContent = message;
+            }
+
+            if (modal) {
+                // Asegurar que no tenga la clase 'hide'
+                modal.classList.remove('hide'); 
+                modal.style.display = 'flex';
+                // Usar un timeout más corto para la aparición visual
+                setTimeout(() => modal.classList.add('open'), 10); 
+                
+                // Ocultar después de 3 segundos
+                setTimeout(() => {
+                    modal.classList.add('hide');
+                    modal.classList.remove('open');
+                    // Ocultar completamente después de la transición de opacidad
+                    setTimeout(() => modal.style.display = 'none', 300); 
+                }, 3000);
+            }
+        };
+        
+        // --- Renderiza toda la tabla a partir del array 'currentPlans' ---
+        function renderTable() {
+            const tbody = document.getElementById('planes-table-body');
+            const footer = document.getElementById('footer-info');
+            if (!tbody) return;
+
+            tbody.innerHTML = ''; // Limpiar filas existentes
+
+            currentPlans.sort((a, b) => b.id - a.id); // Ordenar por ID descendente
+
+            currentPlans.forEach(plan => {
+                const newRow = tbody.insertRow();
+                const estadoClass = plan.estado === 'Activo' ? 'active' : 'inactive';
+
+                // Añadir los datos del plan como JSON string para pasar a la función de edición
+                // Importante: Almacenar los datos ya parseados como floats para evitar errores
+                const planDataForJson = {
+                    ...plan,
+                    precio: parseFloat(plan.precio),
+                    instalacion: parseFloat(plan.instalacion)
+                };
+                const planDataJson = JSON.stringify(planDataForJson).replace(/"/g, '&quot;');
+                
+                newRow.innerHTML = `
+                    <td>${plan.id}</td>
+                    <td>${plan.nombre}</td>
+                    <td>${plan.descripcion}</td>
+                    <td>${parseFloat(plan.precio).toFixed(2)}</td>
+                    <td>${parseFloat(plan.instalacion).toFixed(2)}</td>
+                    <td>${plan.condicion}</td>
+                    <td><span class="status-pill ${estadoClass}">${plan.estado}</span></td>
+                    <td class="table-actions">
+                        <button class="btn-icon edit" title="Editar" onclick="openEditModal('${planDataJson}')"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                `;
+            });
+
+            // Actualizar el pie de página
+            const rowCount = currentPlans.length;
+            if(footer) footer.textContent = `Mostrando 1 a ${rowCount} de ${rowCount} registros`;
+        }
+
+        // --- Abre el modal de edición y precarga los datos ---
+        window.openEditModal = (planDataJson) => {
+            try {
+                const plan = JSON.parse(planDataJson.replace(/&quot;/g, '"'));
+
+                document.getElementById('edit-plan-id').value = plan.id;
+                document.getElementById('edit-plan-id-display').value = plan.id; 
+                document.getElementById('edit-plan-nombre').value = plan.nombre;
+                document.getElementById('edit-plan-condicion').value = plan.condicion;
+                document.getElementById('edit-plan-precio').value = plan.precio;
+                document.getElementById('edit-plan-instalacion').value = plan.instalacion;
+                document.getElementById('edit-plan-estado').value = plan.estado;
+                document.getElementById('edit-plan-descripcion').value = plan.descripcion;
+
+                openModal('modal-editar-plan');
+
+            } catch (e) {
+                console.error("Error al parsear datos del plan para edición:", e);
+            }
+        };
+
+        // ===================================================================
+        // MANEJADORES DE EVENTOS
+        // ===================================================================
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cargar la tabla inicial al cargar la página
+            renderTable();
+
+            const formRegistro = document.getElementById('form-registrar-plan');
+            const formEdicion = document.getElementById('form-editar-plan');
+            
+            // --- Manejador del Formulario de Registro (AÑADIR) ---
+            if (formRegistro) {
+                formRegistro.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(formRegistro);
+                    const nuevoPlan = Object.fromEntries(formData.entries());
+                    
+                    // IMPORTANTE: Convertir a números para el array de datos
+                    nuevoPlan.precio = parseFloat(nuevoPlan.precio);
+                    nuevoPlan.instalacion = parseFloat(nuevoPlan.precioInstalacion);
+                    
+                    try {
+                        const result = await db.addPlan(nuevoPlan);
+                        const newId = result.id;
+                        
+                        // Añadir el nuevo plan al array local con el ID asignado
+                        currentPlans.push({ 
+                            ...nuevoPlan, 
+                            id: newId,
+                            precioInstalacion: nuevoPlan.instalacion // Corregir nombre de campo
+                        });
+
+                        renderTable();
+                        closeModal('modal-registrar-plan');
+                        
+                        showSuccessNotification(`¡Plan "${nuevoPlan.nombre}" registrado con éxito!`);
+                        
+                    } catch (error) {
+                        console.error("Error al registrar el plan:", error);
+                        // showErrorMessage("Ocurrió un error al guardar el plan."); // Se podría añadir un modal de error
+                    }
+                });
+            }
+
+            // --- Manejador del Formulario de Edición (EDITAR) ---
+            if (formEdicion) {
+                formEdicion.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(formEdicion);
+                    const planEditado = Object.fromEntries(formData.entries());
+                    const planId = parseInt(planEditado.id);
+                    
+                    // IMPORTANTE: Convertir a números para el array de datos
+                    planEditado.precio = parseFloat(planEditado.precio);
+                    planEditado.instalacion = parseFloat(planEditado.precioInstalacion);
+                    
+                    try {
+                        // 1. Simulación de actualización en Firebase
+                        await db.updatePlan(planId, planEditado);
+                        
+                        // 2. Actualizar el array de datos local
+                        const index = currentPlans.findIndex(p => p.id === planId);
+                        if (index !== -1) {
+                            // Sustituir el plan antiguo con el editado (asegurando el formato correcto)
+                            currentPlans[index] = {
+                                id: planId,
+                                nombre: planEditado.nombre,
+                                descripcion: planEditado.descripcion,
+                                precio: planEditado.precio,
+                                instalacion: planEditado.instalacion,
+                                condicion: planEditado.condicion,
+                                estado: planEditado.estado
+                            };
+                        }
+
+                        // 3. Volver a renderizar la tabla para mostrar los cambios
+                        renderTable();
+                        closeModal('modal-editar-plan');
+                        
+                        showSuccessNotification(`¡Plan ID ${planId} actualizado correctamente!`);
+                        
+                    } catch (error) {
+                        console.error("Error al editar el plan:", error);
+                        // showErrorMessage("Ocurrió un error al actualizar el plan."); // Se podría añadir un modal de error
+                    }
+                });
+            }
+            
+            // --- Lógica para la carga simulada del Sidebar ---
+            // Simulación de carga para no depender de archivos externos
+            fetch("siderbar.html")
+                .then(res => {
+                    if (!res.ok) return '';
+                    return res.text();
+                })
+                .then(html => {
+                    const sidebarContainer = document.getElementById("sidebar-container");
+                    if(sidebarContainer) {
+                        sidebarContainer.innerHTML = html;
+                    }
+                })
+                .catch(err => {
+                    console.warn("Advertencia: Error al cargar el sidebar (simulación).", err);
+                });
+        });
+
+    </script>
 </body>
 </html>
