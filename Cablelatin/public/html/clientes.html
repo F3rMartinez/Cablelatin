@@ -553,23 +553,22 @@
              const toggleSidebar = () => sidebar.classList.toggle('open');
              sidebarToggleMain.addEventListener('click', toggleSidebar);
 
-             fetch("sidebar.html") 
-                 .then(res => res.ok ? res.text() : Promise.reject('No se encontró sidebar.html'))
-                 .then(html => {
+            fetch("sidebar.html") 
+                .then(res => res.ok ? res.text() : Promise.reject('No se encontró sidebar.html'))
+                .then(html => {
                      sidebar.innerHTML = html; // Reemplazar contenido
                      const internalToggleBtn = sidebar.querySelector('#sidebar-toggle-mobile'); // Botón dentro del sidebar
-                     if (internalToggleBtn) internalToggleBtn.addEventListener('click', toggleSidebar);
-                     
+                    if (internalToggleBtn) internalToggleBtn.addEventListener('click', toggleSidebar);
                      // Inicializar iconos Lucide DENTRO del sidebar cargado
-                     if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: sidebar.querySelectorAll('[data-lucide]')}); 
-                     
+                    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: sidebar.querySelectorAll('[data-lucide]')}); 
+                    
                      setActiveSidebarItem(); // Marcar item activo
-                 })
-                 .catch(err => {
-                     console.error("Error al cargar sidebar:", err);
-                     const placeholder = document.getElementById('sidebar-menu-placeholder');
-                     if(placeholder) placeholder.innerHTML = `<ul><li><a href="#" style="color:red;"><i class="fas fa-exclamation-triangle"></i> Error menú</a></li></ul>`;
-                 });
+                })
+                .catch(err => {
+                    console.error("Error al cargar sidebar:", err);
+                    const placeholder = document.getElementById('sidebar-menu-placeholder');
+                    if(placeholder) placeholder.innerHTML = `<ul><li><a href="#" style="color:red;"><i class="fas fa-exclamation-triangle"></i> Error menú</a></li></ul>`;
+                });
         }
         function setActiveSidebarItem() { /* Misma función */ 
             const sidebar = document.getElementById('sidebar-container');
@@ -584,25 +583,25 @@
 
             if (activeLink) {
                  const activeItem = activeLink.closest('.nav-item, .submenu-item'); // Puede ser item principal o subitem
-                 if (activeItem) {
-                     activeItem.classList.add('active');
-                     const parentMenu = activeItem.closest('.submenu-container');
-                     if(parentMenu){
-                         const parentToggle = parentMenu.previousElementSibling;
-                          if(parentToggle && parentToggle.classList.contains('is-parent')){
-                              parentToggle.classList.add('active', 'open'); 
-                              parentMenu.classList.add('open');
-                               const arrow = parentToggle.querySelector('.submenu-arrow');
-                               if (arrow) arrow.style.transform = 'rotate(90deg)';
-                          }
-                     }
-                 }
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                    const parentMenu = activeItem.closest('.submenu-container');
+                    if(parentMenu){
+                        const parentToggle = parentMenu.previousElementSibling;
+                        if(parentToggle && parentToggle.classList.contains('is-parent')){
+                            parentToggle.classList.add('active', 'open'); 
+                            parentMenu.classList.add('open');
+                            const arrow = parentToggle.querySelector('.submenu-arrow');
+                            if (arrow) arrow.style.transform = 'rotate(90deg)';
+                        }
+                    }
+                }
             }
         }
 
 
         // --- Inicialización Firebase y Auth ---
-         try {
+        try {
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
@@ -1002,8 +1001,6 @@
                  });
              }
         });
-
     </script>
 </body>
 </html>
-
