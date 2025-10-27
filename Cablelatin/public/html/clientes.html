@@ -636,7 +636,7 @@
             if (!isAuthReady || !db || !userId) return;
             if (unsubscribeClients) unsubscribeClients(); 
 
-            const clientsRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
+            const clientsRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
             // Ordenar por fecha de registro descendente por defecto
             const q = query(clientsRef, orderBy("fecha_registro", "desc")); 
 
@@ -875,7 +875,7 @@
             form.reset(); 
             clientNameDisplay.textContent = clientName || 'N/A'; 
             form.clienteId.value = clientId; 
-            const servicesRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
+            const servicesRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
             const q = query(servicesRef, where("id_cliente", "==", clientId), limit(1)); 
             try {
                 const snapshot = await getDocs(q);
@@ -918,16 +918,16 @@
                  closeModal('modal-confirm'); return; 
             }
             closeModal('modal-confirm'); 
-            const clientRef = doc(db, 'artifacts', appId, 'users', userId, 'clientes', clientId);
+            const clientRef = doc(db, 'artifacts', appId, 'public', 'data', 'clientes', clientId);
             try {
                 await deleteDoc(clientRef);
                 console.log("Cliente eliminado:", clientId);
-                const servicesRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
+                const servicesRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
                 const q = query(servicesRef, where("id_cliente", "==", clientId), limit(1));
                 const serviceSnapshot = await getDocs(q);
                 if (!serviceSnapshot.empty) {
                     const serviceDocId = serviceSnapshot.docs[0].id;
-                    const serviceRefToDelete = doc(db, 'artifacts', appId, 'users', userId, 'servicios_clientes', serviceDocId);
+                    const serviceRefToDelete = doc(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes', serviceDocId);
                     await deleteDoc(serviceRefToDelete);
                     console.log("Servicio asociado eliminado:", serviceDocId);
                 } else { console.log("No se encontró servicio asociado."); }
@@ -953,7 +953,7 @@
                     telefono: formData.get('telefono'), direccion: formData.get('direccion'), referencia: formData.get('referencia'),
                     estado: formData.get('estado'), tipo_cliente: formEditClient.querySelector('input[name="tipo_cliente"]:checked')?.value // Correcto para radios
                 };
-                const clientRef = doc(db, 'artifacts', appId, 'users', userId, 'clientes', clientId);
+                const clientRef = doc(db, 'artifacts', appId, 'public', 'data', 'clientes', clientId);
                 try { await updateDoc(clientRef, updatedData); closeModal('modal-editar-cliente'); showNotification('success', 'Cliente Actualizado', 'Datos guardados.'); } 
                 catch (error) { console.error("Error update cliente:", error); showNotification('error', 'Error', `No se pudo actualizar: ${error.message}`); }
              });
@@ -970,7 +970,7 @@
                      fecha_inicio: formData.get('fecha_inicio'), ciclo_facturacion: parseInt(formData.get('ciclo_facturacion') || 15),
                      estado: formData.get('estado'), observaciones: formData.get('observaciones'),
                  };
-                 const serviceRef = doc(db, 'artifacts', appId, 'users', userId, 'servicios_clientes', serviceDocId);
+                 const serviceRef = doc(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes', serviceDocId);
                  try { await updateDoc(serviceRef, updatedData); closeModal('modal-editar-servicio'); showNotification('success', 'Servicio Actualizado', 'Datos guardados.'); } 
                  catch (error) { console.error("Error update servicio:", error); showNotification('error', 'Error', `No se pudo actualizar: ${error.message}`); }
             });

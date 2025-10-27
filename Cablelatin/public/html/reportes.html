@@ -276,10 +276,10 @@
             if (!userId) return;
 
             // Definir las 4 referencias
-            const clientesRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
-            const serviciosRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
-            const pagosRef = collection(db, 'artifacts', appId, 'users', userId, 'pagos');
-            const reportesRef = collection(db, 'artifacts', appId, 'users', userId, 'reportes_tecnicos');
+            const clientesRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
+            const serviciosRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
+            const pagosRef = collection(db, 'artifacts', appId, 'public', 'data', 'pagos');
+            const reportesRef = collection(db, 'artifacts', appId, 'public', 'data', 'reportes_tecnicos');
 
             // Iniciar los 4 "listeners"
             listenForData(clientesRef, allClientes, "clientes", "Clientes");

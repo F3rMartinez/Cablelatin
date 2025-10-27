@@ -573,7 +573,7 @@ async function processPayment() {
         // -----------------------------------------------------------------
         
         // 4. Definir la colección de 'pagos' (AQUÍ SÍ TENEMOS 'userId')
-        const pagosCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'pagos');
+        const pagosCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'pagos');
 
         // 5. Preparar el objeto del nuevo pago (leyendo los datos de la tabla)
         const nuevoPago = {
@@ -812,8 +812,8 @@ try {
             console.log("Autenticado:", userId);
 
             // Definir referencias a colecciones (privadas del usuario)
-            serviciosCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
-            clientesCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
+            serviciosCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
+            clientesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
 
             // Iniciar carga de datos
             await loadClientes(); // Esperar a que los clientes carguen primero

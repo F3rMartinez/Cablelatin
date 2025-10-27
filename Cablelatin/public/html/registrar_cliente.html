@@ -794,7 +794,7 @@
                         };
 
                         // Guardar Cliente
-                        const clientesRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
+                        const clientesRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
                         const clienteDocRef = await addDoc(clientesRef, clienteData);
                         
                         // Servicio Data
@@ -814,7 +814,7 @@
                         };
 
                         // Guardar Servicio
-                        const serviciosRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
+                        const serviciosRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
                         await addDoc(serviciosRef, servicioData);
 
                         // Éxito

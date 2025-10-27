@@ -248,7 +248,7 @@
                     // --- ¡CAMBIO IMPORTANTE! ---
                     // Apuntamos a la colección PRIVADA del usuario, basándonos en tus otros archivos.
                     // Ruta: artifacts/{appId}/users/{userId}/pagos
-                    pagosCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'pagos');
+                    pagosCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'pagos');
                     
                     console.log("Escuchando en la ruta:", pagosCollectionRef.path); // Log para verificar la ruta
 
