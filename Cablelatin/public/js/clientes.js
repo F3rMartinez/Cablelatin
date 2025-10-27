@@ -247,21 +247,6 @@ function deleteConfirmed(clienteId, clienteNombre) {
     }
 }
 
-<<<<<<< HEAD
-=======
-// --- EL FETCH (Esto es lo que carga el menú) ---
-// Se ejecuta apenas carga la página
-fetch("sidebar.html")
-    .then(res => {
-        // Asegúrate que el archivo siderbar.html exista en la misma carpeta
-        if (!res.ok) throw new Error('No se encontró siderbar.html'); 
-        return res.text();
-    })
-    .then(html => {
-        // 1. Inserta el HTML del menú en el div
-        document.getElementById("sidebar-container").innerHTML = html;
->>>>>>> ce4f311 (planes agregada a la bd y pequeños cambios en otros archivos)
-
 // ==============================================
 // 5. CARGA Y RENDERIZADO DE LA TABLA
 // ==============================================
