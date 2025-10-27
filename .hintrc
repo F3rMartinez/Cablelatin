@@ -20,11 +20,18 @@
       "default",
       {
         "ignore": [
-          "backdrop-filter"
+          "backdrop-filter",
+          "user-select"
         ]
       }
     ],
     "meta-charset-utf-8": "off",
-    "meta-viewport": "off"
+    "meta-viewport": "off",
+    "axe/aria": [
+      "default",
+      {
+        "aria-allowed-attr": "off"
+      }
+    ]
   }
 }
