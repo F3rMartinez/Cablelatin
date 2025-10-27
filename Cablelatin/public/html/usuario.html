@@ -5,25 +5,302 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Usuarios</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="/public/css/usuario.css">
+    <style>
+        /* Estilos personalizados para replicar usuario.css */
+        :root {
+            --color-principal: #0d6efd; /* Azul primario */
+            --color-fondo: #f8f9fa;
+            --color-texto: #212529;
+            --color-texto-secundario: #6c757d;
+            --color-borde: #dee2e6;
+            --color-blanco: #ffffff;
+            --color-verde: #198754;
+            --color-verde-fondo: #d1e7dd;
+            --color-rojo: #dc3545;
+            --color-rojo-fondo: #f8d7da;
+            --color-gris: #6c757d;
+            --color-gris-fondo: #e2e3e5;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            display: flex;
+        }
+
+        /* Contenedor principal */
+        #sidebar-container {
+            /* (Tu sidebar se cargará aquí) */
+            /* Asumimos un ancho fijo para el ejemplo */
+            width: 250px; 
+            background-color: #343a40;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            max-width: calc(100% - 250px);
+        }
+
+        /* Cabecera de Contenido */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .content-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: var(--color-texto-secundario);
+            margin: 0;
+        }
+        
+        /* Botón Primario (Añadir) */
+        .btn-primary {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            border: none;
+            border-radius: 50%; /* Circular */
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        /* Contenedor de la Tabla */
+        .card {
+            background-color: var(--color-blanco);
+            border: 1px solid var(--color-borde);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden; /* Para que la tabla respete el borde redondeado */
+        }
+        
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Para responsividad */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table th, table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--color-borde);
+            vertical-align: middle;
+        }
+
+        table th {
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--color-texto-secundario);
+            background-color: var(--color-fondo);
+        }
+        
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        /* Píldora de Estado */
+        .status-pill {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+        .status-pill.active {
+            color: var(--color-verde);
+            background-color: var(--color-verde-fondo);
+        }
+        .status-pill.inactive {
+            color: var(--color-rojo);
+            background-color: var(--color-rojo-fondo);
+        }
+        
+        /* Píldora de Rol */
+        .role-pill {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+        .role-pill.admin {
+            color: var(--color-rojo);
+            background-color: var(--color-rojo-fondo);
+        }
+        .role-pill.supervisor {
+            color: var(--color-principal);
+            background-color: #cfe2ff;
+        }
+        .role-pill.vendedor {
+            color: var(--color-gris);
+            background-color: var(--color-gris-fondo);
+        }
+
+        /* Acciones de Tabla */
+        .table-actions a {
+            color: var(--color-texto-secundario);
+            margin-right: 1rem;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        .table-actions a:last-child {
+            margin-right: 0;
+        }
+        .table-actions a[title="Editar"]:hover {
+            color: var(--color-principal);
+        }
+        .table-actions a[title="Eliminar"]:hover {
+            color: var(--color-rojo);
+        }
+
+        /* Footer de Tabla */
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background-color: var(--color-fondo);
+            font-size: 0.9rem;
+            color: var(--color-texto-secundario);
+        }
+        .pagination a {
+            color: var(--color-principal);
+            text-decoration: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.25rem;
+            margin-left: 0.25rem;
+        }
+        .pagination a.active {
+            background-color: var(--color-principal);
+            color: var(--color-blanco);
+            font-weight: 700;
+        }
+        .pagination a.disabled {
+            color: var(--color-texto-secundario);
+            pointer-events: none;
+        }
+
+        /* --- NUEVO: Estilos para el Modal de Confirmación --- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-content {
+            background-color: var(--color-blanco);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-backdrop.open .modal-content {
+            transform: scale(1);
+        }
+        .modal-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--color-rojo);
+        }
+        .modal-content p {
+            color: var(--color-texto-secundario);
+            margin-bottom: 1.5rem;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-cancel {
+            background-color: var(--color-gris-fondo);
+            color: var(--color-gris);
+        }
+        .btn-cancel:hover {
+            background-color: #d3d3d4;
+        }
+        .btn-confirm-delete {
+            background-color: var(--color-rojo);
+            color: var(--color-blanco);
+        }
+        .btn-confirm-delete:hover {
+            background-color: #b02a37;
+        }
+
+    </style>
 </head>
 <body>
     
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container">
+        <!-- Tu sidebar se cargará aquí. Añadimos contenido de placeholder -->
+        <div class="p-4">
+            <h2 class="text-xl font-bold text-white">Cable Latín</h2>
+        </div>
+    </div>
 
     <main class="main-content">
         
-        </header>
-
         <div class="content-header">
             <div>
                 <p class="breadcrumb">Administración / Usuarios</p>
                 <h1>Usuarios</h1>
             </div>
-            <button class="btn-primary" title="Añadir Usuario">
+            <!-- Botón de Añadir, ahora funcional -->
+            <button class="btn-primary" title="Añadir Usuario" onclick="location.href='/Cablelatin/public/html/crearUsuario.html'">
                 <i class="fas fa-plus"></i>
             </button>
         </div>
@@ -37,64 +314,26 @@
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Teléfono</th>
+                        <th>Rol</th> <!-- ¡COLUMNA AÑADIDA! -->
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <!-- Cuerpo de la tabla, se llenará dinámicamente -->
+                <tbody id="usuarios-table-body">
+                    <!-- Ejemplo de estado de carga -->
                     <tr>
-                        <td>24</td>
-                        <td>juanp</td>
-                        <td>juan p</td>
-                        <td>juanp@gmail.com</td>
-                        <td>987659234</td>
-                        <td><span class="status-pill active">Activo</span></td>
-                        <td class="table-actions">
-                            <a href="#" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                            <a href="#" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>23</td>
-                        <td>Angel2S</td>
-                        <td>Angel lopez</td>
-                        <td>Angelopez@gmail.com</td>
-                        <td>5353543233</td>
-                        <td><span class="status-pill active">Activo</span></td>
-                        <td class="table-actions">
-                            <a href="#" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                            <a href="#" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>22</td>
-                        <td>admin3</td>
-                        <td>Administrador Tres</td>
-                        <td>admin3@gmail.com</td>
-                        <td>3214750004</td>
-                        <td><span class="status-pill active">Activo</span></td>
-                        <td class="table-actions">
-                            <a href="#" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                            <a href="#" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>21</td>
-                        <td>elmer</td>
-                        <td>wilcor</td>
-                        <td>elmergomez278@hotmail.com</td>
-                        <td>906646100</td>
-                        <td><span class="status-pill active">Activo</span></td>
-                        <td class="table-actions">
-                            <a href="#" title="Editar"><i class="fas fa-pencil-alt"></i></a>
-                            <a href="#" title="Eliminar"><i class="fas fa-trash-alt"></i></a>
+                        <td colspan="8" class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                            <span class="ml-2">Cargando usuarios...</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
             
             <div class="table-footer">
-                <span class="footer-info">Mostrando registros del 1 al 4 de un total de 4 registros</span>
+                <span id="footer-info">Mostrando 0 de 0 registros</span>
+                <!-- La paginación es estática por ahora -->
                 <nav class="pagination">
                     <a href="#" class="disabled">Anterior</a>
                     <a href="#" class="active">1</a>
@@ -105,6 +344,266 @@
         
     </main>
 
-    <script src="/public/js/usuario.js"></script>
+    <!-- ======== NUEVO: Modal de Confirmar Eliminación ======== -->
+    <div id="confirmDeleteModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
+            <p id="modalDeleteMessage">¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button id="modalCancelDelete" class="btn btn-cancel">Cancelar</button>
+                <button id="modalConfirmDelete" class="btn btn-confirm-delete">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
+    <!-- ====================================================== -->
+
+
+    <!-- ============================================== -->
+    <!--          SCRIPT DE FIREBASE Y LÓGICA           -->
+    <!-- ============================================== -->
+    <script type="module">
+        // --- Importaciones de Firebase ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            onSnapshot,
+            doc,         // <-- ¡NUEVO! Para referenciar un documento
+            deleteDoc    // <-- ¡NUEVO! Para eliminar
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Configuración Firebase ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
+          authDomain: "cablelatin-prueba.firebaseapp.com",
+          projectId: "cablelatin-prueba",
+          storageBucket: "cablelatin-prueba.firebasestorage.app",
+          messagingSenderId: "370823325775",
+          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
+          measurementId: "G-PV3NRMJBW2"
+        };
+        
+        // --- Variables Globales ---
+        const appId = firebaseConfig.projectId;
+        let app, auth, db;
+        let adminUserId = null;
+        
+        // --- Referencias a Elementos DOM ---
+        const tableBody = document.getElementById('usuarios-table-body');
+        const footerInfo = document.getElementById('footer-info');
+        // --- NUEVO: Referencias al Modal ---
+        const modal = document.getElementById('confirmDeleteModal');
+        const modalMessage = document.getElementById('modalDeleteMessage');
+        const btnCancelDelete = document.getElementById('modalCancelDelete');
+        const btnConfirmDelete = document.getElementById('modalConfirmDelete');
+        let userIdToDelete = null; // Guardará el ID del usuario a eliminar
+
+        // --- Inicialización Firebase ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase inicializado");
+            initAuth();
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+            renderError("Error de Conexión a Firebase.");
+        }
+
+        // --- Autenticación (del admin/usuario que ve la tabla) ---
+        function initAuth() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    adminUserId = user.uid;
+                    console.log("Admin autenticado:", adminUserId);
+                    
+                    // Ahora que estamos autenticados, escuchamos la BBDD
+                    listenForUsers();
+                    
+                } else {
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error("Error auth anónima:", error);
+                        renderError("Error de autenticación.");
+                    }
+                }
+            });
+        }
+        
+        /**
+         * Escucha en tiempo real la colección de usuarios
+         */
+        function listenForUsers() {
+            if (!adminUserId) return;
+            
+            // Esta es la ruta donde 'crear_usuario.html' guarda los perfiles
+            const usersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'personal');
+            
+            onSnapshot(usersCollectionRef, (snapshot) => {
+                console.log(`Datos recibidos: ${snapshot.size} usuarios.`);
+                renderTable(snapshot.docs);
+            }, (error) => {
+                console.error("Error al escuchar la colección 'personal':", error);
+                renderError("No se pudieron cargar los datos de usuarios.");
+            });
+        }
+        
+        /**
+         * Dibuja la tabla con los datos de Firebase
+         */
+        function renderTable(userDocs) {
+            // Limpiar la tabla
+            tableBody.innerHTML = '';
+
+            if (userDocs.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center py-8 text-gray-500">
+                            No se encontraron usuarios.
+                            <a href="crear_usuario.html" class="text-blue-600 hover:underline ml-1">¡Crea el primero!</a>
+                        </td>
+                    </tr>`;
+                footerInfo.textContent = "Mostrando 0 de 0 registros";
+                return;
+            }
+
+            // Actualizar contador
+            footerInfo.textContent = `Mostrando ${userDocs.length} de ${userDocs.length} registros`;
+
+            // Llenar la tabla
+            userDocs.forEach(doc => {
+                const user = doc.data();
+                const uid = doc.id; // El ID de Firebase Auth
+                
+                // Determinar clases de estado y rol
+                const estadoClass = user.estado === 'Activo' ? 'active' : 'inactive';
+                let rolClass = '';
+                switch(user.rol) {
+                    case 'administrador': rolClass = 'admin'; break;
+                    case 'supervisor': rolClass = 'supervisor'; break;
+                    case 'vendedor': rolClass = 'vendedor'; break;
+                    default: rolClass = '';
+                }
+
+                const newRow = tableBody.insertRow();
+                newRow.innerHTML = `
+                    <td>${uid.substring(0, 6)}...</td>
+                    <td>${user.usuario || 'N/A'}</td>
+                    <td>${user.nombre || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.telefono || 'N/A'}</td>
+                    <td>
+                        <span class="role-pill ${rolClass}">${user.rol || 'N/A'}</span>
+                    </td>
+                    <td>
+                        <span class="status-pill ${estadoClass}">${user.estado || 'N/A'}</span>
+                    </td>
+                    <td class="table-actions">
+                        <!-- ¡MODIFICADO! El href ahora es funcional -->
+                        <a href="editarUsuario.html?id=${uid}" title="Editar" data-id="${uid}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <!-- ¡MODIFICADO! Ahora es un botón (<a>) con data-id -->
+                        <a href="#" title="Eliminar" class="btn-delete" data-id="${uid}" data-name="${user.nombre || user.usuario || 'N/A'}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                `;
+            });
+        }
+        
+        /**
+         * Muestra un error en la tabla
+         */
+        function renderError(message) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-8 text-red-600 font-semibold">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        ${message}
+                    </td>
+                </tr>`;
+            footerInfo.textContent = "Error al cargar";
+        }
+
+        // ==============================================
+        //          NUEVO: LÓGICA DE ELIMINACIÓN
+        // ==============================================
+
+        /**
+         * Muestra el modal de confirmación
+         */
+        function showConfirmModal(id, name) {
+            userIdToDelete = id;
+            modalMessage.textContent = `¿Estás seguro de que deseas eliminar a "${name}" (ID: ...${id.substring(id.length - 6)})? Esta acción no se puede deshacer.`;
+            modal.classList.add('open');
+        }
+
+        /**
+         * Oculta el modal de confirmación
+         */
+        function hideConfirmModal() {
+            userIdToDelete = null;
+            modal.classList.remove('open');
+        }
+
+        /**
+         * Elimina el usuario de Firestore
+         */
+        async function deleteUser() {
+            if (!userIdToDelete) return;
+
+            console.log(`Intentando eliminar usuario (Firestore Doc): ${userIdToDelete}`);
+            
+            // 1. Definir la ruta al documento del perfil
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'personal', userIdToDelete);
+
+            try {
+                // 2. Eliminar el documento de Firestore
+                await deleteDoc(userDocRef);
+                console.log("¡Documento de perfil eliminado!");
+                
+                // 3. Ocultar modal
+                hideConfirmModal();
+                
+                // Nota: onSnapshot actualizará la tabla automáticamente.
+                
+                // ADVERTENCIA TÉCNICA:
+                // Esto solo elimina el perfil de la base de datos (Firestore).
+                // El usuario de *Autenticación* (Auth) sigue existiendo y podría
+                // volver a iniciar sesión. Eliminar usuarios de Auth de forma segura
+                // requiere Cloud Functions (código del lado del servidor).
+                // Por ahora, esto hace que desaparezca de la lista, que es
+                // el comportamiento esperado de la UI.
+                console.warn(`El documento ${userIdToDelete} fue eliminado de Firestore, pero el registro de Auth (autenticación) puede seguir existiendo.`);
+
+            } catch (error) {
+                console.error("Error al eliminar el documento:", error);
+                hideConfirmModal();
+                alert(`Error al eliminar: ${error.message}`);
+            }
+        }
+
+        // --- Event Listeners ---
+        
+        // Listener de clic para los botones de eliminar (usando delegación de eventos)
+        tableBody.addEventListener('click', (e) => {
+            const deleteButton = e.target.closest('.btn-delete');
+            if (deleteButton) {
+                e.preventDefault(); // Prevenir que el a href="#" mueva la página
+                const id = deleteButton.dataset.id;
+                const name = deleteButton.dataset.name;
+                showConfirmModal(id, name);
+            }
+        });
+        
+        // Listeners del modal
+        btnCancelDelete.addEventListener('click', hideConfirmModal);
+        btnConfirmDelete.addEventListener('click', deleteUser);
+
+
+    </script>
 </body>
 </html>

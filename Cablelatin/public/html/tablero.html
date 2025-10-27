@@ -5,97 +5,439 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CABLE LATIN</title>
     
+    <!-- Fuentes y Iconos -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <link rel="stylesheet" href="/Cablelatin/public/css/tablero.css">
-</head>
-<body>
     
-    <div id="sidebar-container"></div>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <main class="main-content">
+    <style>
+        /* Estilos base */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa; /* Color de fondo claro */
+        }
+
+        /* Estilo para el contenido principal, asumiendo una sidebar de 256px en desktop */
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+        @media (min-width: 1024px) {
+            .main-content {
+                margin-left: 256px; /* Ajusta esto al ancho de tu sidebar real */
+            }
+        }
+
+        /* Estilo para el contenedor del gráfico para que no se encoja */
+        .chart-container {
+            position: relative;
+            height: 250px; /* Altura fija para los gráficos */
+            width: 100%;
+        }
+
+        /* Pequeño spinner para los números de las tarjetas */
+        .card-value {
+            min-height: 36px; /* Evita que la tarjeta salte de tamaño al cargar */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    
+    <!-- 
+      CONTENEDOR DEL SIDEBAR (VACÍO)
+      Asumo que cargas tu sidebar.html aquí como en los otros archivos.
+    -->
+    <div id="sidebar-container" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-20 hidden lg:block">
+        <!-- El sidebar se cargará aquí... -->
+    </div>
+
+    <!-- Contenido Principal -->
+    <main class="main-content p-4 md:p-8">
         
+        <!-- Encabezado (Moví el botón de "Añadir" aquí, es más lógico) -->
+        <header class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Tablero</h1>
+                <p class="text-gray-500">Resumen general de tu sistema.</p>
+            </div>
+            <button onclick="window.location.href='crear_cliente.html'" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors flex items-center space-x-2" title="Añadir Nuevo Cliente">
+                <i class="fas fa-plus"></i>
+                <span class="hidden md:inline">Añadir Cliente</span>
+            </button>
         </header>
 
-        <section class="summary-cards">
-            <div class="card summary-card clients">
-                <div class="card-icon"><i class="fas fa-users"></i></div>
-                <div class="card-content">
-                    <h3>Clientes</h3>
-                    <p>54</p>
-                    <a href="clientes.html">Ver más</a> </div>
-            </div>
-            <div class="card summary-card plans">
-                <div class="card-icon"><i class="fas fa-folder-open"></i></div>
-                <div class="card-content">
-                    <h3>Planes</h3>
-                    <p>5</p>
-                    <a href="planes.html">Ver más</a> </div>
-            </div>
-            <div class="card summary-card pending">
-                <div class="card-icon"><i class="fas fa-hourglass-half"></i></div>
-                <div class="card-content">
-                    <h3>Pendientes</h3>
-                    <p>3</p>
-                    <a href="#">Ver más</a>
+        <!-- Tarjetas de Resumen -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            
+            <!-- Card 1: Clientes Totales -->
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+                <div class="bg-blue-100 text-blue-600 p-4 rounded-full">
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium">Clientes Totales</h3>
+                    <p id="count-clientes" class="text-3xl font-bold text-gray-800 card-value">...</p>
                 </div>
             </div>
-            <div class="card summary-card approved">
-                <div class="card-icon"><i class="fas fa-check-circle"></i></div>
-                <div class="card-content">
-                    <h3>Aprobados</h3>
-                    <p>112</p>
-                    <a href="#">Ver más</a>
+
+            <!-- Card 2: Planes Activos -->
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+                <div class="bg-green-100 text-green-600 p-4 rounded-full">
+                    <i class="fas fa-folder-open fa-2x"></i>
                 </div>
-                <button class="add-button" title="Añadir Nuevo Cliente"><i class="fas fa-plus"></i></button>
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium">Planes Activos</h3>
+                    <p id="count-planes" class="text-3xl font-bold text-gray-800 card-value">...</p>
+                </div>
             </div>
+
+            <!-- Card 3: Servicios Suspendidos (Antes "Pendientes") -->
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+                <div class="bg-yellow-100 text-yellow-600 p-4 rounded-full">
+                    <i class="fas fa-hourglass-half fa-2x"></i>
+                </div>
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium">Servicios Suspendidos</h3>
+                    <p id="count-pendientes" class="text-3xl font-bold text-gray-800 card-value">...</p>
+                </div>
+            </div>
+
+            <!-- Card 4: Ingresos (Últimos 30 días) (Antes "Aprobados") -->
+            <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+                <div class="bg-indigo-100 text-indigo-600 p-4 rounded-full">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium">Ingresos (30 días)</h3>
+                    <p id="count-ingresos" class="text-3xl font-bold text-gray-800 card-value">...</p>
+                </div>
+            </div>
+
         </section>
 
-        <section class="charts-section">
-            <div class="card active-plans-chart">
-                <h3>Planes activos</h3>
-                <div class="chart-controls">
-                    <div class="chart-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
-                </div>
+        <!-- Sección de Gráficos -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Gráfico 1: Distribución de Planes Activos (Torta) -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Servicios Activos por Plan</h3>
                 <div class="chart-container">
                     <canvas id="activePlansChart"></canvas>
                 </div>
             </div>
 
-            <div class="card new-clients-chart">
-                <h3>Nuevos clientes</h3>
-                <div class="chart-controls">
-                    <button><i class="fas fa-cog"></i></button>
-                    <button><i class="fas fa-ellipsis-v"></i></button>
-                </div>
+            <!-- Gráfico 2: Nuevos Clientes por Mes (Barras) -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Nuevos Clientes (Últ. 6 Meses)</h3>
                 <div class="chart-container">
                     <canvas id="newClientsChart"></canvas>
                 </div>
             </div>
 
-            <div class="card monthly-income-chart">
-                <h3>Ingreso mes actual</h3>
-                <div class="chart-controls">
-                    <button class="refresh-button"><i class="fas fa-sync-alt"></i></button>
-                </div>
+            <!-- Gráfico 3: Ingresos Diarios (Línea) -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Ingresos (Últ. 30 Días)</h3>
                 <div class="chart-container">
                     <canvas id="monthlyIncomeChart"></canvas>
                 </div>
             </div>
 
-            <div class="card inactive-plans-chart">
-                <h3>Planes inactivos</h3>
+            <!-- Gráfico 4: Servicios Suspendidos por Plan (Dona) -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">Servicios Suspendidos por Plan</h3>
                 <div class="chart-container">
                     <canvas id="inactivePlansChart"></canvas>
                 </div>
-                <ul id="inactivePlansList"></ul>
             </div>
+
         </section>
     </main>
 
-    <script src="/Cablelatin/public/js/tablero.js"></script>
+    <!-- ============================================== -->
+    <!--          SCRIPT DE FIREBASE Y LÓGICA           -->
+    <!-- ============================================== -->
+    <script type="module">
+        // --- Importaciones de Firebase ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            onSnapshot,
+            query,
+            where
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Configuración Firebase ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
+          authDomain: "cablelatin-prueba.firebaseapp.com",
+          projectId: "cablelatin-prueba",
+          storageBucket: "cablelatin-prueba.firebasestorage.app",
+          messagingSenderId: "370823325775",
+          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
+          measurementId: "G-PV3NRMJBW2"
+        };
+        
+        // --- Variables Globales ---
+        const appId = firebaseConfig.projectId;
+        let app, auth, db;
+        let userId = null;
+        let isAuthReady = false;
+
+        // Referencias a Colecciones (se definirán en initAuth)
+        let clientesRef, planesRef, serviciosRef, pagosRef;
+
+        // Referencias a Gráficos (para destruirlos antes de redibujar)
+        let chartActivePlans, chartNewClients, chartIncome, chartInactivePlans;
+        
+        // --- Referencias a Elementos DOM ---
+        const countClientes = document.getElementById('count-clientes');
+        const countPlanes = document.getElementById('count-planes');
+        const countPendientes = document.getElementById('count-pendientes');
+        const countIngresos = document.getElementById('count-ingresos');
+
+        // --- Inicialización Firebase ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase inicializado para Dashboard.");
+            initAuth();
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+        }
+
+        // --- Autenticación ---
+        function initAuth() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Usuario autenticado:", userId);
+
+                    // Definir rutas de colecciones
+                    // --- ¡CAMBIO IMPORTANTE! Apuntamos a la base de datos PÚBLICA (compartida) ---
+                    clientesRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
+                    planesRef = collection(db, 'artifacts', appId, 'public', 'data', 'planes');
+                    serviciosRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
+                    pagosRef = collection(db, 'artifacts', appId, 'public', 'data', 'pagos');
+
+                    // Cargar datos
+                    loadSummaryCards();
+                    initCharts();
+
+                } else {
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error("Error auth anónima:", error);
+                    }
+                }
+            });
+        }
+
+        // ==============================================
+        //        CARGA DE TARJETAS DE RESUMEN
+        // ==============================================
+        function loadSummaryCards() {
+            if (!isAuthReady) return;
+
+            // 1. Clientes Totales
+            onSnapshot(clientesRef, (snapshot) => {
+                countClientes.textContent = snapshot.size;
+            });
+
+            // 2. Planes Activos (de la lista pública de planes)
+            const qPlanes = query(planesRef, where("estado", "==", "Activo"));
+            onSnapshot(qPlanes, (snapshot) => {
+                countPlanes.textContent = snapshot.size;
+            });
+
+            // 3. Servicios Suspendidos (de los servicios de clientes)
+            const qPendientes = query(serviciosRef, where("estado", "==", "Suspendido"));
+            onSnapshot(qPendientes, (snapshot) => {
+                countPendientes.textContent = snapshot.size;
+            });
+
+            // 4. Ingresos (Últimos 30 días)
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+
+            const qIngresos = query(pagosRef, where("fecha_pago", ">=", thirtyDaysAgoStr));
+            onSnapshot(qIngresos, (snapshot) => {
+                let total = 0;
+                snapshot.forEach(doc => {
+                    const pago = doc.data();
+                    total += pago.plan_info?.precio || 0;
+                });
+                countIngresos.textContent = `S/ ${total.toFixed(2)}`;
+            });
+        }
+
+        // ==============================================
+        //        INICIALIZACIÓN DE GRÁFICOS
+        // ==============================================
+        function initCharts() {
+            initActivePlansChart();
+            initNewClientsChart();
+            initMonthlyIncomeChart();
+            initInactivePlansChart();
+        }
+
+        // --- Gráfico 1: Servicios Activos por Plan (Torta) ---
+        function initActivePlansChart() {
+            const ctx = document.getElementById('activePlansChart').getContext('2d');
+            const q = query(serviciosRef, where("estado", "==", "Activo"));
+            
+            onSnapshot(q, (snapshot) => {
+                const planCounts = new Map();
+                snapshot.forEach(doc => {
+                    const planNombre = doc.data().plan_info?.nombre || 'Sin Plan';
+                    planCounts.set(planNombre, (planCounts.get(planNombre) || 0) + 1);
+                });
+
+                if (chartActivePlans) chartActivePlans.destroy();
+                chartActivePlans = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: [...planCounts.keys()],
+                        datasets: [{
+                            label: 'Servicios Activos',
+                            data: [...planCounts.values()],
+                            backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#34D399'],
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            });
+        }
+
+        // --- Gráfico 2: Nuevos Clientes (Barras) ---
+        function initNewClientsChart() {
+            const ctx = document.getElementById('newClientsChart').getContext('2d');
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+            const q = query(clientesRef, where("fecha_registro", ">=", sixMonthsAgo));
+            
+            onSnapshot(q, (snapshot) => {
+                const monthCounts = new Map();
+                // Preparar los últimos 6 meses en el mapa para asegurar el orden
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date();
+                    d.setMonth(d.getMonth() - i);
+                    const monthKey = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}`;
+                    monthCounts.set(monthKey, 0);
+                }
+
+                snapshot.forEach(doc => {
+                    const fechaRegistro = doc.data().fecha_registro?.toDate();
+                    if (fechaRegistro) {
+                        const monthKey = `${fechaRegistro.getFullYear()}-${(fechaRegistro.getMonth() + 1).toString().padStart(2, '0')}`;
+                        if (monthCounts.has(monthKey)) {
+                            monthCounts.set(monthKey, monthCounts.get(monthKey) + 1);
+                        }
+                    }
+                });
+
+                if (chartNewClients) chartNewClients.destroy();
+                chartNewClients = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [...monthCounts.keys()],
+                        datasets: [{
+                            label: 'Nuevos Clientes',
+                            data: [...monthCounts.values()],
+                            backgroundColor: '#3B82F6',
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            });
+        }
+
+        // --- Gráfico 3: Ingresos Diarios (Línea) ---
+        function initMonthlyIncomeChart() {
+            const ctx = document.getElementById('monthlyIncomeChart').getContext('2d');
+            
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const thirtyDaysAgoStr = thirtyDaysAgo.toISOString().split('T')[0];
+
+            const q = query(pagosRef, where("fecha_pago", ">=", thirtyDaysAgoStr));
+
+            onSnapshot(q, (snapshot) => {
+                const dailyIncome = new Map();
+                // Preparar los últimos 30 días
+                for (let i = 30; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const dayKey = d.toISOString().split('T')[0];
+                    dailyIncome.set(dayKey, 0);
+                }
+                
+                snapshot.forEach(doc => {
+                    const pago = doc.data();
+                    const dayKey = pago.fecha_pago;
+                    if (dailyIncome.has(dayKey)) {
+                        dailyIncome.set(dayKey, dailyIncome.get(dayKey) + (pago.plan_info?.precio || 0));
+                    }
+                });
+
+                if (chartIncome) chartIncome.destroy();
+                chartIncome = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [...dailyIncome.keys()].map(d => d.substring(5)), // Mostrar solo "MM-DD"
+                        datasets: [{
+                            label: 'Ingresos Diarios',
+                            data: [...dailyIncome.values()],
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.1
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            });
+        }
+
+        // --- Gráfico 4: Servicios Suspendidos (Dona) ---
+        function initInactivePlansChart() {
+            const ctx = document.getElementById('inactivePlansChart').getContext('2d');
+            const q = query(serviciosRef, where("estado", "==", "Suspendido"));
+            
+            onSnapshot(q, (snapshot) => {
+                const planCounts = new Map();
+                snapshot.forEach(doc => {
+                    const planNombre = doc.data().plan_info?.nombre || 'Sin Plan';
+                    planCounts.set(planNombre, (planCounts.get(planNombre) || 0) + 1);
+                });
+
+                if (chartInactivePlans) chartInactivePlans.destroy();
+                chartInactivePlans = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [...planCounts.keys()],
+                        datasets: [{
+                            label: 'Servicios Suspendidos',
+                            data: [...planCounts.values()],
+                            backgroundColor: ['#F59E0B', '#EF4444', '#8B5CF6', '#6B7280'],
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            });
+        }
+
+    </script>
 </body>
 </html>
+
