@@ -6,10 +6,13 @@
     <title>Reportes - Cable Latín System</title>
     
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Librería para generar EXCEL (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
         /* ======================================== */
-        /* VARIABLES GLOBALES             */
+        /* VARIABLES GLOBALES (CSS sin cambios)   */
         /* ======================================== */
         :root {
             --color-principal: #0d6efd;
@@ -20,7 +23,6 @@
             --color-fondo-panel: #ffffff;
             --color-borde: #dee2e6;
             
-            /* Colores de estado (para las "badges") */
             --color-exito-ligero: #d1e7dd;
             --color-exito-oscuro: #0f5132;
             --color-error-ligero: #f8d7da;
@@ -30,7 +32,7 @@
         }
 
         /* ======================================== */
-        /* ESTILOS GENERALES              */
+        /* ESTILOS GENERALES (CSS sin cambios)    */
         /* ======================================== */
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -58,20 +60,20 @@
         }
 
         /* ======================================== */
-        /* CONTENEDOR DE FILTROS          */
+        /* CONTENEDOR DE FILTROS (CSS sin cambios) */
         /* ======================================== */
         .filtros-container {
             display: flex;
-            flex-wrap: wrap; /* Para que se adapte en móviles */
+            flex-wrap: wrap; 
             gap: 1.5rem;
             margin-bottom: 2rem;
-            align-items: flex-end; /* Alinea los botones con los inputs */
+            align-items: flex-end; 
         }
 
         .filtro-grupo {
             display: flex;
             flex-direction: column;
-            flex-grow: 1; /* Ocupan espacio disponible */
+            flex-grow: 1; 
         }
 
         .filtro-grupo label {
@@ -95,7 +97,7 @@
         }
 
         /* ======================================== */
-        /* BOTONES                        */
+        /* BOTONES (CSS Modificado)              */
         /* ======================================== */
         .btn {
             padding: 0.65rem 1.25rem;
@@ -107,7 +109,12 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: background-color 0.3s, box-shadow 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .btn .icon {
@@ -115,85 +122,18 @@
             height: 18px;
         }
 
-        /* Este estilo (btn-primario) ya no se usa, pero no molesta */
-        .btn-primario {
-            background-color: var(--color-principal);
-            color: white;
-        }
-        .btn-primario:hover {
-            background-color: var(--color-principal-hover);
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
-        }
-
-        .btn-secundario {
-            /* Usamos el verde de "éxito" para exportar */
+        /* Botón EXCEL (Verde) */
+        .btn-excel {
             background-color: var(--color-exito-oscuro);
             color: white;
         }
-        .btn-secundario:hover {
+        .btn-excel:hover:not(:disabled) {
             background-color: #0c4128;
             box-shadow: 0 2px 8px rgba(15, 81, 50, 0.3);
         }
 
         /* ======================================== */
-        /* TABLA DE REPORTES              */
-        /* ======================================== */
-        .tabla-container {
-            width: 100%;
-            overflow-x: auto; /* IMPORTANTE: Para responsividad en móviles */
-        }
-
-        #tablaReportes {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            min-width: 800px; /* Evita que la tabla se comprima demasiado */
-        }
-
-        #tablaReportes th,
-        #tablaReportes td {
-            padding: 0.85rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--color-borde);
-        }
-
-        #tablaReportes th {
-            background-color: var(--color-fondo-claro);
-            font-weight: 700;
-            color: var(--color-texto);
-        }
-
-        #tablaReportes tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        /* Estilos para "badges" de estado */
-        .badge {
-            padding: 0.25rem 0.6rem;
-            border-radius: 1rem;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-align: center;
-        }
-
-        .badge-resuelto {
-            background-color: var(--color-exito-ligero);
-            color: var(--color-exito-oscuro);
-        }
-
-        .badge-pendiente {
-            background-color: var(--color-pendiente-ligero);
-            color: var(--color-pendiente-oscuro);
-        }
-
-        .badge-cancelado {
-            background-color: var(--color-error-ligero);
-            color: var(--color-error-oscuro);
-        }
-
-
-        /* ======================================== */
-        /* RESPONSIVIDAD                  */
+        /* RESPONSIVIDAD (CSS sin cambios)        */
         /* ======================================== */
         @media (max-width: 768px) {
             .container {
@@ -204,7 +144,7 @@
             .filtros-container {
                 flex-direction: column;
                 gap: 1rem;
-                align-items: stretch; /* Ocupan todo el ancho */
+                align-items: stretch; 
             }
 
             .btn {
@@ -221,204 +161,330 @@
 
         <div class="filtros-container">
             <div class="filtro-grupo">
-                <label for="fechaDesde">Desde</label>
+                <label for="fechaDesde">Filtrar Desde</label>
                 <input type="date" id="fechaDesde" />
             </div>
 
             <div class="filtro-grupo">
-                <label for="fechaHasta">Hasta</label>
+                <label for="fechaHasta">Filtrar Hasta</label>
                 <input type="date" id="fechaHasta" />
             </div>
-
-            <button id="btnGenerarPdf" class="btn btn-secundario">
-                <i data-lucide="file-down" class="icon"></i>
-                Generar PDF
+            
+            <!-- Botón EXCEL (ÚNICO BOTÓN) -->
+            <button id="btnGenerarExcel" class="btn btn-excel" disabled>
+                <i data-lucide="loader" class="icon icon-loader" id="loader-icon"></i>
+                <i data-lucide="file-spreadsheet" class="icon icon-ready" id="excel-icon" style="display: none;"></i>
+                <span id="btn-excel-text">Cargando datos...</span>
             </button>
         </div>
 
-        <div class="tabla-container">
-            <table id="tablaReportes">
-                <thead>
-                    <tr>
-                        <th>Folio</th>
-                        <th>Fecha</th>
-                        <th>Cliente</th>
-                        <th>Tipo de Reporte</th>
-                        <th>Técnico Asignado</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="cuerpoTabla">
-                    <tr>
-                        <td colspan="6">Cargando datos...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <!-- YA NO HAY TABLA -->
+
     </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Activa los íconos de Lucide
-            lucide.createIcons();
+    <!-- ============================================== -->
+    <!--          SCRIPT DE FIREBASE Y LÓGICA           -->
+    <!-- ============================================== -->
+    <script type="module">
+        // --- Importaciones de Firebase ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            // Referencias a elementos del DOM
-            // const btnFiltrar = document.getElementById('btnFiltrar'); // <-- ELIMINADO
-            const btnGenerarPdf = document.getElementById('btnGenerarPdf');
-            const fechaDesdeInput = document.getElementById('fechaDesde');
-            const fechaHastaInput = document.getElementById('fechaHasta');
-            const cuerpoTabla = document.getElementById('cuerpoTabla');
-            
-            // Objeto jsPDF (cargado desde el HTML)
-            const { jsPDF } = window.jspdf;
+        // --- Configuración Firebase ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
+          authDomain: "cablelatin-prueba.firebaseapp.com",
+          projectId: "cablelatin-prueba",
+          storageBucket: "cablelatin-prueba.firebasestorage.app",
+          messagingSenderId: "370823325775",
+          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
+          measurementId: "G-PV3NRMJBW2"
+        };
+        
+        // --- Variables Globales ---
+        const appId = firebaseConfig.projectId;
+        let app, auth, db;
+        let userId = null;
+        
+        // Almacenes de datos globales
+        let allClientes = [];
+        let allServicios = [];
+        let allPagos = [];
+        let allReportes = [];
+        
+        // Estado de carga
+        const loadStatus = {
+            clientes: false,
+            servicios: false,
+            pagos: false,
+            reportes: false
+        };
 
-            // ========================================
-            //      DATOS DE SIMULACIÓN (MOCK)
-            // ========================================
-            const mockData = [
-                { id: 'R-001', fecha: '2025-10-01', cliente: 'Ana García', tipo: 'Falla de Internet', tecnico: 'Juan Pérez', estado: 'Resuelto' },
-                { id: 'R-002', fecha: '2025-10-03', cliente: 'Luis Martínez', tipo: 'Instalación Nueva', tecnico: 'Maria López', estado: 'Resuelto' },
-                { id: 'R-003', fecha: '2025-10-05', cliente: 'Carlos Sánchez', tipo: 'Cable sin señal', tecnico: 'Juan Pérez', estado: 'Pendiente' },
-                { id: 'R-004', fecha: '2025-10-06', cliente: 'Sofía Romero', tipo: 'Falla de Internet', tecnico: 'Pedro Gómez', estado: 'Resuelto' },
-                { id: 'R-005', fecha: '2025-10-10', cliente: 'Elena Torres', tipo: 'Revisión técnica', tecnico: 'Maria López', estado: 'Pendiente' },
-                { id: 'R-006', fecha: '2025-10-12', cliente: 'Miguel Díaz', tipo: 'Falla de Internet', tecnico: 'Juan Pérez', estado: 'Cancelado' },
-                { id: 'R-007', fecha: '2025-10-15', cliente: 'Laura Pausini', tipo: 'Instalación Nueva', tecnico: 'Pedro Gómez', estado: 'Resuelto' },
-            ];
+        // --- Referencias a Elementos DOM ---
+        const btnGenerarExcel = document.getElementById('btnGenerarExcel');
+        const fechaDesdeInput = document.getElementById('fechaDesde');
+        const fechaHastaInput = document.getElementById('fechaHasta');
+        const loaderIcon = document.getElementById('loader-icon');
+        const excelIcon = document.getElementById('excel-icon');
+        const btnExcelText = document.getElementById('btn-excel-text');
+        
+        // Objetos de librerías
+        const XLSX = window.XLSX;
 
-            // ========================================
-            //    FUNCIÓN PARA RENDERIZAR LA TABLA
-            // ========================================
-            function renderizarTabla(datos) {
-                // Limpiamos la tabla
-                cuerpoTabla.innerHTML = '';
+        // --- Inicialización Firebase ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase inicializado");
+            initAuth();
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+            btnExcelText.textContent = "Error de Conexión";
+        }
 
-                if (datos.length === 0) {
-                    cuerpoTabla.innerHTML = `<tr><td colspan="6" style="text-align: center;">No se encontraron reportes.</td></tr>`;
-                    return;
-                }
-
-                datos.forEach(reporte => {
-                    const tr = document.createElement('tr');
+        // --- Autenticación ---
+        function initAuth() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("Autenticado:", userId);
                     
-                    let estadoClass = '';
-                    switch (reporte.estado.toLowerCase()) {
-                        case 'resuelto':
-                            estadoClass = 'badge-resuelto';
-                            break;
-                        case 'pendiente':
-                            estadoClass = 'badge-pendiente';
-                            break;
-                        case 'cancelado':
-                            estadoClass = 'badge-cancelado';
-                            break;
-                        default:
-                            estadoClass = '';
-                    }
+                    // Empezar a cargar todas las colecciones
+                    loadAllCollections();
 
-                    tr.innerHTML = `
-                        <td>${reporte.id}</td>
-                        <td>${reporte.fecha}</td>
-                        <td>${reporte.cliente}</td>
-                        <td>${reporte.tipo}</td>
-                        <td>${reporte.tecnico}</td>
-                        <td>
-                            <span class="badge ${estadoClass}">${reporte.estado}</span>
-                        </td>
-                    `;
-                    cuerpoTabla.appendChild(tr);
-                });
-            }
-
-            // ========================================
-            //      NUEVA FUNCIÓN DE FILTRADO
-            // ========================================
-            function filtrarDatos() {
-                const fechaDesde = fechaDesdeInput.value;
-                const fechaHasta = fechaHastaInput.value;
-
-                // 1. Si AMBAS fechas están seleccionadas, filtramos
-                if (fechaDesde && fechaHasta) {
-                    const fechaDesdeObj = new Date(fechaDesde + 'T00:00:00');
-                    const fechaHastaObj = new Date(fechaHasta + 'T23:59:59');
-
-                    // Validamos que el rango sea correcto
-                    if (fechaDesdeObj > fechaHastaObj) {
-                        alert('La fecha "Desde" no puede ser mayor que la fecha "Hasta".');
-                        renderizarTabla(mockData); // Mostramos todo
-                        return;
-                    }
-
-                    // Filtramos los datos
-                    const datosFiltrados = mockData.filter(reporte => {
-                        const fechaReporte = new Date(reporte.fecha + 'T00:00:00');
-                        return fechaReporte >= fechaDesdeObj && fechaReporte <= fechaHastaObj;
-                    });
-                    
-                    renderizarTabla(datosFiltrados);
-                
                 } else {
-                    // 2. Si falta una o ambas fechas (ej. se borró una),
-                    //    mostramos todos los datos (reseteamos el filtro)
-                    renderizarTabla(mockData);
+                    console.log("No autenticado, intentando anónimo...");
+                    try {
+                        await signInAnonymously(auth);
+                    } catch (error) {
+                        console.error("Error auth anónima:", error);
+                    }
                 }
+            });
+        }
+        
+        /**
+         * Inicia la carga de todas las colecciones de datos
+         */
+        function loadAllCollections() {
+            if (!userId) return;
+
+            // Definir las 4 referencias
+            const clientesRef = collection(db, 'artifacts', appId, 'users', userId, 'clientes');
+            const serviciosRef = collection(db, 'artifacts', appId, 'users', userId, 'servicios_clientes');
+            const pagosRef = collection(db, 'artifacts', appId, 'users', userId, 'pagos');
+            const reportesRef = collection(db, 'artifacts', appId, 'users', userId, 'reportes_tecnicos');
+
+            // Iniciar los 4 "listeners"
+            listenForData(clientesRef, allClientes, "clientes", "Clientes");
+            listenForData(serviciosRef, allServicios, "servicios", "Servicios");
+            listenForData(pagosRef, allPagos, "pagos", "Pagos");
+            listenForData(reportesRef, allReportes, "reportes", "Reportes Técnicos");
+        }
+        
+        /**
+         * Función genérica para escuchar una colección y llenar un array
+         */
+        function listenForData(collectionRef, targetArray, statusKey, logName) {
+            onSnapshot(collectionRef, (snapshot) => {
+                targetArray.length = 0; // Limpiar el array
+                snapshot.forEach(doc => {
+                    targetArray.push({ id: doc.id, ...doc.data() });
+                });
+                console.log(`${logName} cargados: ${targetArray.length}`);
+                
+                // Marcar como cargado y revisar si ya terminamos
+                loadStatus[statusKey] = true;
+                checkAllDataLoaded();
+                
+            }, (error) => {
+                console.error(`Error al cargar ${logName}:`, error);
+                // Marcar como cargado (incluso con error) para no bloquear el botón
+                loadStatus[statusKey] = true;
+                checkAllDataLoaded();
+            });
+        }
+        
+        /**
+         * Revisa si las 4 colecciones ya respondieron (con datos o vacías)
+         */
+        function checkAllDataLoaded() {
+            if (loadStatus.clientes && loadStatus.servicios && loadStatus.pagos && loadStatus.reportes) {
+                console.log("Toda la data ha sido cargada.");
+                btnGenerarExcel.disabled = false;
+                btnExcelText.textContent = "Generar Excel";
+                loaderIcon.style.display = 'none';
+                excelIcon.style.display = 'inline-block';
+            }
+        }
+        
+        /**
+         * Función de ayuda para filtrar un array por un campo de fecha
+         */
+        function filterDataByDate(data, dateField, startDate, endDate) {
+            // Si no hay fechas, devolver todos los datos
+            if (!startDate || !endDate) {
+                return data;
             }
 
+            try {
+                const start = new Date(startDate + 'T00:00:00');
+                const end = new Date(endDate + 'T23:59:59');
 
-            // ========================================
-            //      EVENT LISTENERS (MODIFICADOS)
-            // ========================================
+                if (start > end) {
+                    return data; // Si el rango es inválido, devolver todo
+                }
 
-            // Se activa el filtro automático cuando CUALQUIERA de las fechas cambia
-            fechaDesdeInput.addEventListener('change', filtrarDatos);
-            fechaHastaInput.addEventListener('change', filtrarDatos);
-
-
-            // ========================================
-            //    EVENT LISTENER: GENERAR PDF (Sin cambios)
-            // ========================================
-            btnGenerarPdf.addEventListener('click', () => {
-                // Inicializa el documento PDF
-                const doc = new jsPDF();
-
-                // Título del documento
-                doc.setFontSize(18);
-                doc.text("Reporte de Cable Latín System", 14, 22);
-
-                // Subtítulo (toma las fechas que estén puestas)
-                const desde = fechaDesdeInput.value || 'N/A';
-                const hasta = fechaHastaInput.value || 'N/A';
-                doc.setFontSize(11);
-                doc.setTextColor(100);
-                doc.text(`Período del reporte: ${desde} al ${hasta}`, 14, 30);
-
-                // Genera la tabla automáticamente desde el HTML
-                doc.autoTable({
-                    html: '#tablaReportes', 
-                    startY: 35, 
-                    theme: 'grid', 
-                    styles: {
-                        font: 'helvetica',
-                        fontSize: 9,
-                    },
-                    headStyles: {
-                        fillColor: [13, 110, 253], // Color de cabecera (azul principal)
+                return data.filter(item => {
+                    const itemDateStr = item[dateField];
+                    if (!itemDateStr) return false; // No incluir si no tiene fecha
+                    
+                    // Asegurarse que la fecha sea válida antes de crear el objeto Date
+                    if (typeof itemDateStr === 'string' && itemDateStr.length >= 10) {
+                        const itemDate = new Date(itemDateStr.substring(0, 10) + 'T00:00:00');
+                        return itemDate >= start && itemDate <= end;
                     }
+                    return false;
                 });
+            } catch (e) {
+                console.error("Error al filtrar fechas:", e);
+                return data; // Devolver todo si hay error
+            }
+        }
+        
+        /**
+         * ¡NUEVO!
+         * Función de ayuda para convertir un objeto Timestamp de Firebase
+         * en un string de fecha legible (YYYY-MM-DD).
+         */
+        function formatTimestamp(timestamp) {
+            if (!timestamp || typeof timestamp.seconds !== 'number') {
+                // Si ya es un string de fecha (como '2025-10-26'), devolverlo tal cual.
+                if (typeof timestamp === 'string' && timestamp.length >= 10) {
+                    return timestamp.substring(0, 10);
+                }
+                return 'N/A'; // Devuelve 'N/A' si no es un timestamp válido
+            }
+            try {
+                // Multiplicar por 1000 para convertir segundos a milisegundos
+                const date = new Date(timestamp.seconds * 1000);
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            } catch (e) {
+                console.error("Error formateando timestamp:", timestamp, e);
+                return 'Error Fecha';
+            }
+        }
 
-                // Guarda el archivo
-                doc.save('reporte_cable_latin.pdf');
-            });
+        // ========================================
+        // 	  EVENT LISTENER: GENERAR EXCEL
+        // ========================================
+        btnGenerarExcel.addEventListener('click', () => {
+            console.log("Iniciando generación de Excel...");
+            
+            // Poner el botón en estado de "cargando"
+            btnGenerarExcel.disabled = true;
+            btnExcelText.textContent = "Generando...";
+            loaderIcon.style.display = 'inline-block';
+            excelIcon.style.display = 'none';
 
+            // Obtener las fechas de los filtros
+            const fechaDesde = fechaDesdeInput.value;
+            const fechaHasta = fechaHastaInput.value;
+            
+            // Usamos setTimeout para que la UI se actualice (muestre "Generando...")
+            // antes de que el procesador se bloquee creando el Excel.
+            setTimeout(() => {
+                try {
+                    // 1. Crear el "Libro" (Workbook)
+                    const wb = XLSX.utils.book_new();
 
-            // ========================================
-            //      CARGA INICIAL DE DATOS
-            // ========================================
-            // Mostramos todos los datos al cargar la página
-            renderizarTabla(mockData);
+                    // 2. Filtrar y añadir las hojas
+                    
+                    // Hoja 1: Clientes (sin filtro de fecha, pero con fecha_registro formateada)
+                    const dataClientes = allClientes.map(c => ({
+                        ...c,
+                        fecha_registro: formatTimestamp(c.fecha_registro)
+                    }));
+                    const wsClientes = XLSX.utils.json_to_sheet(dataClientes);
+                    XLSX.utils.book_append_sheet(wb, wsClientes, "Clientes");
+                    
+                    
+                    // Hoja 2: Servicios (filtrado por 'fecha_inicio' Y fecha_creacion formateada)
+                    const dataServiciosRaw = filterDataByDate(allServicios, 'fecha_inicio', fechaDesde, fechaHasta);
+                    const dataServicios = dataServiciosRaw.map(s => ({
+                        ...s,
+                        fecha_creacion: formatTimestamp(s.fecha_creacion)
+                    }));
+                    const wsServicios = XLSX.utils.json_to_sheet(dataServicios);
+                    XLSX.utils.book_append_sheet(wb, wsServicios, "Servicios");
+
+                    
+                    // Hoja 3: Pagos (filtrado por 'fecha_pago' Y creado_en formateado)
+                    const dataPagosRaw = filterDataByDate(allPagos, 'fecha_pago', fechaDesde, fechaHasta);
+                    const dataPagos = dataPagosRaw.map(p => ({
+                        ...p,
+                        creado_en: formatTimestamp(p.creado_en)
+                    }));
+                    const wsPagos = XLSX.utils.json_to_sheet(dataPagos);
+                    XLSX.utils.book_append_sheet(wb, wsPagos, "Pagos");
+                    
+                    
+                    // Hoja 4: Reportes Técnicos (filtrado por 'fecha' Y creado_en formateado)
+                    const dataReportesRaw = filterDataByDate(allReportes, 'fecha', fechaDesde, fechaHasta);
+                    const dataReportes = dataReportesRaw.map(r => ({
+                        ...r,
+                        // Asumimos que la fecha de registro se llama 'creado_en'
+                        creado_en: formatTimestamp(r.creado_en) 
+                    }));
+                    const wsReportes = XLSX.utils.json_to_sheet(dataReportes);
+                    XLSX.utils.book_append_sheet(wb, wsReportes, "Reportes Tecnicos");
+
+                    // 3. Descargar el archivo
+                    const nombreArchivo = `Reporte_Total_CableLatin_${new Date().toISOString().split('T')[0]}.xlsx`;
+                    XLSX.writeFile(wb, nombreArchivo);
+                    
+                    console.log("Excel generado y descargado.");
+
+                } catch (error) {
+                    console.error("Error al generar el Excel:", error);
+                    alert("Ocurrió un error al generar el archivo Excel.");
+                } finally {
+                    // Restaurar el botón
+                    btnGenerarExcel.disabled = false;
+                    btnExcelText.textContent = "Generar Excel";
+                    loaderIcon.style.display = 'none';
+                    excelIcon.style.display = 'inline-block';
+                }
+            }, 50); // 50ms de espera para actualizar la UI
         });
+
+
+        // ========================================
+        // 	  CARGA INICIAL
+        // ========================================
+        // Activa los íconos de Lucide
+        lucide.createIcons();
+        // Animamos el loader al inicio
+        const loader = document.getElementById('loader-icon');
+        if (loader) {
+            loader.animate([
+                { transform: 'rotate(0deg)' },
+                { transform: 'rotate(360deg)' }
+            ], {
+                duration: 4000,
+                iterations: Infinity
+            });
+        }
     </script>
-    </body>
+</body>
 </html>
+
