@@ -1,0 +1,141 @@
+/* ======================================== */
+/* VARIABLES GLOBALES (CSS sin cambios)   */
+/* ======================================== */
+:root {
+    --color-principal: #0d6efd;
+    --color-principal-hover: #0b5ed7;
+    --color-texto: #212529;
+    --color-texto-secundario: #6c757d;
+    --color-fondo-claro: #f8f9fa;
+    --color-fondo-panel: #ffffff;
+    --color-borde: #dee2e6;
+    
+    --color-exito-ligero: #d1e7dd;
+    --color-exito-oscuro: #0f5132;
+    --color-error-ligero: #f8d7da;
+    --color-error-oscuro: #842029;
+    --color-pendiente-ligero: #fff3cd;
+    --color-pendiente-oscuro: #664d03;
+}
+
+/* ======================================== */
+/* ESTILOS GENERALES (CSS sin cambios)     */
+/* ======================================== */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin: 0;
+    background-color: var(--color-fondo-claro);
+    color: var(--color-texto);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--color-fondo-panel);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    color: var(--color-texto);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-borde);
+    padding-bottom: 0.5rem;
+}
+
+/* ======================================== */
+/* CONTENEDOR DE FILTROS (CSS sin cambios) */
+/* ======================================== */
+.filtros-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: flex-end; 
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+}
+
+.filtro-grupo label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: var(--color-texto-secundario);
+}
+
+.filtro-grupo input[type="date"] {
+    padding: 0.65rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 0.375rem;
+    font-size: 0.95rem;
+}
+
+.filtro-grupo input[type="date"]:focus {
+    border-color: var(--color-principal);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+/* ======================================== */
+/* BOTONES (CSS Modificado)              */
+/* ======================================== */
+.btn {
+    padding: 0.65rem 1.25rem;
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Botón EXCEL (Verde) */
+.btn-excel {
+    background-color: var(--color-exito-oscuro);
+    color: white;
+}
+.btn-excel:hover:not(:disabled) {
+    background-color: #0c4128;
+    box-shadow: 0 2px 8px rgba(15, 81, 50, 0.3);
+}
+
+/* ======================================== */
+/* RESPONSIVIDAD (CSS sin cambios)         */
+/* ======================================== */
+@media (max-width: 768px) {
+    .container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .filtros-container {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch; 
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

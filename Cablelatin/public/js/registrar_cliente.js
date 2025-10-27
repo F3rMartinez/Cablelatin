@@ -267,5 +267,4 @@ document.addEventListener('DOMContentLoaded', () => {
                     `<p style="color: red; padding: 20px;">Error al cargar el menú: ${err.message}</p>`;
             }
         });
-
 }); // Fin del DOMContentLoaded

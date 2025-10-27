@@ -7,254 +7,13 @@
     
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Enlace a tu CSS (Asegúrate que la ruta sea correcta) -->
-    <link rel="stylesheet" href="/Cablelatin/public/css/registrarDatosServicio.css">
+    <link rel="stylesheet" href="/Cablelatin/public/css/registrarCliente.css">
 
-    <!-- Estilos básicos (Puedes moverlos a tu CSS) -->
-    <style>
-        :root {
-            --primary-color: #007bff; /* Azul primario */
-            --secondary-color: #6c757d; /* Gris secundario */
-            --success-color: #28a745; /* Verde éxito */
-            --danger-color: #dc3545; /* Rojo peligro */
-            --bg-light: #f8f9fa; /* Fondo claro */
-            --bg-white: #ffffff; /* Fondo blanco */
-            --text-dark: #343a40; /* Texto oscuro */
-            --text-light: #6c757d; /* Texto claro */
-            --border-color: #dee2e6; /* Color de borde */
-        }
-
-        body { 
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background: var(--bg-light); 
-            margin: 0; 
-            color: var(--text-dark);
-            display: flex; /* Para layout con sidebar */
-        }
-        
-        /* Utilidades */
-        .hidden { display: none !important; } /* Usar !important para asegurar ocultación */
-        .flex { display: flex; }
-        .items-center { align-items: center; }
-        .justify-center { justify-content: center; }
-        .justify-end { justify-content: flex-end; }
-        .justify-between { justify-content: space-between; }
-        .mt-4 { margin-top: 1rem; }
-        .ml-2 { margin-left: 0.5rem; }
-        
-        /* Layout */
-        #sidebar-container { 
-            width: 250px; 
-            background: var(--bg-white); 
-            height: 100vh; /* Alto completo */
-            position: fixed; /* Fijo */
-            top: 0; left: 0; 
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05); 
-            z-index: 100;
-            transform: translateX(-100%); /* Oculto por defecto */
-            transition: transform 0.3s ease;
-            overflow-y: auto; /* Scroll si el contenido es largo */
-        }
-        #sidebar-container.open {
-             transform: translateX(0);
-        }
-        #main-content { 
-            padding: 20px; 
-            flex-grow: 1; /* Ocupa el espacio restante */
-            transition: margin-left 0.3s ease;
-             margin-left: 0; /* Por defecto sin margen */
-        }
-        .header-main { 
-            background: var(--bg-white); 
-            padding: 10px 20px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-            margin-bottom: 20px; 
-            display: flex;
-            align-items: center;
-            border-radius: 8px; /* Bordes redondeados */
-        }
-        .sidebar-toggle-btn {
-            background: none; border: none; cursor: pointer;
-            padding: 8px; margin-right: 15px; display: block; /* Siempre visible */
-            color: var(--text-dark);
-        }
-        .sidebar-toggle-btn:hover { background-color: #f1f1f1; border-radius: 50%; }
-
-        /* Formulario */
-        .form-wrapper-center { max-width: 900px; margin: auto; }
-        .panel-form { 
-            background: var(--bg-white); 
-            border-radius: 12px; /* Más redondeado */
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08); 
-            overflow: hidden; 
-        }
-        .form-title { 
-            font-size: 1.4rem; /* Ligeramente más pequeño */
-            padding: 18px 25px; 
-            background: #fdfdfd; 
-            border-bottom: 1px solid var(--border-color); 
-            margin: 0; 
-            font-weight: 600;
-        }
-        .tab-navigation { 
-            display: flex; 
-            border-bottom: 1px solid var(--border-color); 
-            background: #fcfcfc;
-        }
-        .tab-item { 
-            flex: 1; /* Ocupa espacio equitativo */
-            text-align: center; /* Centrado */
-            padding: 15px 10px; 
-            cursor: pointer; 
-            color: var(--text-light); 
-            border-bottom: 3px solid transparent; 
-            font-weight: 500;
-            transition: color 0.2s, border-color 0.2s;
-        }
-         .tab-item:hover { color: var(--primary-color); }
-        .tab-item.active { 
-            color: var(--primary-color); 
-            border-bottom-color: var(--primary-color); 
-            font-weight: 600; 
-        }
-        
-        form { padding: 30px; } /* Más padding */
-        .form-step { display: none; }
-        .form-step.active { display: block; animation: fadeIn 0.4s ease-out; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-content-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 22px 28px; /* Más separación */
-        }
-        .form-content-grid > .client-type-group { grid-column: 1 / -1; margin-bottom: 10px; }
-        .form-content-grid > .form-group-grid[style*="grid-column"] { grid-column: 1 / -1; }
-
-        .form-group-grid { display: flex; flex-direction: column; }
-        .form-group-grid label { 
-            margin-bottom: 8px; /* Más espacio */
-            font-weight: 500; /* Ligeramente menos grueso */
-            font-size: 0.88rem; 
-            color: #495057; /* Gris más oscuro */
-        }
-        .form-group-grid input, .form-group-grid select, .form-group-grid textarea {
-            width: 100%; 
-            padding: 11px 14px; /* Ligeramente más alto */
-            border: 1px solid #ced4da; /* Borde más suave */
-            border-radius: 6px; 
-            box-sizing: border-box;
-            font-size: 0.95rem; /* Tamaño de fuente consistente */
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-         .form-group-grid input[disabled], .form-group-grid select[disabled],
-         .form-group-grid input[readonly] { /* Estilo para readonly */
-            background-color: #e9ecef;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .form-group-grid input:focus, .form-group-grid select:focus, .form-group-grid textarea:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
-            outline: none;
-        }
-        .form-group-grid textarea { resize: vertical; min-height: 85px; }
-
-        .client-type-options { display: flex; flex-wrap: wrap; gap: 15px 25px; margin-top: 8px; }
-        .client-type-options label { 
-            display: flex; align-items: center; 
-            font-weight: 400; font-size: 0.95rem; cursor: pointer;
-        }
-        .client-type-options input[type="radio"] { margin-right: 8px; }
-        
-        /* Botones */
-        .btn-action {
-            padding: 10px 20px; /* Ligeramente más pequeño */
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: 500; /* Normal */
-            font-size: 0.9rem; /* Consistente */
-            transition: background-color 0.2s, opacity 0.2s, transform 0.1s;
-        }
-         .btn-action:active { transform: scale(0.98); } /* Efecto click */
-        .btn-next, .btn-save { 
-            background-color: var(--primary-color); color: white; 
-        }
-        .btn-next:hover, .btn-save:hover { background-color: #0069d9; }
-        .btn-prev { background-color: var(--secondary-color); color: white; }
-        .btn-prev:hover { background-color: #5a6268; }
-        .btn-save.btn-loading { opacity: 0.7; cursor: not-allowed; }
-        
-        .servicio-info {
-            font-size: 1rem; /* Más legible */
-            padding: 12px 15px; /* Más padding */
-            background: #e7f3ff; /* Azul muy claro */
-            border: 1px solid #cfe2ff; /* Borde azul claro */
-            border-left: 4px solid var(--primary-color); /* Indicador izquierdo */
-            border-radius: 6px;
-            margin-bottom: 25px; /* Más espacio */
-            color: #0d6efd; /* Texto azul */
-        }
-        .servicio-info strong { font-weight: 600; }
-
-        /* Modales */
-        .modal-backdrop {
-            position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); 
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
-            z-index: 200; display: flex; align-items: center; justify-content: center;
-        }
-        .modal-backdrop.open { opacity: 1; visibility: visible; }
-        .modal-content { 
-            background: white; padding: 25px 30px; border-radius: 10px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            text-align: center; max-width: 420px; width: 90%;
-            transform: scale(0.95); opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .modal-backdrop.open .modal-content { opacity: 1; transform: scale(1); }
-        .modal-icon-wrapper { 
-            width: 55px; height: 55px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            margin: 0 auto 18px auto; background: #e6f7ec; 
-        }
-        .modal-icon { width: 28px; height: 28px; color: var(--success-color); }
-        .modal-content h3 { margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 600; }
-        .modal-content p { margin: 0 0 25px 0; color: #555; line-height: 1.5; }
-        .btn-modal-close { 
-            background-color: var(--primary-color); color: white; 
-            padding: 9px 22px; border: none; border-radius: 6px; 
-            cursor: pointer; font-weight: 500; font-size: 0.9rem;
-        }
-        .modal-error .modal-icon-wrapper { background: #fdebee; }
-        .modal-error .modal-icon { color: var(--danger-color); }
-        .modal-error .btn-modal-close { background-color: var(--danger-color); }
-
-        /* Responsive */
-        @media (min-width: 1024px) { /* Desktop */
-            #main-content { margin-left: 250px; }
-            #sidebar-container { transform: translateX(0); } 
-            .sidebar-toggle-btn { display: none; } 
-        }
-        @media (max-width: 767px) {
-            .form-content-grid { grid-template-columns: 1fr; gap: 18px; }
-            form { padding: 20px; }
-            .form-title { padding: 15px 20px; font-size: 1.2rem; }
-            .tab-item { padding: 12px 10px; font-size: 0.85rem; }
-            .header-main h1 { font-size: 1rem; }
-            .btn-action { padding: 10px 18px; font-size: 0.85rem; }
-        }
-    </style>
 </head>
 <body>
 
     <div id="sidebar-container">
-        <!-- Sidebar se carga aquí -->
-    </div>
+        </div>
 
     <main id="main-content">
         
@@ -262,8 +21,7 @@
             <button id="sidebar-toggle-mobile-main" class="sidebar-toggle-btn">
                 <i data-lucide="menu"></i>
             </button>
-            <!-- Título opcional del Header -->
-             <h1 style="font-size: 1.1rem; margin: 0; font-weight: 500; color: #495057;">Registro de Cliente</h1>
+            <h1 style="font-size: 1.1rem; margin: 0; font-weight: 500; color: #495057;">Registro de Cliente</h1>
         </header>
 
         <div class="form-wrapper-center">
@@ -283,7 +41,6 @@
                 <form id="multiStepForm">
                     <div class="form-carousel" id="formCarousel">
                     
-                        <!-- ================== PASO 1 ================== -->
                         <div class="form-step active" data-step="1">
                             <div class="form-content-grid">
                                 <div class="client-type-group">
@@ -300,9 +57,7 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Izquierda -->
                                 <div>
-                                    <!-- CAMBIO: Separado en nombres y apellidos -->
                                     <div class="form-group-grid">
                                         <label for="nombres">Nombres:</label>
                                         <input type="text" id="nombres" name="nombres" required>
@@ -332,7 +87,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Derecha -->
                                 <div>
                                     <div class="form-group-grid">
                                         <label for="direccionCompleta">Dirección (Calle/Av/N°):</label>
@@ -363,12 +117,10 @@
                             </div>
                         </div>
                     
-                        <!-- ================== PASO 2 ================== -->
                         <div class="form-step" data-step="2">
                             <p class="servicio-info">Asignando servicio para: <strong id="customerNameDisplay">(Nombre del Cliente)</strong></p>
                             <div class="form-content-grid">
                                 
-                                <!-- Izquierda -->
                                 <div>
                                     <div class="form-group-grid">
                                         <label for="tipoPlan">Seleccione el Plan:</label>
@@ -384,10 +136,16 @@
                                         <label for="serviciosAdicionales">Servicios Adicionales (Opcional):</label>
                                         <select id="serviciosAdicionales" name="serviciosAdicionales">
                                             <option value="Ninguno">Ninguno</option>
+<<<<<<< HEAD
                                             <option value="HBO">3era TV</option>
                                             <option value="FOX">4ta TV</option>
                                             <!-- Añadir más si es necesario -->
                                         </select>
+=======
+                                            <option value="HBO">HBO Premium</option>
+                                            <option value="FOX">FOX Sports Pack</option>
+                                            </select>
+>>>>>>> e5d6fa63f7b92155a329a6cd1ca38ae0a2591aea
                                     </div>
                                     <div class="form-group-grid">
                                         <label for="costoAdicional">Costo Adicional (S/) (Si aplica):</label>
@@ -396,7 +154,6 @@
                                    
                                 </div>
                                 
-                                <!-- Derecha -->
                                 <div>
                                      <div class="form-group-grid">
                                         <label for="fechaInicio">Fecha de Inicio del Servicio:</label>
@@ -436,7 +193,6 @@
         </div> 
     </main>
 
-    <!-- Modal de Éxito -->
     <div id="successModal" class="modal-backdrop hidden">
         <div class="modal-content">
             <div class="modal-icon-wrapper"> <i data-lucide="check-circle-2" class="modal-icon"></i> </div>
@@ -448,7 +204,6 @@
         </div>
     </div>
 
-    <!-- Modal de Error -->
     <div id="errorModal" class="modal-backdrop hidden">
         <div class="modal-content modal-error">
             <div class="modal-icon-wrapper"> <i data-lucide="alert-triangle" class="modal-icon"></i> </div>
@@ -460,380 +215,6 @@
         </div>
     </div>
 
-    <!-- ============================================== -->
-    <!--     SCRIPT DE FIREBASE Y LÓGICA              -->
-    <!-- ============================================== -->
-    <script type="module">
-        // --- Importaciones ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // --- Configuración Firebase ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE", // Reemplaza si es necesario
-          authDomain: "cablelatin-prueba.firebaseapp.com",
-          projectId: "cablelatin-prueba",
-          storageBucket: "cablelatin-prueba.firebasestorage.app",
-          messagingSenderId: "370823325775",
-          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
-          measurementId: "G-PV3NRMJBW2"
-        };
-        const appId = firebaseConfig.projectId;
-        
-        // --- Variables Globales ---
-        let app, auth, db, analytics;
-        let userId = null;
-        let isAuthReady = false;
-        let availablePlans = []; // Almacena los planes cargados
-
-        // --- Referencias a Elementos DOM ---
-        const errorModal = document.getElementById('errorModal');
-        const errorModalMessage = document.getElementById('errorModalMessage');
-        const closeModalError = document.getElementById('closeModalError');
-        const successModal = document.getElementById('successModal');
-        const closeModalSuccess = document.getElementById('closeModalSuccess');
-        const multiStepForm = document.getElementById('multiStepForm');
-        const planSelect = document.getElementById('tipoPlan');
-        const planPriceInput = document.getElementById('precioPlan');
-        // const velocidadInput = document.getElementById('velocidadInternet'); // Descomentar si se usa velocidad
-        const tipoDocumentoSelect = document.getElementById('tipoDocumento');
-        const nDocumentoLabel = document.querySelector('label[for="nDocumento"]');
-        const customerNameDisplay = document.getElementById('customerNameDisplay');
-        const tabItems = document.querySelectorAll('.tab-item');
-        const steps = document.querySelectorAll('.form-step');
-
-        // --- Funciones de Utilidad (Modales, Sidebar) ---
-        function showError(message) {
-            if (!errorModal || !errorModalMessage) return;
-            errorModalMessage.textContent = message;
-            errorModal.classList.remove('hidden');
-            requestAnimationFrame(() => errorModal.classList.add('open'));
-            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [errorModal] });
-        }
-
-        function closeErrorModal() {
-            if (errorModal) {
-                errorModal.classList.remove('open');
-                setTimeout(() => errorModal.classList.add('hidden'), 300);
-            }
-        }
-
-        function closeTheSuccessModal() {
-            if (successModal) {
-                successModal.classList.remove('open');
-                setTimeout(() => successModal.classList.add('hidden'), 300); 
-            }
-            if (multiStepForm) multiStepForm.reset(); 
-            actualizarTipoDocumento(); 
-            updateTabsAndSteps(1); 
-            if(customerNameDisplay) customerNameDisplay.textContent = "(Nombre del Cliente)";
-            if(planSelect) {
-                planSelect.selectedIndex = 0; 
-                planSelect.dispatchEvent(new Event('change')); 
-            }
-            window.scrollTo(0, 0); 
-        }
-
-         function initSidebarEvents() {
-            const sidebar = document.getElementById('sidebar-container');
-            const sidebarToggleMobile = document.getElementById('sidebar-toggle-mobile'); // En sidebar.html
-            const sidebarToggleMain = document.getElementById('sidebar-toggle-mobile-main'); // En esta página
-            if (!sidebar || !sidebarToggleMain) return;
-
-            const toggleSidebar = () => {
-                sidebar.classList.toggle('open');
-                // Ajusta el margen del contenido principal si el sidebar está abierto en desktop simulado
-                 if (window.innerWidth >= 1024) { // Si la pantalla es grande
-                    // No hacemos nada aquí porque el CSS ya maneja el margen
-                 } else { // Si es pantalla pequeña (tablet/móvil)
-                     // El sidebar se superpone, no necesitamos ajustar margen
-                 }
-            };
-            
-            sidebarToggleMain.addEventListener('click', toggleSidebar);
-
-            // Cargar contenido del sidebar y añadir listener al botón interno
-            fetch("sidebar.html") 
-                .then(res => res.ok ? res.text() : Promise.reject('No se encontró sidebar.html'))
-                .then(html => {
-                    sidebar.innerHTML = html;
-                    const internalToggleBtn = sidebar.querySelector('#sidebar-toggle-mobile');
-                    if (internalToggleBtn) {
-                        internalToggleBtn.addEventListener('click', toggleSidebar); // Usar la misma función
-                    }
-                    if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [sidebar] });
-                    // Marcar item activo del menú
-                    setActiveSidebarItem(); 
-                })
-                .catch(err => {
-                    console.error("Error al cargar el sidebar:", err);
-                    sidebar.innerHTML = `<p style="color: red; padding: 20px;">Error al cargar menú.</p>`;
-                });
-        }
-
-        function setActiveSidebarItem() {
-            const sidebar = document.getElementById('sidebar-container');
-            if (!sidebar) return;
-             // Lógica para marcar item activo (simplificada)
-             const currentPage = window.location.pathname.split('/').pop(); 
-             const activeLink = sidebar.querySelector(`a[href$="${currentPage}"]`); 
-             if (activeLink) {
-                 const activeItem = activeLink.closest('.nav-item'); // Asumiendo estructura
-                 if (activeItem) {
-                      sidebar.querySelectorAll('.nav-item.active').forEach(el => el.classList.remove('active'));
-                      activeItem.classList.add('active');
-                      // Expandir menú padre si existe
-                      const parentMenu = activeItem.closest('.submenu-container');
-                      if(parentMenu){
-                          const parentToggle = parentMenu.previousElementSibling;
-                           if(parentToggle && parentToggle.classList.contains('is-parent')){
-                               parentToggle.classList.add('active', 'open'); // Marcar y abrir padre
-                               parentMenu.classList.add('open');
-                                const arrow = parentToggle.querySelector('.submenu-arrow');
-                                if (arrow) arrow.style.transform = 'rotate(90deg)';
-                           }
-                      }
-                 }
-             }
-        }
-
-
-        // --- Inicialización Firebase y Autenticación ---
-        try {
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            analytics = getAnalytics(app);
-            console.log("Firebase inicializado:", appId);
-
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    userId = user.uid;
-                    isAuthReady = true;
-                    console.log("Autenticado:", userId);
-                    await loadPlans(); // Cargar planes ahora que estamos autenticados
-                } else {
-                    console.log("No autenticado, intentando anónimo...");
-                    try {
-                        await signInAnonymously(auth);
-                    } catch (error) {
-                        console.error("Error auth anónima:", error);
-                        showError("Error de autenticación. Funcionalidad limitada.");
-                    }
-                }
-            });
-
-        } catch (e) {
-            console.error("Error inicializando Firebase:", e);
-            showError("Error crítico: No se pudo conectar a Firebase.");
-        }
-
-        // --- Carga de Planes ---
-        async function loadPlans() {
-            if (!isAuthReady || !db || !planSelect) return;
-            planSelect.innerHTML = '<option value="">Cargando...</option>';
-            planSelect.disabled = true;
-
-            const planesCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'planes');
-            const q = query(planesCollectionRef, where("estado", "==", "Activo"), orderBy("nombre"));
-
-            try {
-                const querySnapshot = await getDocs(q);
-                availablePlans = []; 
-                planSelect.innerHTML = '<option value="">-- Seleccione Plan --</option>';
-                
-                querySnapshot.forEach((doc) => {
-                    const plan = { id: doc.id, ...doc.data() };
-                    availablePlans.push(plan);
-                    const option = document.createElement('option');
-                    option.value = plan.id;
-                    option.textContent = `${plan.nombre} (S/ ${parseFloat(plan.precio || 0).toFixed(2)})`; 
-                    option.dataset.price = parseFloat(plan.precio || 0).toFixed(2);
-                    // option.dataset.velocidad = plan.velocidad || 'N/A'; // Si tuvieras velocidad
-                    planSelect.appendChild(option);
-                });
-
-                planSelect.disabled = availablePlans.length === 0;
-                if (availablePlans.length === 0) {
-                     planSelect.innerHTML = '<option value="">No hay planes activos</option>';
-                }
-
-            } catch (error) {
-                console.error("Error cargando planes:", error);
-                showError("No se pudieron cargar los planes.");
-                planSelect.innerHTML = '<option value="">Error al cargar</option>';
-            }
-        }
-
-        // --- Lógica del Formulario Multi-paso y UI ---
-         function updateTabsAndSteps(targetStep) {
-            tabItems.forEach(tab => tab.classList.toggle('active', tab.dataset.step == targetStep));
-            steps.forEach(step => step.classList.toggle('active', step.dataset.step == targetStep));
-        }
-            
-        function actualizarTipoDocumento() {
-            const tipoClienteRadios = document.querySelectorAll('input[name="tipoCliente"]');
-            if (!tipoClienteRadios || tipoClienteRadios.length === 0) return; 
-            const tipoClienteSeleccionado = document.querySelector('input[name="tipoCliente"]:checked')?.value || 'Residencia';
-            
-            if (tipoDocumentoSelect) {
-                tipoDocumentoSelect.value = (tipoClienteSeleccionado === 'Empresarial') ? 'RUC' : 'DNI';
-                tipoDocumentoSelect.disabled = (tipoClienteSeleccionado === 'Empresarial');
-                const rucOption = tipoDocumentoSelect.querySelector('option[value="RUC"]');
-                if (rucOption) rucOption.hidden = (tipoClienteSeleccionado !== 'Empresarial'); // Ocultar opción RUC si no es empresarial
-            }
-            if (nDocumentoLabel) nDocumentoLabel.textContent = (tipoClienteSeleccionado === 'Empresarial') ? 'Nº de RUC:' : 'Nº de Documento:';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            initSidebarEvents(); // Iniciar lógica del sidebar
-
-            // --- Listeners de UI ---
-            if (closeModalError) closeModalError.addEventListener('click', closeErrorModal);
-            if (closeModalSuccess) closeModalSuccess.addEventListener('click', closeTheSuccessModal);
-            if (successModal) successModal.addEventListener('click', (e) => { if (e.target === successModal) closeTheSuccessModal(); });
-            
-            const tipoClienteRadios = document.querySelectorAll('input[name="tipoCliente"]');
-            if (tipoClienteRadios.length > 0) {
-                 actualizarTipoDocumento(); // Llamada inicial
-                 tipoClienteRadios.forEach(radio => radio.addEventListener('change', actualizarTipoDocumento));
-             }
-
-            document.querySelectorAll('.btn-next, .btn-prev').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetStep = button.dataset.targetStep;
-                    const nameInput = document.getElementById('nombres');
-                    const lastNameInput = document.getElementById('apellidos');
-                    
-                    if (targetStep == 2) { // Validar al ir al paso 2
-                        const step1Inputs = document.querySelectorAll('.form-step[data-step="1"] [required]');
-                        let isValid = true;
-                        step1Inputs.forEach(input => {
-                            input.style.borderColor = !input.value ? 'red' : '';
-                            if (!input.value) isValid = false;
-                        });
-                        if (!isValid) { showError("Complete los campos requeridos del Paso 1."); return; }
-                        
-                        if(customerNameDisplay && nameInput && lastNameInput) {
-                            customerNameDisplay.textContent = `${nameInput.value} ${lastNameInput.value}`.trim() || "(Cliente)";
-                        }
-                    }
-                    updateTabsAndSteps(targetStep);
-                    window.scrollTo(0, 0); 
-                });
-            });
-
-            tabItems.forEach(tab => {
-                tab.addEventListener('click', (e) => {
-                     e.preventDefault();
-                     const targetStep = tab.dataset.step;
-                     const nameInput = document.getElementById('nombres'); // Necesario aquí también
-                     const lastNameInput = document.getElementById('apellidos');
-                    
-                    if(targetStep == 2) { // Validar antes de ir al paso 2
-                        const step1Inputs = document.querySelectorAll('.form-step[data-step="1"] [required]');
-                        let isValid = true;
-                        step1Inputs.forEach(input => { if (!input.value) isValid = false; });
-                        
-                        if (isValid) { 
-                            if(customerNameDisplay && nameInput && lastNameInput) {
-                                customerNameDisplay.textContent = `${nameInput.value} ${lastNameInput.value}`.trim() || "(Cliente)";
-                            }
-                            updateTabsAndSteps(targetStep);
-                        } else {
-                            showError("Complete los datos del cliente (Paso 1) antes de continuar.");
-                        }
-                    } else { 
-                        updateTabsAndSteps(targetStep);
-                    }
-                });
-            });
-
-            if (planSelect) {
-                planSelect.addEventListener('change', (e) => {
-                    const selectedOption = e.target.selectedOptions[0];
-                    if (planPriceInput && selectedOption && selectedOption.dataset.price) {
-                        planPriceInput.value = selectedOption.dataset.price;
-                        // const selectedPlanData = availablePlans.find(p => p.id === e.target.value);
-                        // if(velocidadInput && selectedPlanData) { // Ejemplo velocidad
-                        //     velocidadInput.value = selectedPlanData.velocidad || '(No especificado)';
-                        // }
-                    } else if (planPriceInput) {
-                        planPriceInput.value = ''; 
-                        // if(velocidadInput) velocidadInput.value = '(Automático)';
-                    }
-                });
-            }
-
-            // --- Listener de Envío del Formulario ---
-            if (multiStepForm) {
-                multiStepForm.addEventListener('submit', async (e) => {
-                    e.preventDefault(); 
-                    const btnSubmit = document.getElementById('btnSubmit');
-
-                    if (!isAuthReady || !userId || !db) { showError("Error de conexión. Recargue."); return; }
-                    if (!planSelect.value) { showError("Seleccione un plan."); return; }
-                    
-                    if (btnSubmit) btnSubmit.disabled = true; // Deshabilitar botón
-
-                    try {
-                        const formData = new FormData(multiStepForm);
-                        
-                        // Cliente Data
-                        const direccion = [formData.get('direccionCompleta'), formData.get('distrito'), formData.get('provincia'), formData.get('departamento')].filter(Boolean).join(', ');
-                        const clienteData = {
-                            nombre: formData.get('nombres'), apellido: formData.get('apellidos'),
-                            dni: formData.get('nDocumento'), correo: formData.get('email'),
-                            telefono: formData.get('telefono'), direccion: direccion,
-                            referencia: formData.get('referencia'), tipo_cliente: formData.get('tipoCliente'),
-                            estado: 'Activo', fecha_registro: serverTimestamp(), vendedor_id: userId 
-                        };
-
-                        // Guardar Cliente
-                        const clientesRef = collection(db, 'artifacts', appId, 'public', 'data', 'clientes');
-                        const clienteDocRef = await addDoc(clientesRef, clienteData);
-                        
-                        // Servicio Data
-                        const planId = formData.get('tipoPlan');
-                        const planData = availablePlans.find(p => p.id === planId);
-                        const servicioData = {
-                            id_cliente: clienteDocRef.id, id_plan: planId, 
-                            plan_info: planData ? { nombre: planData.nombre, precio: parseFloat(planData.precio || 0) } : null,
-                            fecha_inicio: formData.get('fechaInicio'), 
-                            // fecha_vencimiento: formData.get('fechaVencimiento') || null, // Quitamos este campo que no estaba en el HTML original
-                            estado: formData.get('estadoServicio'), 
-                            observaciones: formData.get('observaciones'),
-                            servicios_adicionales: formData.get('serviciosAdicionales'),
-                            costo_adicional: parseFloat(formData.get('costoAdicional') || 0),
-                            ciclo_facturacion: parseInt(formData.get('cicloFacturacion') || 15),
-                            fecha_creacion: serverTimestamp(), vendedor_id: userId
-                        };
-
-                        // Guardar Servicio
-                        const serviciosRef = collection(db, 'artifacts', appId, 'public', 'data', 'servicios_clientes');
-                        await addDoc(serviciosRef, servicioData);
-
-                        // Éxito
-                        if (successModal) {
-                            successModal.classList.remove('hidden');
-                            requestAnimationFrame(() => successModal.classList.add('open'));
-                            if (typeof lucide !== 'undefined') lucide.createIcons({ nodes: [successModal] }); 
-                        }
-                    
-                    } catch (error) {
-                        console.error("Error al guardar:", error);
-                        showError(`Error al guardar: ${error.message}`);
-                    } finally {
-                        if (btnSubmit) btnSubmit.disabled = false; // Rehabilitar botón
-                    }
-                });
-            }
-        });
-    </script>
+    <script type="module" src="/Cablelatin/public/js/registrar_cliente.js"></script>
 </body>
 </html>
-
