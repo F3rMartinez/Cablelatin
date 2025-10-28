@@ -456,16 +456,31 @@
          * Escucha en tiempo real la colección de usuarios (pública).
          */
         function listenForUsers() {
-            if (!userId) return;
-            // Colección: artifacts/{projectId}/public/data/personal
-            const usersCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'personal');
+            if (!userId) {
+                console.log("UserID no disponible, esperando autenticación.");
+                return;
+            }
             
-            // Usamos onSnapshot para la actualización en tiempo real
+            // La ruta a la colección donde se guardan los perfiles de usuario.
+            const usersCollectionPath = `artifacts/${firebaseConfig.projectId}/public/data/personal`;
+            const usersCollectionRef = collection(db, usersCollectionPath);
+            
+            console.log(`Escuchando la colección: ${usersCollectionPath}`);
+
+            // Usamos onSnapshot para la actualización en tiempo real.
             onSnapshot(usersCollectionRef, (snapshot) => {
+                console.log(`Se recibieron ${snapshot.docs.length} documentos.`);
                 renderTable(snapshot.docs);
             }, (error) => {
                 console.error("Error al escuchar la colección 'personal':", error);
-                renderError("No se pudieron cargar los datos de usuarios. (Ver consola para detalles)");
+                // Analizar el error para dar un mensaje más útil.
+                let errorMessage = "No se pudieron cargar los datos de usuarios.";
+                if (error.code === 'permission-denied') {
+                    errorMessage = "Error de permisos. Revisa las reglas de seguridad de Firestore.";
+                } else if (error.code === 'unauthenticated') {
+                    errorMessage = "No estás autenticado. Se requiere iniciar sesión.";
+                }
+                renderError(`${errorMessage} (Ver consola para detalles)`);
             });
         }
         
