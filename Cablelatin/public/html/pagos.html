@@ -22,29 +22,102 @@
 </head>
 <body class="bg-gray-100">
     
-    <!-- === Sidebar (Placeholder) === -->
-    <div id="sidebar-container" class="p-6">
-        <h2 class="text-2xl font-bold mb-6">Cablelatin</h2>
-        <nav class="flex flex-col space-y-2">
-            <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700">
-                <i class="fas fa-home w-5 text-center"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700">
-                <i class="fas fa-users w-5 text-center"></i>
-                <span>Clientes</span>
-            </a>
-            <a href="#" class="flex items-center space-x-2 p-2 rounded-lg bg-blue-600 font-semibold">
-                <i class="fas fa-file-invoice-dollar w-5 text-center"></i>
-                <span>Pagos</span>
-            </a>
-            <a href="#" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-700">
-                <i class="fas fa-cogs w-5 text-center"></i>
-                <span>Ajustes</span>
-            </a>
-        </nav>
-    </div>
+   <!-- Sidebar (Menú Lateral) -->
+    <div id="sidebar-container">
+        <!-- Botón para Colapsar/Expandir el Sidebar -->
+        <button id="toggle-sidebar-btn" onclick="toggleSidebar()" title="Colapsar/Expandir">
+            <i class="fas fa-chevron-left" id="toggle-icon"></i> 
+        </button>
+        
+        <!-- Header del Sidebar -->
+        <div class="sidebar-header">CABLE LATIN</div>
 
+        <!-- Contenedor del Menú Principal -->
+        <nav class="flex-grow overflow-y-auto">
+            <ul class="list-none p-0 m-0">
+                
+                <!-- 1. DASHBOARD -->
+                <li>
+                    <a href="tablero.html" class="sidebar-link">
+                        <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <!-- 2. ADMINISTRACIÓN (Dropdown) -->
+                <li>
+                    <div id="admin-dropdown-title" class="sidebar-link sidebar-dropdown-title" 
+                       onclick="toggleCollapse('admin-menu', 'admin-icon')">
+                        <i class="fas fa-cogs w-5 h-5 mr-3"></i>
+                        <span>Administración</span>
+                        <i class="fas fa-chevron-down w-3 h-3 ml-auto transition-transform duration-300" id="admin-icon"></i>
+                    </div>
+                    <!-- Submenú -->
+                    <ul id="admin-menu" class="sidebar-submenu list-none p-0 m-0">
+                        <li>
+                            <a href="usuario.html" class="sidebar-link active">
+                                <i class="fas fa-user-friends w-5 h-5 mr-3"></i><span>Usuarios</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="planes.html" class="sidebar-link">
+                                <i class="fas fa-list-alt w-5 h-5 mr-3"></i><span>Planes y Servicios</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 3. CLIENTES (Dropdown) -->
+                <li>
+                    <div id="clientes-dropdown-title" class="sidebar-link sidebar-dropdown-title" 
+                       onclick="toggleCollapse('clientes-menu', 'clientes-icon')">
+                        <i class="fas fa-users w-5 h-5 mr-3"></i>
+                        <span>Clientes</span>
+                        <i class="fas fa-chevron-down w-3 h-3 ml-auto transition-transform duration-300" id="clientes-icon"></i>
+                    </div>
+                    <ul id="clientes-menu" class="sidebar-submenu list-none p-0 m-0">
+                        <li><a href="clientes.html" class="sidebar-link"><i class="fas fa-user w-5 h-5 mr-3"></i><span>Clientes</span></a></li>
+                        <li><a href="facturas.html" class="sidebar-link"><i class="fas fa-file-invoice w-5 h-5 mr-3"></i><span>Facturas</span></a></li>
+                        <li><a href="pagos.html" class="sidebar-link"><i class="fas fa-money-bill-wave w-5 h-5 mr-3"></i><span>Pagos</span></a></li>
+                    </ul>
+                </li>
+                
+                <!-- 4. REPORTES (Dropdown) -->
+                <li>
+                    <div id="reportes-dropdown-title" class="sidebar-link sidebar-dropdown-title" 
+                       onclick="toggleCollapse('reportes-menu', 'reportes-icon')">
+                        <i class="fas fa-chart-line w-5 h-5 mr-3"></i>
+                        <span>Reportes</span>
+                        <i class="fas fa-chevron-down w-3 h-3 ml-auto transition-transform duration-300" id="reportes-icon"></i>
+                    </div>
+                    <!-- Submenú -->
+                    <ul id="reportes-menu" class="sidebar-submenu list-none p-0 m-0">
+                        <li>
+                            <a href="reportes.html" class="sidebar-link">
+                                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i><span>Reportes</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 5. PERFIL -->
+                <li>
+                    <a href="perfil.html" class="sidebar-link">
+                        <i class="fas fa-user-circle w-5 h-5 mr-3"></i>
+                        <span>Perfil</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Footer: CERRAR SESIÓN -->
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link text-red-600 hover:bg-red-50" onclick="handleSignOut(event)">
+                <i class="fas fa-sign-out-alt w-5 h-5 mr-3"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
     <!-- === Contenido Principal === -->
     <main class="main-content">
         
@@ -146,7 +219,8 @@
         </div>
         
     </main>
-
+        
+    <script src="/Cablelatin/public/js/sidebar.js"></script>
     <!-- ============================================== -->
     <!--          SCRIPT DE FIREBASE Y LÓGICA           -->
     <!-- ============================================== -->
@@ -399,6 +473,74 @@
             }
         };
 
+           // ==============================================
+        //          LÓGICA DE SIDEBAR (Funciones)
+        // ==============================================
+
+        /**
+         * Función para alternar la visibilidad de los submenús
+         */
+        function toggleCollapse(menuId, iconId) {
+            // Evita el despliegue de submenús si el sidebar está colapsado 
+            if (document.getElementById('sidebar-container').classList.contains('collapsed')) {
+                return; 
+            }
+            
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
+
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                if (icon) icon.classList.remove('rotate-icon');
+            } else {
+                menu.classList.add('open');
+                if (icon) icon.classList.add('rotate-icon');
+            }
+        }
+        window.toggleCollapse = toggleCollapse; 
+
+        /**
+         * Función para alternar el estado colapsado/expandido del sidebar
+         */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            const icon = document.getElementById('toggle-icon');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                // Colapsado: Gira el ícono y cierra todos los submenús
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+                
+                document.querySelectorAll('.sidebar-submenu.open').forEach(menu => {
+                     menu.classList.remove('open');
+                     const iconId = menu.id.replace('-menu', '-icon');
+                     const iconToRotate = document.getElementById(iconId);
+                     if(iconToRotate) iconToRotate.classList.remove('rotate-icon');
+                });
+
+            } else {
+                // Expandido: Gira el ícono y vuelve a abrir el menú de Administración (por ser la página actual)
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+                
+                document.getElementById('admin-menu').classList.add('open');
+                document.getElementById('admin-icon').classList.add('rotate-icon');
+            }
+        }
+        window.toggleSidebar = toggleSidebar; 
+
+        // --- Configuración inicial al cargar la página ---
+        document.addEventListener('DOMContentLoaded', () => {
+             // Asegura que el menú de Administración esté abierto por defecto
+             document.getElementById('admin-menu').classList.add('open');
+             document.getElementById('admin-icon').classList.add('rotate-icon');
+        });
+
     </script>
+
 </body>
 </html>

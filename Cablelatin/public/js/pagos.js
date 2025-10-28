@@ -1,95 +1,67 @@
-function initSidebarEvents() {
-    
-    // --- LOGIC 1: Acordeón (para los submenús) ---
-    document.querySelectorAll(".has-submenu").forEach(item => {
-        const header = item.querySelector(".submenu-header");
-        if (header) { 
-            header.addEventListener("click", () => {
-                
-                // Cierra otros submenús abiertos
-                document.querySelectorAll(".has-submenu.open").forEach(openItem => {
-                    if (openItem !== item) {
-                        openItem.classList.remove("open");
-                    }
-                });
-                
-                // Abre/cierra el submenú actual
-                item.classList.toggle("open");
-            });
-        }
-    });
 
-    // --- LOGIC 2: Botón de Colapsar (el de la flecha) ---
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggleInternal = document.getElementById('sidebar-toggle-internal');
+        // ==============================================
+        //          LÓGICA DE SIDEBAR (Funciones)
+        // ==============================================
 
-    if (sidebarToggleInternal && sidebar) {
-        sidebarToggleInternal.addEventListener('click', () => {
-            const isMobileView = window.innerWidth <= 768;
-            if (!isMobileView) { // El toggle no funciona en móvil
-                const isCollapsed = sidebar.style.width === '80px';
-                if (isCollapsed) {
-                    sidebar.style.width = '250px';
-                } else {
-                    // Cierra submenús antes de colapsar
-                    document.querySelectorAll(".has-submenu.open").forEach(item => item.classList.remove("open"));
-                    sidebar.style.width = '80px';
-                }
+        /**
+         * Función para alternar la visibilidad de los submenús
+         */
+        function toggleCollapse(menuId, iconId) {
+            // Evita el despliegue de submenús si el sidebar está colapsado 
+            if (document.getElementById('sidebar-container').classList.contains('collapsed')) {
+                return; 
             }
-        });
-    }
-
-    // --- LOGIC 3: Estado Activo (Marcar el link con fondo azul) ---
-    const allNavItems = document.querySelectorAll('.sidebar-nav > ul > li.nav-item');
-    
-    allNavItems.forEach(item => {
-        
-        // Define el elemento 'clickable' (el header o el item entero)
-        const clickableElement = item.querySelector(".submenu-header") || item;
-        
-        clickableElement.addEventListener('click', function() {
-            const isMobileView = window.innerWidth <= 768;
-            if (isMobileView) return; // No hacer nada en móvil
-
-            // Quita 'active' de todos
-            allNavItems.forEach(i => i.classList.remove('active'));
             
-            // Añade 'active' solo al LI principal
-            item.classList.add('active');
-        });
-    });
+            const menu = document.getElementById(menuId);
+            const icon = document.getElementById(iconId);
 
-    // --- LOGIC 4: Estado Inicial (Activa "Pagos" al cargar) ---
-    // NOTA: Para que esto funcione, en tu 'siderbar.html',
-    // el LI de "Facturación" debe tener la clase 'initial-active'.
-    const initialActive = document.querySelector('.nav-item.initial-active');
-    if (initialActive) {
-        initialActive.classList.add('active');
-        if (initialActive.classList.contains('has-submenu')) {
-            initialActive.classList.add('open');
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                if (icon) icon.classList.remove('rotate-icon');
+            } else {
+                menu.classList.add('open');
+                if (icon) icon.classList.add('rotate-icon');
+            }
         }
-    }
-}
+        window.toggleCollapse = toggleCollapse; 
 
-// --- EL FETCH (Esto es lo que carga el menú) ---
-// Se ejecuta apenas carga la página
-fetch("sidebar.html") // Asumiendo que siderbar.html está en la misma carpeta
-    .then(res => {
-        if (!res.ok) throw new Error('No se encontró siderbar.html'); 
-        return res.text();
-    })
-    .then(html => {
-        // 1. Inserta el HTML del menú en el div
-        document.getElementById("sidebar-container").innerHTML = html;
+        /**
+         * Función para alternar el estado colapsado/expandido del sidebar
+         */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            const icon = document.getElementById('toggle-icon');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                // Colapsado: Gira el ícono y cierra todos los submenús
+                icon.classList.remove('fa-chevron-left');
+                icon.classList.add('fa-chevron-right');
+                
+                document.querySelectorAll('.sidebar-submenu.open').forEach(menu => {
+                     menu.classList.remove('open');
+                     const iconId = menu.id.replace('-menu', '-icon');
+                     const iconToRotate = document.getElementById(iconId);
+                     if(iconToRotate) iconToRotate.classList.remove('rotate-icon');
+                });
 
-        // 2. ¡IMPORTANTE!
-        // Ahora que el HTML del menú SÍ EXISTE, 
-        // llamamos a nuestra función para que encuentre los botones.
-        initSidebarEvents();
-    })
-    .catch(err => {
-        // Muestra un error si el fetch falla
-        console.error("Error al cargar el sidebar:", err);
-        document.getElementById("sidebar-container").innerHTML = 
-            `<p style="color: red; padding: 20px;">Error al cargar el menú: ${err.message}</p>`;
-    });
+            } else {
+                // Expandido: Gira el ícono y vuelve a abrir el menú de Administración (por ser la página actual)
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-left');
+                
+                document.getElementById('admin-menu').classList.add('open');
+                document.getElementById('admin-icon').classList.add('rotate-icon');
+            }
+        }
+        window.toggleSidebar = toggleSidebar; 
+
+        // --- Configuración inicial al cargar la página ---
+        document.addEventListener('DOMContentLoaded', () => {
+             // Asegura que el menú de Administración esté abierto por defecto
+             document.getElementById('admin-menu').classList.add('open');
+             document.getElementById('admin-icon').classList.add('rotate-icon');
+        });

@@ -7,36 +7,285 @@
     
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Librería para generar EXCEL (.xlsx) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link rel="stylesheet" href="/Cablelatin/public/css/sidebar.css" />
     <link rel="stylesheet" href="/Cablelatin/public/css/reportes.css" />
-
-</head>
-<body>
-
-    <main class="container">
-        <h1>Gestión de Reportes</h1>
-
-        <div class="filtros-container">
-            <div class="filtro-grupo">
-                <label for="fechaDesde">Filtrar Desde</label>
-                <input type="date" id="fechaDesde" />
-            </div>
-
-            <div class="filtro-grupo">
-                <label for="fechaHasta">Filtrar Hasta</label>
-                <input type="date" id="fechaHasta" />
-            </div>
+    <style>
+        /* ======================================== */
+        /* VARIABLES GLOBALES (CSS sin cambios)   */
+        /* ======================================== */
+        :root {
+            --color-principal: #0d6efd;
+            --color-principal-hover: #0b5ed7;
+            --color-texto: #212529;
+            --color-texto-secundario: #6c757d;
+            --color-fondo-claro: #f8f9fa;
+            --color-fondo-panel: #ffffff;
+            --color-borde: #dee2e6;
             
-            <button id="btnGenerarExcel" class="btn btn-excel" disabled>
-                <i data-lucide="loader" class="icon icon-loader" id="loader-icon"></i>
-                <i data-lucide="file-spreadsheet" class="icon icon-ready" id="excel-icon" style="display: none;"></i>
-                <span id="btn-excel-text">Cargando datos...</span>
-            </button>
+            --color-exito-ligero: #d1e7dd;
+            --color-exito-oscuro: #0f5132;
+            --color-error-ligero: #f8d7da;
+            --color-error-oscuro: #842029;
+            --color-pendiente-ligero: #fff3cd;
+            --color-pendiente-oscuro: #664d03;
+        }
+
+        /* ======================================== */
+        /* ESTILOS GENERALES (CSS sin cambios)    */
+        /* ======================================== */
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            background-color: var(--color-fondo-claro);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--color-fondo-panel);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: var(--color-texto);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-borde);
+            padding-bottom: 0.5rem;
+        }
+
+        /* ======================================== */
+        /* CONTENEDOR DE FILTROS (CSS sin cambios) */
+        /* ======================================== */
+        .filtros-container {
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: flex-end; 
+        }
+
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; 
+        }
+
+        .filtro-grupo label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            color: var(--color-texto-secundario);
+        }
+
+        .filtro-grupo input[type="date"] {
+            padding: 0.65rem;
+            border: 1px solid var(--color-borde);
+            border-radius: 0.375rem;
+            font-size: 0.95rem;
+        }
+
+        .filtro-grupo input[type="date"]:focus {
+            border-color: var(--color-principal);
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: none;
+        }
+
+        /* ======================================== */
+        /* BOTONES (CSS Modificado)              */
+        /* ======================================== */
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn .icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Botón EXCEL (Verde) */
+        .btn-excel {
+            background-color: var(--color-exito-oscuro);
+            color: white;
+        }
+        .btn-excel:hover:not(:disabled) {
+            background-color: #0c4128;
+            box-shadow: 0 2px 8px rgba(15, 81, 50, 0.3);
+        }
+
+        /* ======================================== */
+        /* RESPONSIVIDAD (CSS sin cambios)        */
+        /* ======================================== */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .filtros-container {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch; 
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+    </head>
+<body>
+    <!-- Sidebar (Menú Lateral) -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <i class="fas fa-desktop"></i>
+      <span>CABLE LATIN</span>
+    </div>
+    <i class="fas fa-bars sidebar-toggle-btn" id="sidebar-toggle-internal"></i>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <!-- DASHBOARD -->
+      <li class="nav-item">
+        <a href="tablero.html">
+          <i class="fas fa-grip"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- ADMINISTRACIÓN -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-gear"></i>
+          <span>Administración</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
         </div>
+        <ul class="submenu">
+          <li><a href="usuario.html">Usuarios</a></li>
+          <li><a href="planes.html">Planes y servicios</a></li>
+        </ul>
+      </li>
+
+      <!-- CLIENTES -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-users"></i>
+          <span>Clientes</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+        <ul class="submenu">
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="facturas.html">Facturas</a></li>
+          <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+      </li>
+
+      <!-- REPORTES -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-list-check"></i>
+          <span>Reportes</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+        <ul class="submenu">
+          <li><a href="reportes.html">Reportes</a></li>
+        </ul>
+      </li>
+
+      <!-- PERFIL -->
+      <li class="nav-item">
+        <a href="perfil.html">
+          <i class="fas fa-user-circle"></i>
+          <span>Mi Perfil</span>
+        </a>
+      </li>
+
+      <!-- CERRAR SESIÓN -->
+      <li class="nav-item">
+        <a href="login.html">
+          <i class="fa-solid fa-door-open"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+    <div class="main-content">
+        <main class="container">
+            <h1>Gestión de Reportes</h1>
+
+            <div class="filtros-container">
+                <div class="filtro-grupo">
+                    <label for="fechaDesde">Filtrar Desde</label>
+                    <input type="date" id="fechaDesde" />
+                </div>
+
+                <div class="filtro-grupo">
+                    <label for="fechaHasta">Filtrar Hasta</label>
+                    <input type="date" id="fechaHasta" />
+                </div>
+                
+                <!-- Botón EXCEL (ÚNICO BOTÓN) -->
+                <button id="btnGenerarExcel" class="btn btn-excel" disabled>
+                    <i data-lucide="loader" class="icon icon-loader" id="loader-icon"></i>
+                    <i data-lucide="file-spreadsheet" class="icon icon-ready" id="excel-icon" style="display: none;"></i>
+                    <span id="btn-excel-text">Cargando datos...</span>
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table id="reportes-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Cliente ID</th>
+                            <th>Creado En</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportes-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">Cargando datos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </main>
+    </div>
     
+
+    <script src="/Cablelatin/public/js/sidebar.js"></script>
     <script type="module" src="/Cablelatin/public/js/reportes.js"></script>
 </body>
-</html>
+

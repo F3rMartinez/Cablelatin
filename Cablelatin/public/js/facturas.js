@@ -413,3 +413,84 @@ filterResetBtn.addEventListener('click', (e) => {
     e.preventDefault();
     resetFilters();
 });
+
+// ==============================================
+//          LÓGICA DE SIDEBAR (Funciones)
+// ==============================================
+
+// 🔹 Alternar visibilidad de los submenús (despliegue hacia abajo)
+function toggleCollapse(menuId, iconId) {
+    // Evita el despliegue si el sidebar está colapsado
+    if (document.getElementById('sidebar-container').classList.contains('collapsed')) {
+        return;
+    }
+
+    const menu = document.getElementById(menuId);
+    const icon = document.getElementById(iconId);
+
+    if (!menu) return;
+
+    // Si el submenú está abierto, lo cierra; si está cerrado, lo abre con animación
+    if (menu.classList.contains('open')) {
+        menu.style.maxHeight = '0px';
+        menu.classList.remove('open');
+        if (icon) icon.classList.remove('rotate-icon');
+    } else {
+        menu.classList.add('open');
+        menu.style.maxHeight = menu.scrollHeight + 'px';
+        if (icon) icon.classList.add('rotate-icon');
+    }
+}
+
+// 🔹 Alternar colapso del sidebar
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar-container');
+    const icon = document.getElementById('toggle-icon');
+
+    sidebar.classList.toggle('collapsed');
+
+    if (sidebar.classList.contains('collapsed')) {
+        icon.classList.remove('fa-chevron-left');
+        icon.classList.add('fa-chevron-right');
+
+        // Cierra submenús al colapsar
+        document.querySelectorAll('.sidebar-submenu').forEach(menu => {
+            menu.style.maxHeight = '0px';
+            menu.classList.remove('open');
+        });
+    } else {
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-left');
+    }
+}
+
+// 🔹 Cerrar sesión con confirmación
+function handleSignOut(event) {
+    event.preventDefault();
+    if (confirm('¿Deseas cerrar sesión?')) {
+        window.location.href = '/Cablelatin/public/login.html';
+    }
+}
+
+// --- Configuración inicial ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Cierra todos los submenús inicialmente
+    document.querySelectorAll('.sidebar-submenu').forEach(menu => {
+        menu.style.maxHeight = '0px';
+    });
+
+    // Asegura ícono inicial correcto
+    const sidebar = document.getElementById('sidebar-container');
+    const icon = document.getElementById('toggle-icon');
+    if (sidebar.classList.contains('collapsed')) {
+        icon.classList.remove('fa-chevron-left');
+        icon.classList.add('fa-chevron-right');
+    } else {
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-left');
+    }
+
+    
+});
+
+

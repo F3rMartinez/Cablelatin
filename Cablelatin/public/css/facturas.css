@@ -44,12 +44,10 @@ Cambiado de .sidebar a #sidebar-container
     flex-shrink: 0;
     transition: width 0.3s ease;
     z-index: 100;
-    /* Estilos para el contenido cargado (tu sidebar.html) */
     box-sizing: border-box; 
 }
 
-/* Estilos de tu sidebar.html (Asumiendo la estructura de tu captura) */
-/* Esto se aplicará al HTML que se carga con fetch() */
+/* Estilos del encabezado del sidebar */
 #sidebar-container .sidebar-header {
     display: flex;
     align-items: center;
@@ -71,6 +69,8 @@ Cambiado de .sidebar a #sidebar-container
 #sidebar-container[style*="width: 80px"] .sidebar-toggle-btn {
     transform: rotate(180deg);
 }
+
+/* Navegación lateral */
 #sidebar-container .sidebar-nav ul { list-style: none; padding: 0; margin: 0; width: 100%; }
 #sidebar-container .sidebar-nav .nav-item {
     display: flex; align-items: center; flex-wrap: wrap; 
@@ -89,7 +89,9 @@ Cambiado de .sidebar a #sidebar-container
     border-left: 3px solid var(--primary-color);
     padding-left: 17px; font-weight: 500;
 }
-#sidebar-container .sidebar-nav .nav-item:not(.active):hover { background-color: rgba(0, 0, 0, 0.03); }
+#sidebar-container .sidebar-nav .nav-item:not(.active):hover { 
+    background-color: rgba(0, 0, 0, 0.03); 
+}
 #sidebar-container .sidebar-nav .nav-item > i:first-child,
 #sidebar-container .sidebar-nav .submenu-header > i:first-child { 
     margin-right: 12px; 
@@ -105,23 +107,39 @@ Cambiado de .sidebar a #sidebar-container
     transition: transform 0.3s ease; 
     font-size: 0.8em; 
 }
+
+/* 🔹 corregido: animación de submenús desplegables */
 #sidebar-container .sidebar-nav .submenu {
-    list-style: none; padding: 5px 0 5px 0; margin: 0;
-    display: none; width: 100%;
-    background-color: #fdfdfd; box-sizing: border-box;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #fdfdfd;
+    box-sizing: border-box;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+}
+#sidebar-container .sidebar-nav .submenu.open {
+    max-height: 500px; /* Altura máxima para animación */
 }
 #sidebar-container .sidebar-nav .submenu li {
-    padding: 10px 20px 10px 52px; color: var(--light-text-color);
-    font-size: 0.9em; white-space: nowrap; overflow: hidden;
+    padding: 10px 20px 10px 52px;
+    color: var(--light-text-color);
+    font-size: 0.9em;
+    white-space: nowrap;
+    overflow: hidden;
     transition: all 0.2s ease;
 }
 #sidebar-container .sidebar-nav .submenu li:hover { 
     color: var(--primary-color); 
     background-color: rgba(0, 123, 255, 0.05); 
 }
-#sidebar-container .sidebar-nav .nav-item.open > .submenu { display: block; }
-#sidebar-container .sidebar-nav .nav-item.open .arrow-icon { transform: rotate(90deg); }
 
+/* 🔹 corregido: rotación de flecha */
+.rotate-icon {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
 
 /*
 ---------------------------------
@@ -133,57 +151,51 @@ CONTENIDO PRINCIPAL (BUSQUEDA DE FACTURA)
     padding: 0; 
     background-color: var(--light-bg);
     overflow-x: auto;
-    display: flex; /* Añadido para que el content-body crezca */
-    flex-direction: column; /* Añadido */
+    display: flex;
+    flex-direction: column;
 }
-
-/* Barra de navegación superior (OCULTA) */
 .main-navbar {
-    display: none; /* Oculta porque no la usamos en este HTML */
+    display: none;
 }
-
-/* Contenedor del cuerpo principal */
 .content-body {
     padding: 30px;
-    flex-grow: 1; /* Añadido para que ocupe el espacio */
+    flex-grow: 1;
 }
 
 /*
 ---------------------------------
-ESTILOS DE TÍTULOS (AÑADIDOS)
-Estilos para .content-header y .card-title
+ESTILOS DE TÍTULOS
 ---------------------------------
 */
 .content-header {
-    margin-bottom: 25px; /* Separa el título de la primera tarjeta */
+    margin-bottom: 25px;
 }
 .content-header h1 {
     margin: 0 0 4px 0;
-    font-size: 26px; /* Letra más grande para el título */
+    font-size: 26px;
     font-weight: 500;
-    color: #1a2533; /* Un color oscuro, pero no negro puro */
+    color: #1a2533;
 }
 .content-header p {
     margin: 0;
     font-size: 15px;
-    color: var(--light-text-color); /* Texto secundario */
+    color: var(--light-text-color);
 }
 .card-title {
-    margin-top: -5px; /* Sube un poco el título */
+    margin-top: -5px;
     margin-bottom: 20px;
     font-size: 18px;
     font-weight: 500;
     color: #2c3e50;
-    border-bottom: 1px solid var(--border-color); /* Línea sutil de separación */
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 12px;
 }
 .card-title i {
-    margin-right: 8px; /* Espacio para el ícono */
-    color: var(--primary-color); /* Color del ícono */
+    margin-right: 8px;
+    color: var(--primary-color);
 }
 
-
-/* Contenedor de la tarjeta de formulario */
+/* Tarjetas */
 .card {
     background-color: var(--card-bg);
     border-radius: 8px;
@@ -192,13 +204,12 @@ Estilos para .content-header y .card-title
     margin-bottom: 25px;
 }
 
-/* Grid del formulario de filtros */
+/* Grid de filtros */
 .form-filters-grid {
     display: grid;
-    /* Ajustado para que quepan tus 3 campos + 1 botón */
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
-    align-items: end; /* Alinea los elementos al final */
+    align-items: end;
 }
 .form-group {
     display: flex;
@@ -218,12 +229,12 @@ Estilos para .content-header y .card-title
 }
 .form-group input[type="text"],
 .form-group input[type="search"],
-.form-group input[type="date"] { /* Añadido input[type="date"] */
+.form-group input[type="date"] {
     border: 1px solid #ced4da;
     border-radius: 4px;
     padding: 10px 12px;
     font-size: 0.9em;
-    box-sizing: border-box; /* Añadido para consistencia */
+    box-sizing: border-box;
 }
 
 .form-buttons {
@@ -257,15 +268,14 @@ Estilos para .content-header y .card-title
     background-color: #f4f7fa;
 }
 
-
-/* Controles de la tabla (Mostrar) */
+/* Tabla */
 .table-controls {
     display: flex;
-    justify-content: flex-start; /* Alineado a la izquierda */
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 20px;
 }
-.table-controls label { /* Modificado para que contenga todo */
+.table-controls label {
     font-size: 0.9em;
     color: var(--light-text-color);
 }
@@ -274,32 +284,25 @@ Estilos para .content-header y .card-title
     border-radius: 4px;
     padding: 8px 12px;
     font-size: 0.9em;
-    margin: 0 8px; /* Espacio a ambos lados */
+    margin: 0 8px;
 }
-
-/* Contenedor de la tabla (para scroll) */
 .table-container {
     overflow-x: auto; 
 }
-
 table {
     width: 100%;
     border-collapse: collapse; 
 }
-
-/* Cabecera de la tabla */
 thead th {
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 2px solid var(--border-color); /* Borde más grueso */
+    border-bottom: 2px solid var(--border-color);
     color: var(--light-text-color);
     font-size: 0.8em;
     text-transform: uppercase;
     font-weight: 500;
     white-space: nowrap;
 }
-
-/* Cuerpo de la tabla */
 tbody td {
     padding: 12px 15px;
     text-align: left;
@@ -316,51 +319,41 @@ tbody tr:hover {
     background-color: #fcfcfc;
 }
 
-/* Píldora de estado (Activo) */
-.status-pill { /* Clase genérica */
+/* Píldoras de estado */
+.status-pill {
     border-radius: 12px;
     padding: 4px 12px;
     font-size: 0.8em;
     font-weight: 500;
 }
 .status-pill.active {
-    background-color: #e0f5e9; /* Fondo verde claro */
-    color: var(--success-color); /* Texto verde */
+    background-color: #e0f5e9;
+    color: var(--success-color);
 }
-.status-pill.inactive { /* Ejemplo para Inactivo/Vencido */
+.status-pill.inactive {
     background-color: #ffebee; 
     color: var(--danger-color); 
 }
-.status-pill.pending { /* Ejemplo para Pendiente */
+.status-pill.pending {
     background-color: #fff3cd; 
     color: #856404;
 }
 
-
-/* Acciones de la tabla */
+/* Acciones */
 .table-actions i {
     font-size: 1.2em;
     margin: 0 8px;
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
-.table-actions .icon-success {
-    color: var(--success-color);
-}
-.table-actions .icon-danger {
-    color: var(--danger-color);
-}
+.table-actions .icon-success { color: var(--success-color); }
+.table-actions .icon-danger { color: var(--danger-color); }
 .table-actions i:hover {
     opacity: 0.7;
-    transform: scale(1.1); /* Añadido efecto hover */
+    transform: scale(1.1);
 }
 
-/*
----------------------------------
-ESTILOS DEL MODAL (AÑADIDOS)
-Estilos para el modal de pago
----------------------------------
-*/
+/* Modal */
 .modal {
     display: none; 
     position: fixed; 
@@ -471,34 +464,25 @@ Estilos para el modal de pago
     background-color: #218838;
 }
 
-
-/* Ajustes responsivos */
+/* Responsivo */
 @media (max-width: 992px) {
     .form-filters-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    /* Oculta el sidebar en móvil y muestra una barra simple */
     #sidebar-container {
         display: none;
     }
-    
-    /* En móvil, SÍ mostramos la barra superior */
     .main-navbar {
         display: flex;
         padding: 10px 15px;
     }
     .navbar-breadcrumbs { font-size: 1em; }
     .navbar-right-icons { font-size: 1.1em; gap: 15px; }
-    
     .content-body { padding: 15px; }
-    
-    .form-filters-grid {
-        grid-template-columns: 1fr; /* 1 columna */
-    }
-    
+    .form-filters-grid { grid-template-columns: 1fr; }
     .table-controls { flex-direction: column; align-items: stretch; }
     .table-controls select { width: 100%; margin: 5px 0 0 0; }
     .table-controls label { display: block; margin-bottom: 5px; }

@@ -306,25 +306,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // (Corregí "siderbar.html" a "sidebar.html")
-    fetch("sidebar.html")
-        .then(res => {
-            if (!res.ok) throw new Error('No se encontró sidebar.html');
-            return res.text();
-        })
-        .then(html => {
-            const sidebarContainer = document.getElementById("sidebar-container");
-            if(sidebarContainer) {
-                sidebarContainer.innerHTML = html;
-                // Aquí deberías llamar a 'initSidebarEvents()' si lo tienes
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons({ nodes: [sidebarContainer] });
-                }
-            }
-        })
-        .catch(err => {
-            console.warn("Advertencia: Error al cargar el sidebar.", err);
-             const sidebarContainer = document.getElementById("sidebar-container");
-             if(sidebarContainer) sidebarContainer.innerHTML = `<p style="color:red;padding:15px;">Error al cargar menú lateral.</p>`
+    
         });
-});

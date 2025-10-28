@@ -4,19 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Planes</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <script src="https://unpkg.com/lucide@latest"></script>
 
     <link rel="stylesheet" href="/Cablelatin/public/css/planes.css">
 
 </head>
 <body>
     
-    <div id="sidebar-container">
+<!-- SIDEBAR UNIFICADO -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+<link rel="stylesheet" href="/Cablelatin/public/css/sidebar.css" />
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <i class="fas fa-desktop"></i>
+      <span>CABLE LATIN</span>
+    </div>
+    <i class="fas fa-bars sidebar-toggle-btn" id="sidebar-toggle-internal"></i>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <!-- DASHBOARD -->
+      <li class="nav-item">
+        <a href="tablero.html">
+          <i class="fas fa-grip"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <!-- ADMINISTRACIÓN -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-gear"></i>
+          <span>Administración</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
         </div>
+        <ul class="submenu">
+          <li><a href="usuario.html">Usuarios</a></li>
+          <li><a href="planes.html">Planes y servicios</a></li>
+        </ul>
+      </li>
+
+      <!-- CLIENTES -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-users"></i>
+          <span>Clientes</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+        <ul class="submenu">
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="facturas.html">Facturas</a></li>
+          <li><a href="pagos.html">Pagos</a></li>
+        </ul>
+      </li>
+
+      <!-- REPORTES -->
+      <li class="nav-item has-submenu">
+        <div class="submenu-header">
+          <i class="fas fa-list-check"></i>
+          <span>Reportes</span>
+          <i class="fas fa-chevron-right arrow-icon"></i>
+        </div>
+        <ul class="submenu">
+          <li><a href="reportes.html">Reportes</a></li>
+        </ul>
+      </li>
+
+      <!-- PERFIL -->
+      <li class="nav-item">
+        <a href="perfil.html">
+          <i class="fas fa-user-circle"></i>
+          <span>Mi Perfil</span>
+        </a>
+      </li>
+
+      <!-- CERRAR SESIÓN -->
+      <li class="nav-item">
+        <a href="login.html">
+          <i class="fa-solid fa-door-open"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+<script src="/Cablelatin/public/js/sidebar.js"></script>
+
 
     <main class="main-content">
         
@@ -223,5 +302,7 @@
 
 
     <script type="module" src="/Cablelatin/public/js/planes.js"></script>
+    
+    
 </body>
 </html>
