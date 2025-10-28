@@ -1,112 +1,380 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Perfil - CABLE LATIN</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - CABLE LATIN</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="/Cablelatin/public/css/perfil.css">
     
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <link rel="stylesheet" href="/Cablelatin/public/css/perfil.css">
+    <style>
+        /* Estilos básicos para el loader del botón (puedes personalizarlos) */
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: none; /* Oculto por defecto */
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
 </head>
 <body>
 
-    <div id="sidebar-container"></div>
+    <div id="sidebar-container"></div>
 
-    <main id="main-content">
-        
-        <header class="header-main">
-            </div>
-        </header>
+    <main id="main-content">
+        
+        <header class="header-main">
+                    </header>
 
-        <div class="form-wrapper-center">
-            <div class="panel-form">
-                
-                <h2 class="form-title">Mi Perfil</h2>
-            
-                <form id="profileForm">
+        <div class="form-wrapper-center">
+            <div class="panel-form">
+                
+                <h2 class="form-title">Mi Perfil</h2>
+            
+                <form id="profileForm">
+                    
+                    <div class="profile-pic-section">
+                        <div class="pic-wrapper">
+                            <i data-lucide="user-circle-2" class="profile-icon-placeholder"></i>
+                        </div>
+                        <button type="button" class="btn-action btn-secondary">
+                            <i data-lucide="upload-cloud"></i>
+                            Cambiar Foto
+                        </button>
+                    </div>
+
+                    <div class="form-content-grid">
+                        <div>
+                            <div class="form-group-grid">
+                                <label for="fullName">Nombre Completo:</label>
+                                <input type="text" id="fullName" name="fullName" placeholder="Cargando...">
+                            </div>
+                            <div class="form-group-grid">
+                                <label for="username">Nombre de Usuario (no editable):</label>
+                  S           <input type="text" id="username" name="username" placeholder="Cargando..." readonly class="is-readonly">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="form-group-grid">
+                                <label for="email">Correo Electrónico:</label>
+                                <input type="email" id="email" name="email" placeholder="Cargando...">
+                            </div>
+                            <div class="form-group-grid">
+                                <label for="role">Cargo / Rol (no editable):</label>
+                                <input type="text" id="role" name="role" placeholder="Cargando..." readonly class="is-readonly">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="my-4 border-t"></div>
+
+                    <div class="form-content-grid">
+                        <h3 class="form-subtitle">Cambiar Contraseña</h3>
+                        <div>
+                            <div class="form-group-grid">
+                                <label for="passCurrent">Contraseña Actual:</label>
+                                <input type="password" id="passCurrent" name="passCurrent" placeholder="Requerida para cambiar email o contraseña">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group-grid">
+                                <label for="passNew">Nueva Contraseña:</label>
+                                <input type="password" id="passNew" name="passNew" placeholder="Dejar en blanco para no cambiar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button type="submit" id="btnSave" class="btn-action btn-save">
+                            <div class="loader"></div>
+                            <i data-lucide="save" class="icon-save"></i>
+                            <span id="btn-text">Guardar Cambios</span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div> 
+        </div> 
+        </main>
+
+        <div id="profileSuccessModal" class="fixed inset-0 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <div class="modal-icon-wrapper">
+                <i data-lucide="check" class="modal-icon"></i>
+            </div>
+            <div class="mt-4">
+                <h3>¡Perfil Actualizado!</h3>
+                <p>Tu información ha sido guardada exitosamente.</p>
+            </div>
+            <div>
+                <button id="closeProfileModal" type="button" class="btn-modal-close">
+                    Aceptar
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <script src="/Cablelatin/public/js/perfil.js"></script>
+
+
+            <script type="module">
+        // --- Importaciones de Firebase ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // Importar Auth para manejar al usuario actual
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            updateEmail,
+            updatePassword,
+            EmailAuthProvider,
+            reauthenticateWithCredential
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // Importar Firestore para leer y actualizar el perfil
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc,
+            updateDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Configuración Firebase (La misma que usaste antes) ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHrAEU4HI2onL1bRZpRfB5GAbsbD6_XBE",
+          authDomain: "cablelatin-prueba.firebaseapp.com",
+          projectId: "cablelatin-prueba",
+          storageBucket: "cablelatin-prueba.firebasestorage.app",
+          messagingSenderId: "370823325775",
+          appId: "1:370823325775:web:cbd9142e612bc0a979623a",
+          measurementId: "G-PV3NRMJBW2"
+        };
+        
+        // --- Variables Globales ---
+        const appId = firebaseConfig.projectId;
+        let app, auth, db;
+        let currentUser = null; // El objeto de usuario de Auth
+        let originalEmail = ""; // Para comparar si el email cambió
+
+        // --- Referencias a Elementos DOM ---
+        const form = document.getElementById('profileForm');
+        // Inputs
+        const fullNameInput = document.getElementById('fullName');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const roleInput = document.getElementById('role');
+        const passCurrentInput = document.getElementById('passCurrent');
+        const passNewInput = document.getElementById('passNew');
+        // Botón
+        const btnSave = document.getElementById('btnSave');
+        const btnText = document.getElementById('btn-text');
+        const iconSave = btnSave.querySelector('.icon-save');
+        const iconLoader = btnSave.querySelector('.loader');
+        // Modal
+        const modal = document.getElementById('profileSuccessModal');
+        const modalClose = document.getElementById('closeProfileModal');
+
+        // --- Inicialización Firebase ---
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log("Firebase inicializado para Perfil");
+            initAuth(); 
+        } catch (e) {
+            console.error("Error inicializando Firebase:", e);
+            alert("Error de Conexión. No se pudo conectar a Firebase.");
+        }
+
+        // --- 1. Autenticación y Carga de Datos ---
+        function initAuth() {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // --- Usuario SÍ está logueado ---
+                    currentUser = user;
+                    originalEmail = user.email; // Guardamos el email original
+                    console.log("Usuario autenticado:", user.uid);
+                    // Ahora cargamos su perfil de Firestore
+                    loadUserProfile(user.uid);
+                } else {
+                    // --- Usuario NO está logueado ---
+                    console.log("Usuario no logueado. Redirigiendo a login...");
+                    // Cambia "/login.html" por tu página de inicio de sesión
+                    window.location.href = "/login.html"; 
+                }
+            });
+        }
+
+        // --- 2. Cargar Perfil de Firestore ---
+        async function loadUserProfile(userId) {
+            // Usamos la misma ruta que en tu script de creación
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'personal', userId);
+            try {
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    console.log("Perfil encontrado:", data);
                     
-                    <div class="profile-pic-section">
-                        <div class="pic-wrapper">
-                            <i data-lucide="user-circle-2" class="profile-icon-placeholder"></i>
-                        </div>
-                        <button type="button" class="btn-action btn-secondary">
-                            <i data-lucide="upload-cloud"></i>
-                            Cambiar Foto
-                        </button>
-                    </div>
+                    // Llenamos el formulario
+                    fullNameInput.value = data.nombre || '';
+                    usernameInput.value = data.usuario || '';
+                    emailInput.value = data.email || '';
+                    roleInput.value = data.rol || '';
+                    
+                } else {
+                    console.error("Error: No se encontró el documento del perfil en Firestore.");
+                    alert("No se pudo cargar tu perfil. Contacta a soporte.");
+                }
+            } catch (error) {
+                console.error("Error al cargar perfil de Firestore:", error);
+                alert("Error al leer tus datos.");
+            }
+        }
+        
+        // --- 3. Manejador del Formulario (Actualizar) ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) {
+                alert("No estás autenticado. Recarga la página.");
+                return;
+            }
 
-                    <div class="form-content-grid">
-                        <div>
-                            <div class="form-group-grid">
-                                <label for="fullName">Nombre Completo:</label>
-                                <input type="text" id="fullName" name="fullName" value="Ana Sofía Rivas">
-                            </div>
-                            <div class="form-group-grid">
-                                <label for="username">Nombre de Usuario (no editable):</label>
-                                <input type="text" id="username" name="username" value="arivas_admin" readonly class="is-readonly">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <div class="form-group-grid">
-                                <label for="email">Correo Electrónico:</label>
-                                <input type="email" id="email" name="email" value="a.rivas@cablelatin.com">
-                            </div>
-                            <div class="form-group-grid">
-                                <label for="role">Cargo / Rol (no editable):</label>
-                                <input type="text" id="role" name="role" value="Administrador" readonly class="is-readonly">
-                            </div>
-                        </div>
-                    </div>
+            setLoading(true);
 
-                    <div class="my-4 border-t"></div>
+            // 1. Obtener datos del formulario
+            const newName = fullNameInput.value;
+            const newEmail = emailInput.value;
+            const passCurrent = passCurrentInput.value;
+            const passNew = passNewInput.value;
 
-                    <div class="form-content-grid">
-                        <h3 class="form-subtitle">Cambiar Contraseña</h3>
-                        <div>
-                            <div class="form-group-grid">
-                                <label for="passCurrent">Contraseña Actual:</label>
-                                <input type="password" id="passCurrent" name="passCurrent" placeholder="Ingrese su contraseña actual">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="form-group-grid">
-                                <label for="passNew">Nueva Contraseña:</label>
-                                <input type="password" id="passNew" name="passNew" placeholder="Mínimo 8 caracteres">
-                            </div>
-                        </div>
-                    </div>
+            // 2. Definir qué se va a actualizar
+            const firestoreDataToUpdate = {
+                nombre: newName // Siempre actualizamos el nombre
+            };
 
-                    <div class="mt-4 flex justify-end">
-                        <button type="submit" class="btn-action btn-save">
-                            <i data-lucide="save"></i> Guardar Cambios
-                        </button>
-                    </div>
+            const authUpdatePromises = []; // Promesas para Auth (email, pass)
 
-                </form>
+            // 3. Comprobar si se quieren cambiar datos sensibles
+            const emailChanged = newEmail !== originalEmail;
+            const passwordChanged = passNew.length > 0;
 
-            </div> 
-        </div> 
-        </main>
+            try {
+                // --- SI SE QUIERE CAMBIAR EMAIL O CONTRASEÑA ---
+                if (emailChanged || passwordChanged) {
+                    if (!passCurrent) {
+                        throw new Error("Por favor, ingresa tu contraseña actual para guardar cambios sensibles (email o contraseña).");
+                    }
 
-    <div id="profileSuccessModal" class="fixed inset-0 flex items-center justify-center hidden">
-        <div class="modal-content">
-            <div class="modal-icon-wrapper">
-                <i data-lucide="check" class="modal-icon"></i>
-            </div>
-            <div class="mt-4">
-                <h3>¡Perfil Actualizado!</h3>
-                <p>Tu información ha sido guardada exitosamente.</p>
-            </div>
-            <div>
-                <button id="closeProfileModal" type="button" class="btn-modal-close">
-                    Aceptar
-                </button>
-            </div>
-        </div>
-    </div>
+                    // 3.1 Re-autenticar al usuario
+                    const credential = EmailAuthProvider.credential(originalEmail, passCurrent);
+                    console.log("Re-autenticando...");
+                    await reauthenticateWithCredential(currentUser, credential);
+                    console.log("Re-autenticación exitosa.");
 
-    <script src="/Cablelatin/public/js/perfil.js"></script>
+                    // 3.2 Añadir promesas de actualización de Auth
+                    if (emailChanged) {
+                        console.log("Actualizando email en Auth...");
+                        authUpdatePromises.push(updateEmail(currentUser, newEmail));
+                        firestoreDataToUpdate.email = newEmail; // También actualizar en Firestore
+                    }
+                    if (passwordChanged) {
+                        console.log("Actualizando contraseña en Auth...");
+                        authUpdatePromises.push(updatePassword(currentUser, passNew));
+                    }
+                }
+
+                // --- SIEMPRE ACTUALIZAMOS FIRESTORE (al menos el nombre) ---
+                console.log("Actualizando perfil en Firestore...");
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'personal', currentUser.uid);
+                const firestorePromise = updateDoc(userDocRef, firestoreDataToUpdate);
+                
+                // --- 4. Ejecutar todas las promesas ---
+                await Promise.all([...authUpdatePromises, firestorePromise]);
+
+                console.log("¡Todo actualizado!");
+                showSuccessModal();
+
+                // Limpiar campos de contraseña
+                passCurrentInput.value = "";
+                passNewInput.value = "";
+                // Actualizar el email original
+                if(emailChanged) originalEmail = newEmail;
+
+            } catch (error) {
+                // --- Manejo de Errores ---
+                console.error("Error al actualizar perfil:", error);
+                alert(getFriendlyErrorMessage(error));
+
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // --- Funciones de UI ---
+        
+        function setLoading(isLoading) {
+            if (isLoading) {
+                btnSave.disabled = true;
+                btnText.textContent = "Guardando...";
+                iconSave.style.display = 'none';
+                iconLoader.style.display = 'inline-block';
+            } else {
+                btnSave.disabled = false;
+                btnText.textContent = "Guardar Cambios";
+                iconSave.style.display = 'inline-block';
+                iconLoader.style.display = 'none';
+            }
+        }
+
+        function showSuccessModal() {
+            // Re-renderizar el ícono por si acaso
+            const iconElement = modal.querySelector('[data-lucide="check"]');
+            if (iconElement) lucide.createIcons({ nodes: [iconElement] });
+            
+            modal.classList.remove('hidden');
+        }
+
+        modalClose.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        function getFriendlyErrorMessage(error) {
+            let userMessage = error.message; // Mensaje por defecto
+
+            switch (error.code) {
+                case 'auth/wrong-password':
+                    userMessage = "La contraseña actual es incorrecta.";
+                    break;
+                case 'auth/weak-password':
+                    userMessage = "La nueva contraseña es muy débil (mínimo 6 caracteres).";
+                    break;
+                case 'auth/email-already-in-use':
+                    userMessage = "El nuevo correo electrónico ya está en uso por otra cuenta.";
+                    break;
+                case 'auth/invalid-email':
+                    userMessage = "El formato del nuevo correo no es válido.";
+                    break;
+                case 'auth/requires-recent-login':
+                    userMessage = "Esta operación es sensible. Por favor, vuelve a iniciar sesión e inténtalo de nuevo.";
+                    break;
+            }
+            return userMessage;
+        }
+
+        // Cargar iconos iniciales
+        lucide.createIcons();
+    </script>
+
 </body>
 </html>
