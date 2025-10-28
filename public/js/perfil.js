@@ -55,8 +55,6 @@ function initSidebarEvents() {
     });
     
     // Activa el item inicial (ej: Configuración > Mi Perfil)
-    // NOTA: Debes añadir 'initial-active' al LI de 'Configuración'
-    // y 'initial-active-sub' al 'a' de 'Mi Perfil' en sidebar.html
     const initialActiveParent = document.querySelector('#sidebar .initial-active');
     const initialActiveSub = document.querySelector('#sidebar .initial-active-sub');
     
@@ -72,109 +70,155 @@ function initSidebarEvents() {
          }
     } else if (initialActiveSub) { // Si solo hay subitem activo (raro)
         initialActiveSub.classList.add('active');
-        // Intenta activar el padre si existe
         const parentLi = initialActiveSub.closest('.submenu-container')?.previousElementSibling;
         if(parentLi) parentLi.classList.add('active');
     }
 
-
-    // --- Lógica para botones móviles (Toggle Sidebar) ---
     const toggleSidebar = () => sidebar?.classList.toggle('open');
     if (sidebarToggleMobile) sidebarToggleMobile.addEventListener('click', toggleSidebar);
     if (sidebarToggleMain) sidebarToggleMain.addEventListener('click', toggleSidebar);
 }
 
-
-// --- Lógica del Formulario y Modal de Perfil (Fuera de initSidebarEvents) ---
+// --- Lógica del Formulario y Modal de Perfil ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializar iconos Lucide AHORA, porque están en el HTML principal
     lucide.createIcons();
 
-    // Referencias del Formulario y Modal
     const profileForm = document.getElementById('profileForm');
     const profileModal = document.getElementById('profileSuccessModal');
     const closeProfileModalBtn = document.getElementById('closeProfileModal');
     const passCurrentInput = document.getElementById('passCurrent');
     const passNewInput = document.getElementById('passNew');
 
-    // Función para CERRAR el modal
+    // --- Cargar datos del usuario ---
+    function cargarDatosUsuario() {
+        try {
+            // Se asume que los datos del usuario se guardan en sessionStorage tras el login
+            // con una clave 'usuarioLogueado'.
+            const usuarioString = sessionStorage.getItem('usuarioLogueado');
+            
+            if (!usuarioString) {
+                console.warn('No se encontró información del usuario en la sesión. Mostrando campos vacíos.');
+                // Opcional: Redirigir al login si no hay sesión
+                // window.location.href = 'login.html'; 
+                return;
+            }
+
+            const usuario = JSON.parse(usuarioString);
+
+            // Rellenar el formulario con los datos del usuario
+            document.getElementById('fullName').value = usuario.nombreCompleto || '';
+            document.getElementById('username').value = usuario.username || '';
+            document.getElementById('email').value = usuario.email || '';
+            document.getElementById('role').value = usuario.rol || '';
+
+        } catch (error) {
+            console.error('Error al cargar y procesar los datos del perfil:', error);
+            alert('Hubo un error al cargar tu perfil. Por favor, intenta recargar la página.');
+        }
+    }
+
     const closeProfileModal = () => {
         if (profileModal) {
             profileModal.classList.remove('open');
             setTimeout(() => {
                 profileModal.classList.add('hidden');
-            }, 300); // Esperar animación
+            }, 300);
             
-            // Limpiar campos de contraseña
             if(passCurrentInput) passCurrentInput.value = '';
             if(passNewInput) passNewInput.value = '';
         }
     }
     
-    // Evento al ENVIAR el formulario
     if (profileForm) {
-        profileForm.addEventListener('submit', (e) => {
+        profileForm.addEventListener('submit', (e) => { // Removed async
             e.preventDefault();
             
-            // Aquí iría la lógica para guardar los datos...
-            console.log("Formulario enviado (simulación)");
-            
-            // Mostrar el modal
-            if (profileModal) {
-                profileModal.classList.remove('hidden');
-                // Pequeño delay para asegurar que no esté hidden antes de la transición
-                requestAnimationFrame(() => {
-                    profileModal.classList.add('open');
-                });
-                lucide.createIcons(); // Recargar icono del modal si es necesario
+            // --- Lógica para guardar los datos ---
+            // En una aplicación real, aquí harías un fetch a tu API para guardar los cambios.
+            // Por ahora, simularemos el guardado y actualizaremos sessionStorage.
+            console.log("Simulando guardado de datos...");
+
+            // Removed loader logic as it's not needed for client-side simulation
+            // const btnSave = document.getElementById('btnSave');
+            // const loader = btnSave.querySelector('.loader');
+            // const btnText = document.getElementById('btn-text');
+            // btnSave.disabled = true;
+            // loader.style.display = 'inline-block';
+            // btnText.textContent = 'Guardando...';
+
+            try {
+                const usuarioString = sessionStorage.getItem('usuarioLogueado');
+                if (!usuarioString) {
+                    alert('Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.');
+                    return;
+                }
+                let usuario = JSON.parse(usuarioString); // Use let to allow modification
+
+                // Actualizar solo los campos que han cambiado
+                usuario.nombreCompleto = document.getElementById('fullName').value;
+                usuario.email = document.getElementById('email').value;
+                
+                // Actualizar sessionStorage
+                sessionStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+
+                console.log("Datos actualizados en sessionStorage:", usuario);
+
+                // Mostrar el modal de éxito
+                if (profileModal) {
+                    profileModal.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        profileModal.classList.add('open');
+                    });
+                    lucide.createIcons();
+                }
+
+            } catch (error) {
+                console.error("Error al guardar el perfil:", error);
+                alert("Hubo un error al guardar los cambios.");
+            } finally {
+                // Removed loader logic
+                // btnSave.disabled = false;
+                // loader.style.display = 'none';
+                // btnText.textContent = 'Guardar Cambios';
             }
         });
     }
     
-    // Evento para CERRAR con el botón "Aceptar"
     if (closeProfileModalBtn) {
         closeProfileModalBtn.addEventListener('click', closeProfileModal);
     }
     
-    // Evento para CERRAR haciendo clic en el fondo
     if (profileModal) {
         profileModal.addEventListener('click', (e) => {
-            // Cierra solo si se hace clic DIRECTAMENTE en el fondo (no en el contenido)
             if (e.target === profileModal) { 
                 closeProfileModal();
             }
         });
     }
 
-    // --- EL FETCH (Carga el menú lateral) ---
-    // Esto se ejecuta después de que el DOM esté listo
-    fetch("sidebar.html") // Asegúrate que siderbar.html esté en la misma carpeta que perfil.html
+    // --- Carga del Sidebar ---
+    fetch("sidebar.html")
         .then(res => {
-            if (!res.ok) throw new Error('No se encontró siderbar.html'); 
+            if (!res.ok) throw new Error('No se encontró sidebar.html'); 
             return res.text();
         })
         .then(html => {
-            // 1. Inserta el HTML del menú
             const sidebarContainer = document.getElementById("sidebar-container");
             if(sidebarContainer) {
                 sidebarContainer.innerHTML = html;
-                
-                // 2. ¡IMPORTANTE! Ahora que el HTML del menú existe, inicializa sus eventos
                 initSidebarEvents();
-                
-                // 3. Inicializa los iconos Lucide DENTRO del sidebar cargado
-                lucide.createIcons({
-                    // Busca iconos solo dentro del contenedor del sidebar
-                    nodes: [sidebarContainer], 
-                });
+                lucide.createIcons({ nodes: [sidebarContainer] });
             }
         })
         .catch(err => {
             console.error("Error al cargar el sidebar:", err);
             const sidebarContainer = document.getElementById("sidebar-container");
             if(sidebarContainer) {
-                sidebarContainer.innerHTML = 
-                    `<p style="color: red; padding: 20px;">Error al cargar el menú: ${err.message}</p>`;
+                sidebarContainer.innerHTML = `<p style="color: red; padding: 20px;">Error al cargar el menú: ${err.message}</p>`;
             }
         });
+
+    // --- Cargar datos del usuario al iniciar la página ---
+    cargarDatosUsuario();
+
 }); // Fin del DOMContentLoaded

@@ -15,7 +15,7 @@ body {
     margin: 0; 
     background: var(--color-fondo); 
     color: var(--color-texto); 
-    font-size: 0.95rem;
+    font-size: 1rem;
 }
 #app-container { display: flex; }
 
@@ -75,6 +75,7 @@ body {
     color: var(--color-principal); 
     font-weight: 600; 
     border-left: 3px solid var(--color-principal);
+    box-shadow: 2px 0 8px rgba(13, 110, 253, 0.1);
 }
 .nav-item span { margin-left: 0.75rem; flex-grow: 1; }
 .nav-item .submenu-arrow { 
@@ -101,7 +102,7 @@ body {
 }
 .submenu-item:hover { 
     color: var(--color-texto); 
-    background: #f8f9fa;
+    background: #e9ecef;
 }
 .submenu-item.active { 
     color: var(--color-principal); 
@@ -150,14 +151,14 @@ body {
     background: var(--color-panel); 
     border-radius: 0.5rem; 
     border: 1px solid var(--color-borde);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
     width: 100%; 
     max-width: 900px; 
 }
 .form-title { 
     font-size: 1.5rem; 
     font-weight: 600; 
-    padding: 1.5rem; 
+    padding: 1.5rem 2rem; 
     border-bottom: 1px solid var(--color-borde); 
     text-align: center; 
 }
@@ -172,7 +173,7 @@ form { padding: 2rem; }
 .form-group-grid input[type="email"],
 .form-group-grid input[type="password"] {
     width: 100%; 
-    padding: 0.75rem; 
+    padding: 0.85rem 0.75rem; 
     border: 1px solid var(--color-borde); 
     border-radius: 0.375rem; 
     box-sizing: border-box; 
@@ -191,9 +192,8 @@ form { padding: 2rem; }
 }
 
 /* --- Botones --- */
-.btn-action { 
-    padding: 0.75rem 1.5rem; 
-    border-radius: 0.375rem; 
+.btn-action {
+    padding: 0.85rem 1.5rem;    border-radius: 0.375rem; 
     font-weight: 600; 
     cursor: pointer; 
     border: none; 

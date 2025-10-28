@@ -32,6 +32,7 @@
       {
         "aria-allowed-attr": "off"
       }
-    ]
+    ],
+    "disown-opener": "off"
   }
 }
